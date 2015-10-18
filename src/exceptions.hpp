@@ -1,5 +1,5 @@
-#ifndef __EXCEPTIONS_H
-#define __EXCEPTIONS_H
+#ifndef __EXCEPTIONS_HPP
+#define __EXCEPTIONS_HPP
 
 #include <string>
 #include <iosfwd>
@@ -48,4 +48,9 @@ DECLARE_EXCEPTION(EpNotPrime);
  */
 DECLARE_EXCEPTION(EOperationUnsupported);
 
-#endif // __EXCEPTIONS_H
+/**
+ *  Yet to be implemented functionality
+ */
+DECLARE_EXCEPTION(ENotImplementedYet);
+
+#endif // __EXCEPTIONS_HPP

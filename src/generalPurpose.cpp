@@ -1,5 +1,6 @@
-
-#include "Exceptions.h"
+#include "exceptions.hpp"
+#include "types.hpp"
+#include <cstdlib> // abs function for long long ints
 
 /**
  * Exponentiation by Squaring
@@ -19,7 +20,7 @@ ll fastPowMod(ll a, ll b, ll p){
     if(b==0)return 1;
     if(b%2){
         ll aux = fastPowMod(a,b/2,p);
-        return (b*b)%p;
+        return (aux*aux)%p;
     }
     return (a*fastPowMod(a,b-1,p))%p;
 }
@@ -50,8 +51,8 @@ ll fastPowMod(ll a, ll b, ll p){
  *   restrict ourselves to long long integers, it is enough to check with:
  *  a = 2,3,4,5,11,13,17,19,23,29,31 and 37
  */
-bool millerRabin(ll n, int k=35) {
-	ll s=n-1, r=0, a, aux;
+bool millerRabin(ll n, int k /*= 35*/){
+    ll s=n-1, r=0, a;
 
     // Discards edge cases for the random generation process
     if(n==2 || n==3) return true;
@@ -59,34 +60,33 @@ bool millerRabin(ll n, int k=35) {
     if(n%2==0 || n==1) return false;
 
     // Decompose n-1 as n-1=s*2^r
-	while(s%2==0){
+    while(s%2==0){
         s/=2;
         r++;
     }
-	while(k--) {
-        // Generate a random number a<-{1..n-2}
-		a=(rand()%(n-2))+1;
-		a=fastPowMod(a, s, n);
+    while(k--) {
+        // Generate a random number a<-{2..n-2}
+        a=(rand()%(n-3))+2;
+        a=fastPowMod(a, s, n);
 
         // if a=1,n-1, we are not going to find any non trivial root
         // since a^2 (mod n) = 1
         if(a==1 || a == n-1) continue;
 
-		for(int i=0; i<r; i++){
+        for(int i=0; i<r; i++){
             a=(a*a)%n;
 
             // If we find a non trivial root of the unity
             if(a==1) return false;
 
-            // We are not going to find any nontrivial root of unity
-			if(a==n-1) break;
-
             // By fermat's little theorem a^{n-1}=1 (mod n) if n prime
             if(i==r-1 && a!=1) return false;
 
+            // We are not going to find any nontrivial root of unity
+            if(a==n-1) break;
         }
-	}
-	return true;
+    }
+    return true;
 }
 
 
@@ -96,35 +96,43 @@ bool millerRabin(ll n, int k=35) {
  * Description:
  *  Given two integers a, b it computes:
  *   ax+by=d=gcd(a,b)
- *   It returns d
+ *   It returns d with  d > 0, i.e. in its normal form.
  *
  * Theoretical background:
  *  The algorithm is based in the equality mcd(a,b)=mcd(b%a,a)
- *  At the end of each recursive call we have the invariant
- *   a*x+b*y=gdc(a,b)
+ *  The details of the invariants are commented in the code
+ *  This algorithm works with a few tweaks for an arbitrary Euclidean Domain
  *
  * Complexity:
  *  O(log(min(a,b)))
  *
  */
 ll eea (ll a, ll b, ll& x, ll& y) {
-    // If a=0 => gcd(0,b) = b = 0*0+1*b
-    if(a==0){
-        x=0; y=1;
-        return b;
+    // We set a = |a| and b = |b| and set a flag if the sign was changed
+    bool ca=false, cb=false;
+    if(a<0)a=-a, ca=true;
+    if(b<0)b=-b, cb=true;
+
+    x = 1; y = 0;
+    ll xx = 0, yy = 1;
+    ll q, r, r1, r2;
+    while(b){
+        // The following invariant holds:
+        //  a = x*|a|+y*|b|
+        //  b = xx*|a|+yy*|b|
+
+        // Compute quotient and reminder
+        q = a/b; r = a-q*b;
+
+        // After this r = r1*|a|+r2*|b| holds
+        r1 = x-q*xx; r2 = y-q*yy;
+
+        // Iterate
+        a = b; x = xx; y = yy;
+        b = r; xx = r1; yy = r2;
     }
-    ll x1, y1;
+    if(ca) x = -x;
+    if(cb) y = -y;
 
-    // Recursively compute the gcd
-    ll gcd = eea(b%a, a, x1, y1);
-
-    // By induction hypothesis gcd = b%a*x1+a*y1
-    // So we update the coefficients so that gcd = a*x+b*y
-    x= y1 - (b/a)*x1;
-    y = x1;
-
-    return gcd;
+    return abs(a);
 }
-
-
-#endif // __GENERAL_PURPOSE_H
