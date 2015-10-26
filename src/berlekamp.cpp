@@ -5,13 +5,13 @@ template <typename FX>
 
 //Input: a polinomial pol over a field of size q
 //O(q n^2) where n is deg(pol)
-const matrixF& formMatrix (const FX &pol) { //TODO: change ll
+const matrixF& formMatrix (const FX &pol) { //TODO: change/check ALL ll
 	ll q = pol.baseFieldSize(), n = pol.degree(); 
 	FX::F aux(0, q);
 	std::vector<F> r(n, 0);
+	r[0] = 1; //r == (1, 0, ..)
 	matrixF result;
 	result.push_back(r);
-	r[0] = 1;
 	for (ll i = 1; i<= (n-1)*q; ++i){
 		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*a_{n-1})
 		aux = r[n-1];
