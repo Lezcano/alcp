@@ -53,4 +53,19 @@ DECLARE_EXCEPTION(EOperationUnsupported);
  */
 DECLARE_EXCEPTION(ENotImplementedYet);
 
+/**
+ *  Thrown when tying to create an element of Fp[X] with a vector with elemnts
+ *   not in F_p (but in other Fpelem)
+ *  Also thrown when trying to assing to an element in some ED another element
+ *   which is not in a compatible ED (e.g. an element assign an element from F_3
+ *   an element in F_5;
+ */
+DECLARE_EXCEPTION(ENotCompatible);
+
+/**
+ * Thrown when trying to create an element of F[X] with an empty vector
+ */
+DECLARE_EXCEPTION(EEmptyVector);
+
+
 #endif // __EXCEPTIONS_HPP
