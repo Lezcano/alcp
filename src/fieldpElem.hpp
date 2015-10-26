@@ -25,8 +25,9 @@ class Fpelem{
 
         Fpelem & operator=(const Fpelem &rhs){
             if(&rhs != this){
+                if(_p != rhs._p)
+                    throw ENotCompatible();
                 _num = rhs._num;
-                _p = rhs._p;
             }
             return *this;
         }
@@ -117,6 +118,8 @@ class Fpelem{
 
         int degree(){return _num;}
         const Fpelem operator%(const Fpelem &rhs) const{return Fpelem(0,_p);}
+
+        ll getP(){return _p;}
 
     private:
         void checkInSameField(const Fpelem &rhs) const{
