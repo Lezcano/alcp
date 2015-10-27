@@ -59,7 +59,7 @@ class Fpelem{
         }
 
         const Fpelem operator-(const Fpelem &rhs) const{
-            return Fpelem(*this) += rhs;
+            return Fpelem(*this) -= rhs;
         }
 
 
