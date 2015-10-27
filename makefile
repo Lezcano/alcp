@@ -1,6 +1,6 @@
 SRC = src/
 BIN = bin/
-CC = g++
+CC = clang++
 CFLAGS = -Wall -std=c++11
 
 TARGET = main
