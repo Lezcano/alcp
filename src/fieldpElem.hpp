@@ -7,7 +7,6 @@
 #include"exceptions.hpp"
 #include"generalPurpose.hpp" // Miller Rabin, eea
 
-// class Fpelem : Felem{
 class Fpelem{
     public:
         Fpelem(ll num, ll p){
@@ -114,7 +113,7 @@ class Fpelem{
             return Fpelem(*this) /= rhs;
         }
 
-        int degree(){return _num;}
+        int deg(){return _num;}
         const Fpelem operator%(const Fpelem &rhs) const{return Fpelem(0,_p);}
 
         ll getP(){return _p;}
@@ -138,5 +137,7 @@ class Fpelem{
         ll _num;
         ll _p;
 };
+
+// TODO suma y
 
 #endif // __FPELEM_HPP

@@ -7,13 +7,12 @@
 #include "exceptions.hpp"
 #include "fieldpElem.hpp"
 
-// class FXelem : Felem{
-class FXelem{
+class FpXelem{
     public:
         //TODO Revisar si realmente copia bien el vector.
-        FXelem(const std::vector<Fpelem> &v): _v(v){
+        FpXelem(const std::vector<Fpelem> &v): _v(v){
             if(v.size()==0)
-                throw EEmptyVector("The vector used to define the element in FXelem is empty.");
+                throw EEmptyVector("The vector used to define the element in FpXelem is empty.");
             _p=_v.back().getP();
             // Check integrity of v
             for (auto &i : _v){
@@ -21,10 +20,10 @@ class FXelem{
                     throw ENotCompatible();
             // TODO check
             // Remove trailing zeros
-            removeTrailingZeros(_v);
+            this->removeTrailingZeros();
         }
 
-        FXelem & operator=(const FXelem &rhs){
+        FpXelem & operator=(const FpXelem &rhs){
             if(&rhs != this){
                 if(_p != rhs._p)
                     throw ENotCompatible();
@@ -33,12 +32,12 @@ class FXelem{
             return *this;
         }
 
-        FXelem & operator=(ll rhs){
+        FpXelem & operator=(ll rhs){
             _v = Vector<Fpelem> = {Fpelem(rhs,_p)};
             return *this;
         }
 
-        bool operator==(const FXelem &rhs){
+        bool operator==(const FpXelem &rhs){
             return (_v == rhs._v && _p == rhs._p);
         }
 
@@ -46,15 +45,15 @@ class FXelem{
             return (_v.size()==1 && _v[0]==Fpelem(rhs,_p));
         }
 
-        friend bool operator==(ll lhs, const FXelem &rhs);
+        friend bool operator==(ll lhs, const FpXelem &rhs);
 
-        bool operator!=(const FXelem &rhs){
+        bool operator!=(const FpXelem &rhs){
             return !(*this == rhs);
         }
 
-        friend bool operator!=(ll lhs, const FXelem &rhs);
+        friend bool operator!=(ll lhs, const FpXelem &rhs);
 
-        FXelem & operator+=(const FXelem &rhs){
+        FpXelem & operator+=(const FpXelem &rhs){
             checkInSameField(rhs);
             auto v1 = _v.begin(), v2 = rhs.begin();
             auto e1 = _v.end(), e2 = rhs.end();
@@ -66,34 +65,35 @@ class FXelem{
                 v1.push_back(*v2);
                 ++v2;
             }
+            this->removeTrailingZeros();
             return *this;
         }
 
-        const FXelem operator+(const FXelem &rhs) const{
+        const FpXelem operator+(const FpXelem &rhs) const{
             // We do not check if they are in the same field since
             // that will be done in the += operator
-            return FXelem(*this) += rhs;
+            return FpXelem(*this) += rhs;
         }
 
-        const FXelem operator-() const{
+        const FpXelem operator-() const{
             std::vector<Fpelem> ret(_v.size());
             for(int i=0;i<_v.size();++i)
                 ret[i]=Fpelem(-_v[i], _p);
-            return FXelem(ret, _p);
+            return FpXelem(ret, _p);
         }
 
-        FXelem & operator-=(const FXelem &rhs){
+        FpXelem & operator-=(const FpXelem &rhs){
             // We do not check if they are in the same field since
             // that will be done in the += operator
             return (*this +=(-rhs));
         }
 
-        const FXelem operator-(const FXelem &rhs) const{
-            return FXelem(*this) -= rhs;
+        const FpXelem operator-(const FpXelem &rhs) const{
+            return FpXelem(*this) -= rhs;
         }
 
 
-        FXelem & operator*=(const FXelem &rhs){
+        FpXelem & operator*=(const FpXelem &rhs){
             checkInSameField(rhs);
 
             std::vector<Fpelem> ret(rhs._v.size()+_v.size()-1,Fpelem(0,_p));
@@ -105,62 +105,92 @@ class FXelem{
             return *this;
         }
 
-        const FXelem operator*(const FXelem &rhs) const{
+        const FpXelem operator*(const FpXelem &rhs) const{
             // We do not check if they are in the same field since
             // that will be done in the *= operator
-            return FXelem(*this) *= rhs;
+            return FpXelem(*this) *= rhs;
         }
 
         // TODO test hard
-        FXelem & operator/=(const FXelem &rhs){
-            checkInSameField(rhs);
-            if(rhs._v.size()==1 && rhs._v[0] == 0)
+        // Implements long polinomial division
+        FpXdiv&& div2(const FpXelem divisor){
+            checkInSameField(divisor);
+            if(divisor._v.size()==1 && divisor._v[0] == 0)
                 throw EOperationUnsupported("Error. Cannot divide by the polinomial 0");
-            FXelem quot(Vector(_v.size()-rhs._v.size(),0));
-            unsigned int divDeg = rhs._v.size();
-            Fpelem divlc = rhs._v.back();
-            // Iterator to the leading coeficient
-            auto remlc = _v.end();
-            remlc--;
+            FpXdiv ret{
+                FpXelem(Vector(_v.size()-divisor._v.size(),0)), //quot
+                FpXelem(*this) //rem
+            };
+
             // While the degree of the leading coefficient is greater
             //  or equal to the degree of the divisor
-            while(std::distance(_v.begin(),remlc) >= divDeg){
-                std::vector<Fpelem> paddingZeros(*this._v.size() - divDeg, Fpelem(0,_p));
-                remlc = std::find_if(_v.rbegin(), _v.rend(),
-                        std::bind1st(std::not_equal_to<Fpelem>(), Fpelem(0, _p))).base();
-                paddingZeros.push_back(remlc/divlc);
-                FXelem monDiv (paddingZeros);
-                quot += monDiv;
-                _v -= monDiv*rhs;
-            }
-            removeTrailingZeros(_v);
+            while(ret.rem.deg() >= divisor.deg()){
+                std::vector<Fpelem> paddingZeros(remDeg - divDeg, Fpelem(0,_p));
 
+                paddingZeros.push_back(ret.rem.lc()/divisor.lc());
+                FpXelem monDiv (paddingZeros);
+                ret.quot += monDiv;
+                ret.rem -= monDiv*divisor;
+            }
+            ret.rem.removeTrailingZeros();
+
+            return ret;
+        }
+
+        FpXelem & operator/=(const FpXelem &rhs){
+            // We do not check if they are in the same field since
+            // that will be done in the div2 method
+            _v = div2(_v, rhs).quot;
             return *this;
         }
 
-        const FXelem operator/(const FXelem &rhs) const{
+        const FpXelem operator/(const FpXelem &rhs) const{
+            // We do not check if they are in the same field since
+            // that will be done in the div2 method
+
+            return FpXelem(*this) /= rhs;
+        }
+
+        FpXelem & operator%=(const FpXelem &rhs){
+            // We do not check if they are in the same field since
+            // that will be done in the div2 method
+            _v = div2(_v, rhs).rem;
+            return *this;
+        }
+
+        const FpXelem operator%(const FpXelem &rhs) const{
             // We do not check if they are in the same field since
             // that will be done in the /= operator
 
-            return FXelem(*this) /= rhs;
+            return FpXelem(*this) %= rhs;
         }
 
-        int fieldSize(){return _num;}
-        const FXelem operator%(const FXelem &rhs) const{return FXelem(0,_p);}
+        ostream& operator<<(ostream& os, const FpXelem &f)
+        {
+            os << f.to_string();
+            return os;
+        }
+
+        // Leading coefficient
+        fieldpElem lc(){return _v.back();}
+        // Degree of the polinomial
+        unsigned int deg(){return _v.size()-1;}
+        // Prime p of the base field Fp[X]
+        ll getP(){return _p;}
 
     private:
-        void checkInSameField(const FXelem &rhs) const{
+        void checkInSameField(const FpXelem &rhs) const{
             if(_p != rhs._p){
                 throw EOperationUnsupported(
                     "Error when adding the polinomials " + this->to_string() +
                     " and " + rhs.to_string() "."));
             }
         }
-        void removeTrailingZeros(vector<Fpelem> &v){
-            v.erase(
-                std::find_if(v.rbegin(), v.rend(),
-                    std::bind1st(std::not_equal_to<Fpelem>(), Fpelem(0, v[0]._p))).base(),
-                v.end());
+        void removeTrailingZeros(){
+            _v.erase(
+                std::find_if(_v.rbegin(), _v.rend(),
+                    std::bind1st(std::not_equal_to<Fpelem>(), Fpelem(0, _p))).base(),
+                _v.end());
         }
 
         std::string to_string() const{
@@ -179,7 +209,6 @@ class FXelem{
                     s+=std::to_string(_v[i]) + "x^" + std::to_string(i);
                 }
             }
-            s += "(mod " + std::to_string(_p) + ")";
             return s;
         }
 
@@ -187,11 +216,11 @@ class FXelem{
         ll _p;
 };
 
-bool operator==(ll lhs, const FXelem &rhs){
+bool FpXelem::operator==(ll lhs, const FpXelem &rhs){
     return (rhs == lhs);
 }
 
-bool operator!=(ll lhs, const FXelem &rhs){
+bool FpXelem::operator!=(ll lhs, const FpXelem &rhs){
     return rhs != lhs;
 }
 
