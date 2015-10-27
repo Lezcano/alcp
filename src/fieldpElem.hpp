@@ -2,25 +2,21 @@
 #ifndef __FPELEM_HPP
 #define __FPELEM_HPP
 
+#include<iosfwd>
 #include"types.hpp"
 #include"exceptions.hpp"
-//#include"fieldElem.hpp" // TODO
 #include"generalPurpose.hpp" // Miller Rabin, eea
 
 // class Fpelem : Felem{
 class Fpelem{
     public:
-        //TODO
         Fpelem(ll num, ll p){
             if(p<=0 || !millerRabin(p))
                 throw EpNotPrime();
-            if(num < 0){
-                throw ENotImplementedYet();
-            }
-            else{
-                _p = p;
-                _num = num % p;
-            }
+            _p = p;
+            _num = num % p;
+            if(_num < 0)
+                _num = (_num + p) % p;
         }
 
         Fpelem & operator=(const Fpelem &rhs){
@@ -63,7 +59,7 @@ class Fpelem{
         }
 
         const Fpelem operator-(const Fpelem &rhs) const{
-            return Fpelem(*this) += rhs;
+            return Fpelem(*this) -= rhs;
         }
 
 
@@ -98,6 +94,8 @@ class Fpelem{
 
         /** Multiplicative inverse */
         const Fpelem inv() const{
+            if(_num == 0)
+                throw EOperationUnsupported("Error. Zero has no inverse.");
             ll res, aux;
             eea(_num, _p, res, aux);
             return Fpelem(res, _p);
@@ -121,11 +119,17 @@ class Fpelem{
 
         ll getP(){return _p;}
 
+        ostream& operator<<(ostream& os, const Fpelem &f)
+        {
+            os << f._num;
+            return os;
+        }
+
     private:
         void checkInSameField(const Fpelem &rhs) const{
             if(_p != rhs._p)
                 throw EOperationUnsupported(
-                    "Error when adding the number " + std::to_string(_num) +
+                    "Error. Is not possible to add the number " + std::to_string(_num) +
                     " in F" + std::to_string(_p) +
                     " with the number " + std::to_string(rhs._num) +
                     " in F" + std::to_string(rhs._p));
