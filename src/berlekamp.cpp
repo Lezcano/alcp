@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <field.hpp>
 #include <vector>
 #include <algorithm>
