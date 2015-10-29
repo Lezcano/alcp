@@ -134,5 +134,5 @@ ll eea (ll a, ll b, ll& x, ll& y) {
     if(ca) x = -x;
     if(cb) y = -y;
 
-    return abs(a);
+    return std::abs(a);
 }

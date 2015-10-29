@@ -36,7 +36,7 @@ class Exception : public ExcepALCP { \
 public: \
 Exception() {}; \
 Exception(const std::string &msg) : ExcepALCP(msg) {} \
-};
+}
 
 /**
  *  Thrown when a Field with a non prime p is declared

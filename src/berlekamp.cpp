@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <field.hpp>
 #include <vector>
 #include <algorithm>
@@ -28,8 +29,8 @@ const matrixF&& formMatrix (const FX &pol) {
 		r[0] = -aux*pol[0];
 		if (i%q == 0)
 			result.push_back(r);
-	}	
-	return result;	
+	}
+	return result;
 }
 
 /**
@@ -59,8 +60,8 @@ const vector< vector< F > >&& kernelBasis (const matrixF & matrix){
 			if (i==k) ++i;
 			while(i < n){
 				for (j = 0; j < n ; ++j){
-					matrix[j][i] -= matrix[j][k]*matrix[k][i]; 
-				}	
+					matrix[j][i] -= matrix[j][k]*matrix[k][i];
+				}
 				++i;
 			}
 		}
