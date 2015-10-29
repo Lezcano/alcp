@@ -9,7 +9,7 @@ typedef std::vector< vector< F > > matrixF;
  * Input: a polinomial pol over a field of size q
  * Output: Matrix Q with x^0, x^q, x^{2q},..., x^{(n-1)*q} (mod pol) as rows
  * Complexity: O(q n^2) where n is deg(pol)
- * There is a solution in O(log(q)n^2 + n^3)
+ * There is a solution in O(log(q)n^2 + n^3) it is better for big q and small n
  */
 const matrixF&& formMatrix (const FX &pol) {
 	bint q = pol.baseFieldSize();
@@ -35,6 +35,13 @@ const matrixF&& formMatrix (const FX &pol) {
 /**
  * Input: a square matrix.
  * Output: a basis for the kernel of a matrix. The matrix is destroyed.
+ *
+ * It forms a lower triangular matrix L. It will satisfies that L^2 = L
+ * so as (I-L)L = 0, the non zero rows of I-L form a base for the kernel
+ * of the original matrix
+ *
+ * Complexity:
+ *  O(n^3) where n is the dimension of the square matrix
  */
 const vector< vector< F > >&& kernelBasis (const matrixF & matrix){
 	bint n = matrix.size();
@@ -84,7 +91,24 @@ const vector< vector< F > >&& kernelBasis (const matrixF & matrix){
 	return result; //result[0] should always be (1, 0, ... 0). (Test it!)
 }
 
-//Input: a square-free polynomial pol \in F_{p^m}[x]
+/* Berlekamp's algorithm
+ *
+ * Input: a square-free polynomial pol \in F_{p^m}[x]
+ * Output: a vector with the irreducible factors of pol
+ *
+ * Theoretical background:
+ *  The set W:={v(x) \in FX | v^q = v (mod pol)} is a vectorial space
+ *  whose dimension is the number of irreducible factors of pol. If v \in W
+ *  is a non constant polynomial then:
+ *   pol(x) = \prod_{s \in F} gcd(v(x)-s, pol(x));
+ *  So computing all those gcd where for a base {v_1 .. v_k} of W gives us
+ *  the irreducible polynomials of pol
+ *
+ * Complexity: q is the size of the field and n the degree of pol and k
+ * is the number of factors of pol (on average is log(n)):
+ *  O(k q n^2 +n^3) 
+ *
+ * */
 const std::vector<FX>&& berlekamp_simple (const FX &pol){
 	vector<FX> factors = pol;
 	bint r;
