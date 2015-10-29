@@ -1,0 +1,38 @@
+#include <field.hpp>
+#include <vector>
+#include <"types.hpp">
+
+/**
+ * Given positive moduli m_i \in Z (0 \leq i \leq n) which are
+ * relatively prime and given corresponding residues u_i \in Z_{m_i}
+ * compute the unique integer u \in Z_m (where m = \prod m_i) suc that
+ * u = u_i (mod m_i) i = 0,...,n
+ */
+bint reciprocal (bint a, bint q){
+	bint x, y;
+	eea (a, q, x, y);
+	return x;
+}
+
+const bint& integerCRA (const vector<bint> & m, const vector<bint> & u){
+	int n = m.size()-1;
+	bint prod, aux;
+	vector<bint> inv, v;
+	for (int k = 1; k <= n; ++k ){
+		for	(int i = 0 ; i <= k-1; ++i)
+			prod = (prod*m[i])%m[k];
+		inv.push_back(reciprocal(prod, m[k]));	//inv starts in 0, in the book it starts in 1
+	}
+	v.push_back(u[0]);
+	for (int k = 1; k <= n; ++k){
+		aux = v[k-1];
+		for (int j = k-2; j >=0; --j)
+			aux = (aux*m[j]+v[j])%m[k];
+		v[k] = ((u[k]-aux)*inv[k-1])%m[k];	//it is inv[k-1] because inv starts in 0
+	}
+	bint result = v[n];
+	for (int k = n-1; k >= 0; --k ){
+		result = result*m[k] + v[k];
+	}
+	return result;
+}

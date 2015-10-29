@@ -1,8 +1,7 @@
-<<<<<<< HEAD
 #include <field.hpp>
 #include <vector>
 #include <algorithm>
-
+#include <"types.hpp">
 template <typename FX>
 typedef std::vector< vector< F > > matrixF;
 
@@ -101,9 +100,11 @@ const std::vector<FX>&& berlekamp_simple (const FX &pol){
 				if (g != 1 && g != factors[i]){
 					factors[i]/=g; //We continue in the loop with the new factors[i] because it is a divisor of the old factors[i] so it is not necessary to check the previous s and r.
 					factors.push_back(g); 
+					if (factors.size() == k) return factors;
 				}
 			}
-			++r;
+			++r; //TODO: En el libro viene así, no me convence. Mirar.
 		}
 	}
+	return factors;
 }
