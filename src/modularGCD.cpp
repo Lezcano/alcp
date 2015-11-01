@@ -1,3 +1,4 @@
+//EN PROCESO... NO LO LEAS XD
 
 bint intContent (const FX & a){
 	//Calcula el gcd de los coeficientes con el signo del coeficiente director
