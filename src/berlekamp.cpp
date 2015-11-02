@@ -2,22 +2,24 @@
 #include <vector>
 #include <algorithm>
 #include <"types.hpp">
-template <typename FX>
-typedef std::vector< vector< F > > matrixF;
 
+template <typename T>
+using matrix = std::vector< std::vector< Fxelem::F > >;
 /**
  * Input: a polinomial pol over a field of size q
  * Output: Matrix Q with x^0, x^q, x^{2q},..., x^{(n-1)*q} (mod pol) as rows
  * Complexity: O(q n^2) where n is deg(pol)
  * There is a solution in O(log(q)n^2 + n^3) it is better for big q and small n
  */
-const matrixF&& formMatrix (const FX &pol) {
+template <typename Fxelem>
+const matrix<Fxelem>&& formMatrix (const Fxelem &pol) {
+	
 	bint q = pol.baseFieldSize();
 	int n = pol.degree();
-	FX::F aux(0, q);
+	Fxelem::F aux(0, q);
 	std::vector<F> r(n, 0);
 	r[0] = 1; //r == (1, 0, ..., 0)
-	matrixF result;
+	matrix<Fxelem> result;
 	result.push_back(r);
 	for (bint i = 1; i<= (n-1)*q; ++i){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
 		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*a_{n-1})
@@ -109,8 +111,8 @@ const vector< vector< F > >&& kernelBasis (const matrixF & matrix){
  *  O(k q n^2 +n^3) 
  *
  * */
-const std::vector<FX>&& berlekamp_simple (const FX &pol){
-	vector<FX> factors = pol;
+const std::vector<Fxelem>&& berlekamp_simple (const Fxelem &pol){
+	vector<Fxelem> factors = pol;
 	bint r;
 	matrixF matrix = formMatrix(pol);
 	for (int i=0; i<n; ++i)
@@ -120,7 +122,7 @@ const std::vector<FX>&& berlekamp_simple (const FX &pol){
 	while (factors.size() < k){
 		for (int i = 0; i < factors.size(); ++i){
 			for(s \in F){ //Iterar sobre todos los elementos del cuerpo??
-				FX g = gcd(FX(base)-s, factors[i]);
+				Fxelem g = gcd(Fxelem(base)-s, factors[i]);
 				if (g != 1 && g != factors[i]){
 					factors[i]/=g; //We continue in the loop with the new factors[i] because it is a divisor of the old factors[i] so it is not necessary to check the previous s and r.
 					factors.push_back(g); 

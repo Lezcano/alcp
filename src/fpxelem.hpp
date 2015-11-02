@@ -12,8 +12,13 @@
 
 class FpXelem{
     public:
+        // Base field
+        using F = Fp;
+        using Felem = Fpelem;
+
         FpXelem()=default; // Default ctor
-        //TODO Revisar si realmente copia bien el vector.
+
+        // TODO revisar move semantics
         FpXelem(const std::vector<Fpelem> &v): _v(v){
             if(v.size()==0)
                 throw EEmptyVector("The vector used to define the element in FpXelem is empty.");
@@ -235,6 +240,6 @@ bool operator!=(ll lhs, const FpXelem &rhs){
 typedef struct{
     FpXelem quot;
     FpXelem rem;
-}FpXdiv;
+};
 
 #endif // __FPXELEM_HPP
