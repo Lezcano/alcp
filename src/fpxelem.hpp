@@ -125,12 +125,12 @@ class FpXelem{
         }
 
         // TODO test hard
-        // Implements long polinomial division
+        // Implements long polynomial division
         // Return quotient and reminder in first and second respectively
         std::pair<FpXelem,FpXelem>&& div2(const FpXelem divisor){
             checkInSameField(divisor);
             if(divisor.deg()==1 && divisor._v[0] == 0)
-                throw EOperationUnsupported("Error. Cannot divide by the polinomial 0");
+                throw EOperationUnsupported("Error. Cannot divide by the polynomial 0");
             // Define the quotient of the corresponding size
             FpXelem quot(std::vector<Fpelem>(this->deg()-divisor.deg(),Fpelem(0,_p)));
             FpXelem rem(*this);
@@ -182,7 +182,7 @@ class FpXelem{
 
         // Leading coefficient
         Fpelem lc()const{return _v.back();}
-        // Degree of the polinomial
+        // Degree of the polynomial
         unsigned int deg()const{return _v.size()-1;}
         // Prime p of the base field Fp[X]
         ll getP()const{return _p;}
@@ -191,7 +191,7 @@ class FpXelem{
         void checkInSameField(const FpXelem &rhs) const{
             if(_p != rhs._p){
                 throw EOperationUnsupported(
-                    "Error when adding the polinomials " + this->to_string() +
+                    "Error when adding the polynomials " + this->to_string() +
                     " and " + rhs.to_string() +  ".");
             }
         }
