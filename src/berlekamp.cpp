@@ -52,21 +52,20 @@ const matrix&& formMatrix (const Fxelem &pol) {
 template <typename Fxelem>
 const vector< vector< Felem > >&& kernelBasis (const matrix & mat){
 	bint n = mat.size();
-	bint i, j, k;
+	bint i, j;
 	vector< vector< Felem > > result;
-	for (k = 0; k < n; ++k ){
+	for (bint k = 0; k < n; ++k ){
 		//Search for pivot element
 		for (i = k; i < n && mat[k][i] == 0 ; ++i);
 
 		if (i<n){
 			//Normalize column i
-			F inv = mat[k][i].inv();
+			Felem inv = mat[k][i].inv();
 			for (j = 0; j < n; ++j){
 				if (j==k) mat[j][i] = 1; //This is the pivot
 				else if (mat[j][i] != 0) mat[j][i] *= inv;
 			}
 			//Interchange column i with column k
-			F* aux;
 			for (j = 0; j < n; ++j){
 				std::swap(mat[j][k], mat[j][i]);
 			}
@@ -116,13 +115,13 @@ const vector< vector< Felem > >&& kernelBasis (const matrix & mat){
  *  O(k q n^2 +n^3) 
  *
  * */
-const std::vector<Fxelem>&& berlekamp_simple (const Fxelem &pol){
+const std::vector< Fxelem >&& berlekamp_simple (const Fxelem &pol){
 	vector<Fxelem> factors = pol;
 	bint r;
 	matrix mat = formMatrix(pol);
 	for (int i=0; i<n; ++i)
 		mat[i][i] -= 1;
-	vector< vector< F > > base = kernelBasis(mat);
+	vector< vector< Felem > > base = kernelBasis(mat);
 	int k = base.size(), j; 
 	while (factors.size() < k){
 		for (int i = 0; i < factors.size(); ++i){
