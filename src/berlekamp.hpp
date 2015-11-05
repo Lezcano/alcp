@@ -1,10 +1,9 @@
 #ifndef __BERLEKAMP
 #define __BERLEKAMP
 
-#include <"types.hpp">
+#include<vector>
 
-//¿Poner esto?: template <typename FX>
-
-const std::vector<FX>&& berlekamp_simple (const FX &pol);
+template<typename Fxelem>
+std::vector< Fxelem > berlekamp_simple (const Fxelem &pol);
 
 #endif // __BERLEKAMP

@@ -1,12 +1,14 @@
 #include <vector>
 #include <algorithm>
 #include "fp.hpp"
+#include "fpelem.hpp"
+#include "fpxelem.hpp"
 #include "types.hpp"
 
 
-#define matrix std::vector< std::vector< typename Fxelem::Felem > >;
-#define Felem typename Fxelem::Felem
+#define matrix std::vector< std::vector< typename Fxelem::Felem > >
 #define F typename Fxelem::F
+//#define Felem typename Fxelem::Felem
 
 /**
  * Input: a polynomial pol over a field of size q
@@ -15,14 +17,14 @@
  * There is a solution in O(log(q)n^2 + n^3) it is better for big q and small n
  */
 template <typename Fxelem>
-matrix formMatrix (const Fxelem &pol) {
-	F f =  Fxelem.getField();
+std::vector< std::vector< typename Fxelem::Felem > > formMatrix (const Fxelem &pol) {
+	F f(pol.getField());
 	bint q = f.getSize(), cont = 1;
 	int n = pol.degree();
-	Felem aux = f.get(0);
-	std::vector<Felem> r(n, f.get(0));
+	typename Fxelem::Felem aux = f.get(0);
+	std::vector<typename Fxelem::Felem> r(n, f.get(0));
 	r[0] = 1; //r == (1, 0, ..., 0)
-	matrix<Fxelem> result;
+	matrix result;
 	result.push_back(r);
 	for (bint i = 1; i<= (n-1)*q; ++i, ++cont){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
 		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*a_{n-1})
@@ -51,17 +53,17 @@ matrix formMatrix (const Fxelem &pol) {
  *  O(n^3) where n is the dimension of the square matrix
  */
 template <typename Fxelem>
-const vector< vector< Felem > >&& kernelBasis (const matrix & mat){
+const std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (const matrix & mat){
 	bint n = mat.size();
 	bint i, j;
-	vector< vector< Felem > > result;
+	std::vector< std::vector< typename Fxelem::Felem > > result;
 	for (bint k = 0; k < n; ++k ){
 		//Search for pivot element
 		for (i = k; i < n && mat[k][i] == 0 ; ++i);
 
 		if (i<n){
 			//Normalize column i
-			Felem inv = mat[k][i].inv();
+			typename Fxelem::Felem inv = mat[k][i].inv();
 			for (j = 0; j < n; ++j){
 				if (j==k) mat[j][i] = 1; //This is the pivot
 				else if (mat[j][i] != 0) mat[j][i] *= inv;
@@ -116,17 +118,20 @@ const vector< vector< Felem > >&& kernelBasis (const matrix & mat){
  *  O(k q n^2 +n^3)
  *
  * */
-const std::vector< Fxelem >&& berlekamp_simple (const Fxelem &pol){
-	vector< Fxelem > factors = pol;
+
+template <typename Fxelem>
+std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
+	std::vector< Fxelem > factors = pol;
 	bint r;
 	matrix mat = formMatrix(pol);
+	int n = pol.degree();
 	for (int i=0; i<n; ++i)
 		mat[i][i] -= 1;
-	vector< vector< Felem > > base = kernelBasis(mat);
-	int k = base.size(), j;
+	std::vector< std::vector< typename Fxelem::Felem > > base = kernelBasis(mat);
+	int k = base.size();
 	while (factors.size() < k){
 		for (int i = 0; i < factors.size(); ++i){
-			for(auto &s : F.getElems()){ //Iterar sobre todos los elementos del cuerpo??
+			for(auto &s : pol.getField().getElems()){ //Iterar sobre todos los elementos del cuerpo??
 				Fxelem g = gcd(Fxelem(base)-s, factors[i]);
 				if (g != 1 && g != factors[i]){
 					factors[i]/=g; //We continue in the loop with the new factors[i] because it is a divisor of the old factors[i] so it is not necessary to check the previous s and r.

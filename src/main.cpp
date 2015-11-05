@@ -1,10 +1,11 @@
 #include<iostream>
-#include"gtest/gtest.h"
+#include<vector>
+//#include"gtest/gtest.h"
 #include"fp.hpp"
 #include"fpelem.hpp"
 #include"fpxelem.hpp"
 #include"exceptions.hpp"
-
+#include "berlekamp.hpp"
 using namespace std;
 
 int main (){
@@ -47,8 +48,19 @@ int main (){
         // Until here everything is ok
         */
     vector<Fpelem> v, w;
-    Fp field(17);
+    Fp field(11);
     try{
+		int c[7]= {1, -3, -1, -3, 1, -3, 1};
+        for(int i=0;i<7;++i)
+            v.push_back(field.get(c[i]));
+		Fpxelem a(v);
+		cout << a << endl;
+
+		std::vector< Fpxelem > qw = berlekamp_simple (a);
+		cout << qw[0];
+		cout << qw[1];
+		cout << qw[2];
+		/*
         for(int i=0;i<5;++i)
             v.push_back(field.get(7*i));
         for(int i=0;i<6;++i){
@@ -73,7 +85,7 @@ int main (){
         std::pair<Fpxelem,Fpxelem> div2 = b.div2(a);
         std::cout << "Div & Mod b/a" << std::endl;
         std::cout << div2.first << std::endl << div2.second << std::endl;
-
+*/
 
    }catch(ExcepALCP e){
     cout << e << endl;
