@@ -56,7 +56,7 @@ int main (){
 		Fpxelem a(v);
 		cout << a << endl;
 
-		std::vector< Fpxelem > qw = berlekamp_simple (a);
+		std::vector< Fpxelem > qw (berlekamp_simple (a));
 		cout << qw[0];
 		cout << qw[1];
 		cout << qw[2];
