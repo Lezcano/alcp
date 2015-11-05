@@ -89,6 +89,11 @@ bool millerRabin(ll n, int k /*= 35*/){
     return true;
 }
 
+// Auxiliary function to be able to create a template in EEA
+//  If a is an element of a DFU
+//  a = normalPart(a)*unitPart(a)
+ll normalPart(ll a){return std::abs(a);}
+int unitPart(ll a){return a >= 0 ? 1 : -1;}
 
 /**
  * Extended Euclidean Algorithm
@@ -109,9 +114,9 @@ bool millerRabin(ll n, int k /*= 35*/){
  */
 ll eea (ll a, ll b, ll& x, ll& y) {
     // We set a = |a| and b = |b| and set a flag if the sign was changed
-    bool ca=false, cb=false;
-    if(a<0)a=-a, ca=true;
-    if(b<0)b=-b, cb=true;
+    bool ca = false, cb = false;
+    if(a < 0)a = -a, ca = true;
+    if(b < 0)b = -b, cb = true;
 
     x = 1; y = 0;
     ll xx = 0, yy = 1;
@@ -134,5 +139,5 @@ ll eea (ll a, ll b, ll& x, ll& y) {
     if(ca) x = -x;
     if(cb) y = -y;
 
-    return std::abs(a);
+    return normalPart(a);
 }

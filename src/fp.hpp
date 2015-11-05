@@ -1,24 +1,28 @@
 #ifndef __FP_HPP
 #define __FP_HPP
 
+#include <vector>
+#include "types.hpp"
 #include "fpelem.hpp"
 
+class Fpelem;
+
 class Fp{
-	Fp(ll p): _p(p){}
+    public:
+        Fp(ll p);
 
-	Fpelem getZero(){return Fpelem(0,_p);}
-	Fpelem getOne()	{return Fpelem(1,_p);}
+        Fpelem get(ll n)const;
 
-    ll getSize(){return _p;}
+        ll getSize()const;
 
-    std::vector<Fpelem> getElems(){
-        std::vector<Fpelem> ret;
-		for(ll i=0;i<_p;++i)
-			ret.push_back(Fpelem(i,_p));
-		return ret;
-	}
+        std::vector<Fpelem> getElems();
 
-	ll _p;
+        bool operator==(const Fp &rhs)const;
+        bool operator!=(const Fp &rhs)const;
+
+
+    private:
+        ll _p;
 };
 
 #endif // __FP_HPP

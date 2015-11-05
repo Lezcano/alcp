@@ -1,11 +1,11 @@
-#include <field.hpp>
 #include <vector>
 #include <algorithm>
-#include <"types.hpp">
+#include "fp.hpp"
+#include "types.hpp"
 
-using F = Fxelem::F;
-using Felem = Fxelem::Felem;
-using matrix = std::vector< std::vector< Felem > >;
+template<typename T>
+using matrix = std::vector< std::vector< T > >;
+
 /**
  * Input: a polynomial pol over a field of size q
  * Output: Matrix Q with x^0, x^q, x^{2q},..., x^{(n-1)*q} (mod pol) as rows
@@ -13,14 +13,17 @@ using matrix = std::vector< std::vector< Felem > >;
  * There is a solution in O(log(q)n^2 + n^3) it is better for big q and small n
  */
 template <typename Fxelem>
-const matrix&& formMatrix (const Fxelem &pol) {
-	
+matrix<Fxelem::Felem> formMatrix (const Fxelem &pol) {
+    /* También se podría hacer así:
+        auto F =  Fxelem.getField();
+        auto aux = F.getZero();
+    */
 	bint q = pol.baseFieldSize(), cont;
 	int n = pol.degree();
 	Felem aux(0, q);
 	std::vector<Felem> r(n, 0);
 	r[0] = 1; //r == (1, 0, ..., 0)
-	matrix result;
+	matrix<Fxelem> result;
 	result.push_back(r);
 	cont = 1;
 	for (bint i = 1; i<= (n-1)*q; ++i, ++cont){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
@@ -90,7 +93,7 @@ const vector< vector< Felem > >&& kernelBasis (const matrix & mat){
 			for (i = 0; i < n && mat[j][i] == 0; ++i);
 			if (i==n) ++j;
 			else break;
-		}	
+		}
 		if (j >= n) break;
 		result.push_back(mat[j]);
 	}
@@ -112,7 +115,7 @@ const vector< vector< Felem > >&& kernelBasis (const matrix & mat){
  *
  * Complexity: q is the size of the field and n the degree of pol and k
  * is the number of factors of pol (on average is log(n)):
- *  O(k q n^2 +n^3) 
+ *  O(k q n^2 +n^3)
  *
  * */
 const std::vector< Fxelem >&& berlekamp_simple (const Fxelem &pol){
@@ -122,14 +125,14 @@ const std::vector< Fxelem >&& berlekamp_simple (const Fxelem &pol){
 	for (int i=0; i<n; ++i)
 		mat[i][i] -= 1;
 	vector< vector< Felem > > base = kernelBasis(mat);
-	int k = base.size(), j; 
+	int k = base.size(), j;
 	while (factors.size() < k){
 		for (int i = 0; i < factors.size(); ++i){
-			for(s \in F){ //Iterar sobre todos los elementos del cuerpo??
+			for(auto &s : F.getElems()){ //Iterar sobre todos los elementos del cuerpo??
 				Fxelem g = gcd(Fxelem(base)-s, factors[i]);
 				if (g != 1 && g != factors[i]){
 					factors[i]/=g; //We continue in the loop with the new factors[i] because it is a divisor of the old factors[i] so it is not necessary to check the previous s and r.
-					factors.push_back(g); 
+					factors.push_back(g);
 					if (factors.size() == k) return factors;
 				}
 			}
