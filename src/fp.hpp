@@ -1,5 +1,5 @@
 #ifndef __FP_HPP
-#define __HP_HPP
+#define __FP_HPP
 
 #include "fpelem.hpp"
 
@@ -8,10 +8,12 @@ class Fp{
 
 	Fpelem getZero(){return Fpelem(0,_p);}
 	Fpelem getOne()	{return Fpelem(1,_p);}
-	
-	vector<Fpelem> getElems(){
-		vector<Fpelem> ret;
-		for(ll i=0;i<_p;++i) 
+
+    ll getSize(){return _p;}
+
+    std::vector<Fpelem> getElems(){
+        std::vector<Fpelem> ret;
+		for(ll i=0;i<_p;++i)
 			ret.push_back(Fpelem(i,_p));
 		return ret;
 	}
