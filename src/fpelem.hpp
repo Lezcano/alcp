@@ -32,18 +32,16 @@ class Fpelem{
         bool operator==(const Fpelem &rhs)const{
             return (_num == rhs._num && _p == rhs._p);
         }
+
         friend bool operator==(ll lhs, const Fpelem &rhs);
-        bool operator==(ll rhs)const{
-            return _num == rhs;
-        }
+        friend bool operator==(const Fpelem &lhs, ll rhs);
 
         bool operator!=(const Fpelem &rhs)const{
             return !(*this == rhs);
         }
+
         friend bool operator!=(ll lhs, const Fpelem &rhs);
-        bool operator!=(ll rhs)const{
-            return _num != rhs;
-        }
+        friend bool operator!=(const Fpelem &lhs, ll rhs);
 
         Fpelem & operator+=(const Fpelem &rhs){
             checkInSameField(rhs);
@@ -56,8 +54,8 @@ class Fpelem{
             // that will be done in the += operator
             return Fpelem(*this) += rhs;
         }
-        friend Fpelem operator+(const Fpelem &lhs, ll rhs);  // Addition
-        friend Fpelem operator+(ll lhs, const Fpelem & rhs); // Addition
+        friend const Fpelem operator+(const Fpelem &lhs, ll rhs);
+        friend const Fpelem operator+(ll lhs, const Fpelem & rhs);
 
         const Fpelem operator-() const{
             return Fpelem(_p-_num, _p);
@@ -72,8 +70,8 @@ class Fpelem{
         const Fpelem operator-(const Fpelem &rhs) const{
             return Fpelem(*this) -= rhs;
         }
-        friend Fpelem operator-(const Fpelem &lhs, ll rhs);  // Substraction
-        friend Fpelem operator-(ll lhs, const Fpelem & rhs); // substraction
+        friend const Fpelem operator-(const Fpelem &lhs, ll rhs);
+        friend const Fpelem operator-(ll lhs, const Fpelem & rhs);
 
 
         /** Russian peasant multiplication
@@ -149,27 +147,42 @@ class Fpelem{
         ll _p;
 };
 
+inline const Fpelem operator+(const Fpelem &lhs, ll rhs){
+    return lhs + Fpelem(rhs,lhs._p);
+}
+
+inline const Fpelem operator+(ll lhs, const Fpelem & rhs){
+    return Fpelem(lhs,rhs._p) + rhs;
+}
+
+inline const Fpelem operator-(const Fpelem &lhs, ll rhs){
+    return lhs - Fpelem(rhs,lhs._p);
+}
+
+inline const Fpelem operator-(ll lhs, const Fpelem & rhs){
+    return Fpelem(lhs,rhs._p) - rhs;
+}
+
+inline bool operator==(const Fpelem &lhs, ll rhs){
+    return lhs == Fpelem(rhs,lhs._p);
+}
+
+inline bool operator==(ll lhs, const Fpelem &rhs){
+    return rhs == lhs;
+}
+
+inline bool operator!=(const Fpelem &lhs, ll rhs){
+    return !(lhs == rhs);
+}
+
+inline bool operator!=(ll lhs, const Fpelem &rhs){
+    return !(lhs == rhs);
+}
+
 inline std::ostream& operator<<(std::ostream& os, const Fpelem &f){
     os << f._num;
     return os;
 }
-Fpelem operator+(const Fpelem &lhs, ll rhs){
-    return lhs + Fpelem(rhs,lhs._p);
-}
-Fpelem operator+(ll lhs, const Fpelem & rhs){
-    return Fpelem(lhs,rhs._p) + rhs;
-}
-Fpelem operator-(const Fpelem &lhs, ll rhs){
-    return lhs - Fpelem(rhs,lhs._p);
-}
-Fpelem operator-(ll lhs, const Fpelem & rhs){
-    return Fpelem(lhs,rhs._p) - rhs;
-}
-bool operator==(ll lhs, const Fpelem &rhs){
-    return (rhs == lhs);
-}
-bool operator!=(ll lhs, const Fpelem &rhs){
-    return (rhs != lhs);
-}
+
 
 #endif // __FPELEM_HPP
