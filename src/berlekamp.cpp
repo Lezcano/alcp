@@ -22,7 +22,7 @@ matrix formMatrix (const Fxelem &pol) {
 	Felem aux = f.get(0);
 	std::vector<Felem> r(n, f.get(0));
 	r[0] = 1; //r == (1, 0, ..., 0)
-	matrix result;
+	matrix<Fxelem> result;
 	result.push_back(r);
 	for (bint i = 1; i<= (n-1)*q; ++i, ++cont){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
 		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*a_{n-1})
