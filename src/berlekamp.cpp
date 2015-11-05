@@ -3,8 +3,10 @@
 #include "fp.hpp"
 #include "types.hpp"
 
-template<typename T>
-using matrix = std::vector< std::vector< T > >;
+
+#define matrix std::vector< std::vector< typename Fxelem::Felem > >;
+#define Felem typename Fxelem::Felem
+#define F typename Fxelem::F
 
 /**
  * Input: a polynomial pol over a field of size q
@@ -13,23 +15,19 @@ using matrix = std::vector< std::vector< T > >;
  * There is a solution in O(log(q)n^2 + n^3) it is better for big q and small n
  */
 template <typename Fxelem>
-matrix<Fxelem::Felem> formMatrix (const Fxelem &pol) {
-    /* También se podría hacer así:
-        auto F =  Fxelem.getField();
-        auto aux = F.getZero();
-    */
-	bint q = pol.baseFieldSize(), cont;
+matrix formMatrix (const Fxelem &pol) {
+	F f =  Fxelem.getField();
+	bint q = f.getSize(), cont = 1;
 	int n = pol.degree();
-	Felem aux(0, q);
-	std::vector<Felem> r(n, 0);
+	Felem aux = f.get(0);
+	std::vector<Felem> r(n, f.get(0));
 	r[0] = 1; //r == (1, 0, ..., 0)
 	matrix<Fxelem> result;
 	result.push_back(r);
-	cont = 1;
 	for (bint i = 1; i<= (n-1)*q; ++i, ++cont){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
 		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*a_{n-1})
 		aux = r[n-1];
-		for (ll j = n-1; j>= 1; ++j){
+		for (ll j = n-1; j >= 1; ++j){
 			r[j] = r[j-1]-aux*pol[j];
 		}
 		r[0] = -aux*pol[0];
@@ -119,7 +117,7 @@ const vector< vector< Felem > >&& kernelBasis (const matrix & mat){
  *
  * */
 const std::vector< Fxelem >&& berlekamp_simple (const Fxelem &pol){
-	vector<Fxelem> factors = pol;
+	vector< Fxelem > factors = pol;
 	bint r;
 	matrix mat = formMatrix(pol);
 	for (int i=0; i<n; ++i)
