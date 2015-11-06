@@ -131,7 +131,7 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	int k = base.size();
 	while (factors.size() < k){
 		for (int i = 0; i < factors.size(); ++i){
-			for(auto &s : pol.getField().getElems()){ //Iterar sobre todos los elementos del cuerpo??
+			for(auto &s : pol.getField().getElems()){ 
 				Fxelem g = gcd(Fxelem(base)-s, factors[i]);
 				if (g != 1 && g != factors[i]){
 					factors[i]/=g; //We continue in the loop with the new factors[i] because it is a divisor of the old factors[i] so it is not necessary to check the previous s and r.

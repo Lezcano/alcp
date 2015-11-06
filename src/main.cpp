@@ -56,10 +56,10 @@ int main (){
 		Fpxelem a(v);
 		cout << a << endl;
 
-		std::vector< Fpxelem > qw (berlekamp_simple (a));
-		cout << qw[0];
-		cout << qw[1];
-		cout << qw[2];
+		berlekamp_simple (a);
+		//cout << qw[0];
+		//cout << qw[1];
+		//cout << qw[2];
 		/*
         for(int i=0;i<5;++i)
             v.push_back(field.get(7*i));
