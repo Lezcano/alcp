@@ -7,16 +7,14 @@
 #include "fpelem.hpp"
 #include "fp.hpp"
 
-
-
 // Inmersion Fp \to Fp[X]
-Fpxelem::Fpxelem(const Fpelem &e): _v(std::vector<Fpelem>({e})), _f(new F(e.getField()->getSize())){}
+Fpxelem::Fpxelem(const Fpelem &e): _v(std::vector<Fpelem>({e})), _f(F(e.getField())){}
 
 // TODO delete pointer to _f!!
-Fpxelem::Fpxelem(const std::vector<Fpelem> &v): _v(v), _f(new F(_v.back().getField()->getSize())){
+Fpxelem::Fpxelem(const std::vector<Fpelem> &v): _v(v), _f(F(_v.back().getField())){
     if(v.size()==0)
         throw EEmptyVector("The vector used to define the element in Fpxelem is empty.");
-    ll _p=_f->getSize();
+    ll _p=_f.getSize();
     // Check integrity of v
     for (auto &i : _v)
         if(i.getSize()!=_p)
@@ -27,7 +25,7 @@ Fpxelem::Fpxelem(const std::vector<Fpelem> &v): _v(v), _f(new F(_v.back().getFie
 
 Fpxelem & Fpxelem::operator=(const Fpxelem &rhs){
     if(&rhs != this){
-        if(_f->getSize() != rhs._f->getSize())
+        if(_f.getSize() != rhs._f.getSize())
             throw ENotCompatible("Asignation failed. The vectors "+ to_string()+ " and " + rhs.to_string() + " are not in the same field.");
         _v = rhs._v;
     }
@@ -66,7 +64,7 @@ const Fpxelem Fpxelem::operator+(const Fpxelem &rhs) const{
 }
 
 const Fpxelem Fpxelem::operator-() const{
-    std::vector<Fpelem> ret(_v.size(),_f->get(0));
+    std::vector<Fpelem> ret(_v.size(),_f.get(0));
 
     for(size_t i=0;i<_v.size();++i)
         ret[i]=Fpelem(-_v[i]);
@@ -86,7 +84,7 @@ const Fpxelem Fpxelem::operator-(const Fpxelem &rhs) const{
 Fpxelem & Fpxelem::operator*=(const Fpxelem &rhs){
     checkInSameField(rhs);
 
-    std::vector<Fpelem> ret(rhs._v.size()+_v.size()-1,_f->get(0));
+    std::vector<Fpelem> ret(rhs._v.size()+_v.size()-1,_f.get(0));
     for(size_t i=0;i<_v.size();++i)
         for(size_t j=0;j<rhs._v.size();++j){
             ret[i+j]+=_v[i]*rhs._v[j];
@@ -109,16 +107,16 @@ std::pair<Fpxelem,Fpxelem> Fpxelem::div2(const Fpxelem &divisor){
     if(divisor.deg()==1 && divisor._v[0] == 0)
         throw EOperationUnsupported("Error. Cannot divide by the polynomial 0");
     if(this->deg() < divisor.deg())
-        return std::make_pair(Fpxelem(_f->get(0)), *this);
+        return std::make_pair(Fpxelem(_f.get(0)), *this);
 
     // Define the quotient of the corresponding size
-    Fpxelem quot(std::vector<Fpelem>(this->deg()-divisor.deg()+1,_f->get(0)));
+    Fpxelem quot(std::vector<Fpelem>(this->deg()-divisor.deg()+1,_f.get(0)));
     Fpxelem rem(*this);
 
     // While the degree of the leading coefficient is greater
     //  or equal to the degree of the divisor
     while(rem.deg() >= divisor.deg()){
-        std::vector<Fpelem> paddingZeros(rem.deg() - divisor.deg(), _f->get(0));
+        std::vector<Fpelem> paddingZeros(rem.deg() - divisor.deg(), _f.get(0));
 
         paddingZeros.push_back(rem.lc()/divisor.lc());
         Fpxelem monDiv (paddingZeros);
@@ -168,10 +166,12 @@ Fpelem Fpxelem::lc()const{return _v.back();}
 unsigned int Fpxelem::deg()const{return _v.size()-1;}
 
 // Prime p of the base field Fp[X]
-ll Fpxelem::getSize()const{return _f->getSize();}
+ll Fpxelem::getSize()const{return _f.getSize();}
+
+const Fpxelem::F Fpxelem::getField()const{return _f;}
 
 void Fpxelem::checkInSameField(const Fpxelem &rhs) const{
-    if(*_f != *(rhs._f)){
+    if(_f != rhs._f){
         throw EOperationUnsupported(
             "Polinomials not in the same field. Error when adding the polynomials " + this->to_string() +
             " and " + rhs.to_string() +  ".");
@@ -183,11 +183,11 @@ void Fpxelem::removeTrailingZeros(){
         std::find_if(
             _v.rbegin(),
             _v.rend(),
-            std::bind1st(std::not_equal_to<Fpelem>(), _f->get(0))).base(),
+            std::bind1st(std::not_equal_to<Fpelem>(), _f.get(0))).base(),
         _v.end());
     // In case it was the polinomial equal to zero
     if(_v.size()==0)
-        _v.push_back(_f->get(0));
+        _v.push_back(_f.get(0));
 }
 
 std::string Fpxelem::to_string() const{

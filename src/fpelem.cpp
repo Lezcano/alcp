@@ -8,6 +8,9 @@
 
 Fpelem::Fpelem(const Fpelem&)=default;  // Default copy ctor
 
+operator std::vector< Fpxelem >()const{
+    return _v;
+}
 
 Fpelem & Fpelem::operator=(const Fpelem &rhs){
     if(&rhs != this){
@@ -16,6 +19,11 @@ Fpelem & Fpelem::operator=(const Fpelem &rhs){
                                  + " are in the fields F" + std::to_string(this->getSize()) + " and F" + std::to_string(rhs.getSize()) + " respectively.");
         _num = rhs._num;
     }
+    return *this;
+}
+
+Fpelem & Fpelem::operator=(ll rhs){
+    _num = _f->get(rhs)._num;
     return *this;
 }
 
@@ -111,7 +119,7 @@ const Fpelem Fpelem::operator%(const Fpelem &rhs) const{return _f->get(0);}
 
 ll Fpelem::getSize()const{return _f->getSize();}
 
-const Fp* Fpelem::getField()const{return _f;}
+const Fp Fpelem::getField()const{return *_f;}
 
 std::string Fpelem::to_string()const{return std::to_string(_num);}
 
@@ -131,24 +139,34 @@ void Fpelem::checkInSameField(const Fpelem &rhs) const{
             " in F" + std::to_string(rhs.getSize()));
 }
 
+Fpelem & operator+=(Fpelem &lhs, ll rhs){
+    lhs+=lhs.getField().get(rhs);
+    return lhs;
+}
+
 const Fpelem operator+(const Fpelem &lhs, ll rhs){
-    return lhs + lhs.getField()->get(rhs);
+    return lhs + lhs.getField().get(rhs);
 }
 
 const Fpelem operator+(ll lhs, const Fpelem & rhs){
-    return rhs.getField()->get(lhs) + rhs;
+    return rhs.getField().get(lhs) + rhs;
+}
+
+Fpelem & operator-=(Fpelem &lhs, ll rhs){
+    lhs-=lhs.getField().get(rhs);
+    return lhs;
 }
 
 const Fpelem operator-(const Fpelem &lhs, ll rhs){
-    return lhs - lhs.getField()->get(rhs);
+    return lhs - lhs.getField().get(rhs);
 }
 
 const Fpelem operator-(ll lhs, const Fpelem & rhs){
-    return rhs.getField()->get(lhs) - rhs;
+    return rhs.getField().get(lhs) - rhs;
 }
 
 bool operator==(const Fpelem & lhs, ll rhs){
-    return lhs == lhs.getField()->get(rhs);
+    return lhs == lhs.getField().get(rhs);
 }
 
 bool operator==(ll lhs, const Fpelem &rhs){
