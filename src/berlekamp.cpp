@@ -3,6 +3,7 @@
 #include "fp.hpp"
 #include "fpelem.hpp"
 #include "fpxelem.hpp"
+#include "generalPurpose.hpp"
 #include "types.hpp"
 
 

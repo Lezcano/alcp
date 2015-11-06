@@ -1,6 +1,7 @@
+#include <cstdlib> // abs function for long long ints
 #include "exceptions.hpp"
 #include "types.hpp"
-#include <cstdlib> // abs function for long long ints
+#include "fpxelem.hpp"
 
 /**
  * Exponentiation by Squaring
@@ -89,12 +90,6 @@ bool millerRabin(ll n, int k /*= 35*/){
     return true;
 }
 
-// Auxiliary function to be able to create a template in EEA
-//  If a is an element of a DFU
-//  a = normalPart(a)*unitPart(a)
-ll normalPart(ll a){return std::abs(a);}
-int unitPart(ll a){return a >= 0 ? 1 : -1;}
-
 /**
  * Extended Euclidean Algorithm
  *
@@ -112,7 +107,7 @@ int unitPart(ll a){return a >= 0 ? 1 : -1;}
  *  O(log(min(a,b)))
  *
  */
-ll eea (ll a, ll b, ll& x, ll& y) {
+ll eea(ll a, ll b, ll& x, ll& y){
     // We set a = |a| and b = |b| and set a flag if the sign was changed
     bool ca = false, cb = false;
     if(a < 0)a = -a, ca = true;
@@ -139,5 +134,53 @@ ll eea (ll a, ll b, ll& x, ll& y) {
     if(ca) x = -x;
     if(cb) y = -y;
 
-    return normalPart(a);
+    return std::abs(a);
 }
+
+ll gcd(ll a, ll b){
+    ll x,y;
+    return eea(a,b,x,y);
+}
+
+/**
+ * Extended Euclidean Algorithm for an arbitrary DFU
+ */
+template<typename T>
+T eea (T a, T b, T &x, T &y){
+    typename T::F f = a.getField();
+    a = normalForm(a);
+    b = normalForm(b);
+
+    T ua = unit(a), ub = unit(b);
+
+      x = T(f.get(1)); y = T(f.get(0));
+    T xx = T(f.get(0)), yy = T(f.get(1));
+    while(b!=0){
+        // The following invariant holds:
+        //  a = x*|a|+y*|b|
+        //  b = xx*|a|+yy*|b|
+
+        // Compute quotient and reminder
+        T q = a/b, r = a-q*b;
+
+        // After this r = r1*|a|+r2*|b| holds
+        T r1 = x-q*xx, r2 = y-q*yy;
+
+        // Iterate
+        a = b; x = xx; y = yy;
+        b = r; xx = r1; yy = r2;
+    }
+    x /= unit(ua*unit(a));
+    y /= unit(ub*unit(a));
+    return normalForm(a);
+}
+
+template Fpxelem eea (Fpxelem a, Fpxelem b, Fpxelem &x, Fpxelem &y);
+
+template<typename T>
+T gcd(T a, T b){
+    typename T::F f = a.getField();
+    T x = f.get(0), y = f.get(0);
+    return eea(a,b,x,y);
+}
+template Fpxelem gcd(Fpxelem a, Fpxelem b);

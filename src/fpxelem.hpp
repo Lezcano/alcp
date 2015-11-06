@@ -2,7 +2,6 @@
 #ifndef __FPXELEM_HPP
 #define __FPXELEM_HPP
 
-#include <iostream> // DEBUG
 #include <vector>
 #include <utility>          // pair, make_pair
 #include "types.hpp"
@@ -24,8 +23,10 @@ class Fpxelem{
         Fpxelem & operator=(const Fpxelem &rhs);
 
         bool operator==(const Fpxelem &rhs)const;
+        bool operator==(ll rhs)const;
 
         bool operator!=(const Fpxelem &rhs)const;
+        bool operator!=(ll rhs)const;
 
         Fpxelem & operator+=(const Fpxelem &rhs);
 
@@ -75,6 +76,9 @@ class Fpxelem{
         std::vector<Fpelem> _v;
         const F _f;
 };
+
+const Fpxelem unit(const Fpxelem &f);
+const Fpxelem normalForm(const Fpxelem &f);
 
 
 #endif // __FPXELEM_HPP

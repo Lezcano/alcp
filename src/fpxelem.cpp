@@ -10,7 +10,6 @@
 // Inmersion Fp \to Fp[X]
 Fpxelem::Fpxelem(const Fpelem &e): _v(std::vector<Fpelem>({e})), _f(F(e.getField())){}
 
-// TODO delete pointer to _f!!
 Fpxelem::Fpxelem(const std::vector<Fpelem> &v): _v(v), _f(F(_v.back().getField())){
     if(v.size()==0)
         throw EEmptyVector("The vector used to define the element in Fpxelem is empty.");
@@ -40,8 +39,16 @@ bool Fpxelem::operator==(const Fpxelem &rhs)const{
     return _v == rhs._v;
 }
 
+bool Fpxelem::operator==(ll rhs)const{
+    return *this == Fpxelem(_f.get(rhs));
+}
+
 bool Fpxelem::operator!=(const Fpxelem &rhs)const{
     return _v != rhs._v;
+}
+
+bool Fpxelem::operator!=(ll rhs)const{
+    return *this != Fpxelem(_f.get(rhs));
 }
 
 
@@ -230,4 +237,12 @@ std::string Fpxelem::to_string() const{
 std::ostream& operator<<(std::ostream& os, const Fpxelem &f){
     os << f.to_string();
     return os;
+}
+
+const Fpxelem unit(const Fpxelem &f){
+    return Fpxelem(f.lc());
+}
+
+const Fpxelem normalForm(const Fpxelem &f){
+    return Fpxelem(f)/Fpxelem(f.lc());
 }
