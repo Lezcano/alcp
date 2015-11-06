@@ -123,7 +123,8 @@ matrix<typename Fxelem::Felem> kernelBasis (const matrix<typename Fxelem::Felem>
 
 template <typename Fxelem>
 std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
-	std::vector< Fxelem > factors = pol;
+	std::vector< Fxelem > factors;
+	factors.push_back(pol);
 	bint r;
 	auto mat = formMatrix(pol);
 	int n = pol.deg();
