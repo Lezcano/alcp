@@ -123,7 +123,7 @@ template <typename Fxelem>
 std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	std::vector< Fxelem > factors;
 	factors.push_back(pol);
-	bint r;
+	bint r=2;
 	auto mat = formMatrix(pol);
 	int n = pol.deg();
 	for (int i=0; i<n; ++i)
