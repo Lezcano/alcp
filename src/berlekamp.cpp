@@ -54,10 +54,10 @@ matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
  *  O(n^3) where n is the dimension of the square matrix
  */
 template <typename Fxelem>
-matrix<typename Fxelem::Felem> kernelBasis (matrix<typename Fxelem::Felem> & mat){
+std::vector< std::vector< typename Fxelem::Felem > kernelBasis (matrix<typename Fxelem::Felem> & mat){
 	bint n = mat.size();
 	bint i, j;
-	matrix<typename Fxelem::Felem> result;
+	std::vector< std::vector< typename Fxelem::Felem > result;
 	for (bint k = 0; k < n; ++k ){
 		//Search for pivot element
 		for (i = k; i < n && mat[k][i] == 0 ; ++i);
@@ -96,7 +96,7 @@ matrix<typename Fxelem::Felem> kernelBasis (matrix<typename Fxelem::Felem> & mat
 			else break;
 		}
 		if (j >= n) break;
-		result.push_back(mat[j]);
+		result.push_back(mat[j]);//TODO: Quizás se pueda optimizar con un move
 	}
 	return result; //result[0] should always be (1, 0, ... 0). (Test it!)
 }
@@ -124,7 +124,7 @@ template <typename Fxelem>
 std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	std::vector< Fxelem > factors;
 	factors.push_back(pol);
-	bint r;
+	bint r=2;
 	auto mat = formMatrix(pol);
 	int n = pol.deg();
 	for (int i=0; i<n; ++i)
@@ -134,8 +134,9 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	int k = base.size();
 	while (factors.size() < k){
 		for (int i = 0; i < factors.size(); ++i){
+			Fxelem v(base[r]);
 			for(auto &s : pol.getField().getElems()){ 
-				Fxelem g = gcd(Fxelem(base)-s, factors[i]);
+				Fxelem g = gcd(v-s, factors[i]);
 				if (g != 1 && g != factors[i]){
 					factors[i]/=g; //We continue in the loop with the new factors[i] because it is a divisor of the old factors[i] so it is not necessary to check the previous s and r.
 					factors.push_back(g);
