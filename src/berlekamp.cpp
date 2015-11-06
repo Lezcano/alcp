@@ -10,8 +10,6 @@ template<typename T>
 using matrix = std::vector< std::vector<T> >;
 
 
-//#define Felem typename Fxelem::Felem
-
 /**
  * Input: a polynomial pol over a field of size q
  * Output: Matrix Q with x^0, x^q, x^{2q},..., x^{(n-1)*q} (mod pol) as rows
@@ -55,7 +53,7 @@ matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
  *  O(n^3) where n is the dimension of the square matrix
  */
 template <typename Fxelem>
-matrix<typename Fxelem::Felem> kernelBasis (const matrix<typename Fxelem::Felem> & mat){
+matrix<typename Fxelem::Felem> kernelBasis (matrix<typename Fxelem::Felem> & mat){
 	bint n = mat.size();
 	bint i, j;
 	matrix<typename Fxelem::Felem> result;
@@ -131,7 +129,7 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	for (int i=0; i<n; ++i)
 		mat[i][i] -= 1;
 //matrix<typename Fxelem::Felem> kernelBasis (const matrix<typename Fxelem::Felem> & mat){
-	auto base = kernelBasis<typename Fxelem>(mat);
+	auto base = kernelBasis<Fxelem>(mat);
 	int k = base.size();
 	while (factors.size() < k){
 		for (int i = 0; i < factors.size(); ++i){

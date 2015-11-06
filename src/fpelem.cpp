@@ -8,10 +8,6 @@
 
 Fpelem::Fpelem(const Fpelem&)=default;  // Default copy ctor
 
-operator std::vector< Fpxelem >()const{
-    return _v;
-}
-
 Fpelem & Fpelem::operator=(const Fpelem &rhs){
     if(&rhs != this){
         if(_f->getSize() != rhs.getSize())

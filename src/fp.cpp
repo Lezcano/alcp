@@ -18,7 +18,7 @@ ll Fp::getSize()const{return _p;}
 bool Fp::operator==(const Fp &rhs)const{return _p == rhs._p;}
 bool Fp::operator!=(const Fp &rhs)const{return _p != rhs._p;}
 
-std::vector<Fpelem> Fp::getElems(){
+std::vector<Fpelem> Fp::getElems()const{
     std::vector<Fpelem> ret;
     for(ll i=0;i<_p;++i)
         ret.push_back(this->get(i));

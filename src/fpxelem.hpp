@@ -19,9 +19,9 @@ class Fpxelem{
         Fpxelem(const Fpelem &e);
         Fpxelem(const std::vector<Fpelem> &v);
 
-        Fpxelem & operator=(const Fpxelem &rhs);
+        operator std::vector< Fpxelem >()const;
 
-        operator std::vector< Fpxelem > ()const;
+        Fpxelem & operator=(const Fpxelem &rhs);
 
         bool operator==(const Fpxelem &rhs)const;
 

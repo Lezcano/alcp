@@ -15,7 +15,7 @@ class Fp{
 
         ll getSize()const;
 
-        std::vector<Fpelem> getElems();
+        std::vector<Fpelem> getElems()const;
 
         bool operator==(const Fp &rhs)const;
         bool operator!=(const Fp &rhs)const;
