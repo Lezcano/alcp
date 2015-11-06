@@ -1,6 +1,7 @@
 #include <vector>
 #include <algorithm>        // find_if
 #include <utility>          // pair, make_pair
+#include <string>
 #include "fpxelem.hpp"
 #include "types.hpp"
 #include "exceptions.hpp"
@@ -208,7 +209,8 @@ std::string Fpxelem::to_string() const{
         return s;
     }
     if(_v.back() != 1)
-        s+=_v.back().to_string() + "x^" + std::to_string(_v.size()-1);
+    	s+=_v.back().to_string();
+    s +=  "x^" + std::to_string(_v.size()-1);
 
     for(int i=_v.size()-2;i>=2;--i){
         if(_v[i]!=0){

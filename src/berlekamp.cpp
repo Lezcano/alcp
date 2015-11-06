@@ -5,6 +5,7 @@
 #include "fpxelem.hpp"
 #include "generalPurpose.hpp"
 #include "types.hpp"
+#include <iostream> //TODO Quitar
 
 
 template<typename T>
@@ -22,15 +23,15 @@ matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
     typename Fxelem::F f = pol.getField();
 	bint q = f.getSize(), cont = 1;
 	int n = pol.deg();
-	typename Fxelem::Felem aux = f.get(0);
+	//typename Fxelem::Felem aux = f.get(0);
 	std::vector<typename Fxelem::Felem> r(n, f.get(0));
 	r[0] = 1; //r == (1, 0, ..., 0)
 	matrix<typename Fxelem::Felem> result;
 	result.push_back(r);
 	for (bint i = 1; i<= (n-1)*q; ++i, ++cont){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
 		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*a_{n-1})
-		aux = r[n-1];
-		for (ll j = n-1; j >= 1; ++j){
+		auto aux = r[n-1];
+		for (ll j = n-1; j >= 1; --j){
 			r[j] = r[j-1]-aux*pol[j];
 		}
 		r[0] = -aux*pol[0];
@@ -98,6 +99,12 @@ std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typenam
 		if (j >= n) break;
 		result.push_back(mat[j]);//TODO: Quizás se pueda optimizar con un move
 	}
+/*	for (int i =0; i<result.size(); ++i){
+		for (int j =0; i<result[j].size(); ++j)
+			cout << result[i][j] << " ";
+		cout << endl;
+	}
+	*/
 	return result; //result[0] should always be (1, 0, ... 0). (Test it!)
 }
 
