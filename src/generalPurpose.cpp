@@ -19,11 +19,13 @@
  */
 ll fastPowMod(ll a, ll b, ll p){
     if(b==0)return 1;
-    if(b%2){
-        ll aux = fastPowMod(a,b/2,p);
-        return (aux*aux)%p;
+    if(b%2 != 0){
+    	return (a*fastPowMod(a,b-1,p))%p;
     }
-    return (a*fastPowMod(a,b-1,p))%p;
+    else{
+    	ll aux = fastPowMod(a,b/2,p);
+    	return (aux*aux)%p;
+    }
 }
 
 /**
