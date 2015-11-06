@@ -11,7 +11,8 @@ class Fpelem{
     public:
         // Base field
         typedef Fp F;
-        Fpelem(const Fpelem&);
+
+        ~Fpelem();
 
         Fpelem & operator=(const Fpelem &rhs);
 
