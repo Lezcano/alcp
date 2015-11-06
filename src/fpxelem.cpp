@@ -22,10 +22,6 @@ Fpxelem::Fpxelem(const std::vector<Fpelem> &v): _v(v), _f(F(_v.back().getField()
     this->removeTrailingZeros();
 }
 
-operator std::vector< Fpxelem >()const{
-    return _v;
-}
-
 Fpxelem & Fpxelem::operator=(const Fpxelem &rhs){
     if(&rhs != this){
         if(_f.getSize() != rhs._f.getSize())

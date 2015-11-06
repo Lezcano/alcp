@@ -54,10 +54,10 @@ matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
  *  O(n^3) where n is the dimension of the square matrix
  */
 template <typename Fxelem>
-std::vector< std::vector< typename Fxelem::Felem > kernelBasis (matrix<typename Fxelem::Felem> & mat){
+std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typename Fxelem::Felem> & mat){
 	bint n = mat.size();
 	bint i, j;
-	std::vector< std::vector< typename Fxelem::Felem > result;
+	std::vector< std::vector< typename Fxelem::Felem > > result;
 	for (bint k = 0; k < n; ++k ){
 		//Search for pivot element
 		for (i = k; i < n && mat[k][i] == 0 ; ++i);
