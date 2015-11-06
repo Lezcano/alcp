@@ -21,6 +21,8 @@ class Fpxelem{
 
         Fpxelem & operator=(const Fpxelem &rhs);
 
+        operator std::vector< Fpxelem > ()const;
+
         bool operator==(const Fpxelem &rhs)const;
 
         bool operator!=(const Fpxelem &rhs)const;
@@ -59,6 +61,8 @@ class Fpxelem{
         // Prime p of the base field Fp[X]
         ll getSize()const;
 
+        const F getField()const;
+
         friend std::ostream& operator<<(std::ostream& os, const Fpxelem &f);
 
     private:
@@ -69,7 +73,7 @@ class Fpxelem{
         std::string to_string() const;
 
         std::vector<Fpelem> _v;
-        const F* _f;
+        const F _f;
 };
 
 

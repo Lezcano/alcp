@@ -7,20 +7,20 @@
 
 Fxelem normalization (const & Fxelem &v){
 	Felem leadCoef = v[v.getSize()];
-	
+
 }
 
 
 /**
- * Input: 
+ * Input:
  *		1) A primitive polynomial pol
  *		2) A prime integer p which does not divide pol[pol.degree]
- *		3) Two relatively primes polynomials u1, w1 \in Z_p[X] such that 
+ *		3) Two relatively primes polynomials u1, w1 \in Z_p[X] such that
  *			pol = u1*w1 (mod p)
  *		4) A bound B of all integer coefficients of pol and all coefficients
  *			of u, v
  *
- * Output: Two polynomials u, w (if there are such polynomials) such that 
+ * Output: Two polynomials u, w (if there are such polynomials) such that
  * 			pol = u*w and such that u' = u1' (mod p) and w' = w1' (mod p)
  * 			where v' stands for the monic normalization of v (mod p)
  * 			If there are not such polynomials ...
@@ -32,7 +32,7 @@ template <typename Fxelemi, Zx>
  *		En las asignaciones de u1 y w1 de las primeras lineas hago dos cosas equivalentes, la primera sintacticamente correcta, estaría bien poder hacer la segunda
  *		Comparación del un polinomio en Zx con el número 0
  *		Dividir un polinomio en Zx por un entero
- *	
+ *
  * */
 pair<Fxelem, Fxelem> HenselLifting (const Zx &pol, int p, const Fxelem &u1, const Fxelem &w1, bint bound){//Lo suyo sería devolver un struct...
 	ll leadCoef = pol[pol.getSize()];
@@ -42,7 +42,7 @@ pair<Fxelem, Fxelem> HenselLifting (const Zx &pol, int p, const Fxelem &u1, cons
 
 	Fxelem s, t;
 	eea (u1, w1, &s, &t);//This always must be 1. Test it!!
-	
+
 	Zx u(u1); u[u.getSize()] = leadCoef;
 	Zx w(w1); w[w.getSize()] = leadCoef;
 	Zx err = pol - u*w;
@@ -50,13 +50,13 @@ pair<Fxelem, Fxelem> HenselLifting (const Zx &pol, int p, const Fxelem &u1, cons
 	bound = 2*bound*leadCoef;
 	while (err != 0 && modulus < bound ){
 		Fxelem c(err/modulus);
-		
+
 		pair< Fxelem, Fxelem > qr = div2 (s*c, w1);
-		
-		
+
+
 	}
 
-} 
+}
 
 /**
  * Input: a square matrix.

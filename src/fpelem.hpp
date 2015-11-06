@@ -15,6 +15,8 @@ class Fpelem{
 
         Fpelem & operator=(const Fpelem &rhs);
 
+        Fpelem & operator=(ll rhs);
+
         bool operator==(const Fpelem &rhs)const;
 
         bool operator!=(const Fpelem &rhs)const;
@@ -46,7 +48,7 @@ class Fpelem{
 
         ll getSize()const;
 
-        const F* getField()const;
+        const F getField()const;
 
         std::string to_string()const;
 
@@ -65,8 +67,10 @@ bool operator==(ll lhs, const Fpelem &rhs);
 bool operator==(const Fpelem &lhs, ll rhs);
 bool operator!=(ll lhs, const Fpelem &rhs);
 bool operator!=(const Fpelem &lhs, ll rhs);
+Fpelem & operator+=(Fpelem &lhs, ll rhs);
 const Fpelem operator+(const Fpelem &lhs, ll rhs);
 const Fpelem operator+(ll lhs, const Fpelem & rhs);
+Fpelem & operator-=(Fpelem &lhs, ll rhs);
 const Fpelem operator-(const Fpelem &lhs, ll rhs);
 const Fpelem operator-(ll lhs, const Fpelem & rhs);
 
