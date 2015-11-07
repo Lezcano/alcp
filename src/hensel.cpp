@@ -16,7 +16,7 @@
  * 			where v' stands for the monic normalization of v (mod p)
  * 			If there are not such polynomials ...
  */
-template <typename Fpxelem, Zx>
+
 /* Cosas que necesito
  * 		Polinomios en Z, es decir Z[x]
  *		Multiplicar un bint por un Zx
@@ -25,13 +25,9 @@ template <typename Fpxelem, Zx>
  *		Sumar polinomios en Z_p[x] con polinomios en Z[x]
  *
  * */
-/*
- * Nota: pol lo voy a modificar, pero luego lo voy a dejar como estaba
- *
- * */
-pair<Fpxelem, Fpxelem> HenselLifting (Zx &pol, int p, const Fpxelem &u1, const Fpxelem &w1, bint bound){//Lo suyo sería devolver un struct...
-	bint leadCoef = pol.lc();
-	pol *= leadCoef;
+bool HenselLifting (const Zx &polynomial, int p, const Fpxelem &u1, const Fpxelem &w1, bint bound, Zx & u, Zx & w){
+	bint leadCoef = polynomial.lc();
+	Zx pol = polynomial * leadCoef;
 	Fpxelem::Felem lc(leadCoef);
 	u1 *=  (lc * u1.lc().inv()); //This is more efficient than normalize and then multiply by lc
 	w1 *=  (lc * w1.lc().inv());
@@ -39,16 +35,17 @@ pair<Fpxelem, Fpxelem> HenselLifting (Zx &pol, int p, const Fpxelem &u1, const F
 	Fpxelem s, t;
 	eea (u1, w1, &s, &t);//This must always be 1. Test it!!
 
-	Zx u(u1); u[u.getSize()] = leadCoef;
-	Zx w(w1); w[w.getSize()] = leadCoef;
+	u = Zx(u1); u[u.getSize()] = leadCoef;
+	w = Zx(w1); w[w.getSize()] = leadCoef;
 	Zx err = pol - u*w;
 	bint modulus = p;
 	bound = 2*bound*leadCoef;
+
 	while (err != 0 && modulus < bound ){
 		Fpxelem c(err/modulus);
 		pair< Fpxelem, Fpxelem > qr = div2 (s*c, w1);
- 		u += (t*c + qr.first * u1)*modulus; //Quiero que la multiplicación me dé un polinomio en Z[x]
-		w += qr.second * modulus; //Tambien necesito que el resultado de la multiplicación esté en Z[x]
+ 		u += Zx(t*c + qr.first * u1) * modulus;
+		w += Zx(qr.second) * modulus; 
 		err = pol - u*w;
 		modulus *= p;
 	}
@@ -56,8 +53,8 @@ pair<Fpxelem, Fpxelem> HenselLifting (Zx &pol, int p, const Fpxelem &u1, const F
 	if (err == 0){
 		bint delta = cont(u);
 		u /= delta;
-		w /= (leadCoef / delta); //delta must be a divisor of leadCoef
-		return pair<u, w>;
+		w /= (leadCoef / delta); //delta must be a divisor of leadCoef (Test it!!)
+		return true;
 	}
-	return pair<NULL, NULL>;
+	return false;
 }
