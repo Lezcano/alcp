@@ -1,7 +1,8 @@
 #ifndef __FPELEM_HPP
 #define __FPELEM_HPP
 
-#include<iosfwd>            // ostream
+#include <iosfwd>           // ostream
+#include <memory>           // unique_ptr
 #include "types.hpp"
 #include "fp.hpp"
 
@@ -12,8 +13,7 @@ class Fpelem{
         // Base field
         typedef Fp F;
 
-        ~Fpelem();
-
+        Fpelem ( const Fpelem & );
         Fpelem & operator=(const Fpelem &rhs);
 
         Fpelem & operator=(ll rhs);
@@ -58,11 +58,11 @@ class Fpelem{
     private:
         friend class Fp;
 
-        Fpelem(ll num, const Fp* f);
+        Fpelem(ll num, std::unique_ptr<F> f);
         void checkInSameField(const Fpelem &rhs) const;
 
         ll _num;
-        const F* _f;
+        std::unique_ptr<F> _f;
 };
 bool operator==(ll lhs, const Fpelem &rhs);
 bool operator==(const Fpelem &lhs, ll rhs);

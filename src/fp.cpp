@@ -11,7 +11,9 @@ Fp::Fp(ll p): _p(p){
         throw EpNotPrime("Could not create F" + std::to_string(p) + ". " + std::to_string(p) + " is not prime.");
 }
 
-Fpelem Fp::get(ll n)const{ return Fpelem(n, new Fp(*this));}
+Fpelem Fp::get(ll n)const{
+    return Fpelem(n, std::unique_ptr<Fp>(new Fp(*this)));
+}
 
 ll Fp::getSize()const{return _p;}
 

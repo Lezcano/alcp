@@ -34,10 +34,10 @@ bint reciprocal (bint a, bint q){
  *  O(n^2)
  *
  */
-const bint& integerCRA (const vector<bint> & m, const vector<bint> & u){
+const bint& integerCRA (const std::vector<bint> & m, const std::vector<bint> & u){
 	int n = m.size()-1;
 	bint prod, aux;
-	vector<bint> inv, v;
+	std::vector<bint> inv, v;
 	for (int k = 1; k <= n; ++k ){
 		for	(int i = 0 ; i <= k-1; ++i)
 			prod = (prod*m[i])%m[k];

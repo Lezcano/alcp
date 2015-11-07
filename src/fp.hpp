@@ -1,5 +1,5 @@
-#ifndef __FP_HPP
-#define __FP_HPP
+#ifndef __FIELDP_HPP
+#define __FIELDP_HPP
 
 #include <vector>
 #include "types.hpp"

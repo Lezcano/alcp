@@ -118,9 +118,17 @@ std::pair<Fpxelem,Fpxelem> Fpxelem::div2(const Fpxelem &divisor){
     if(this->deg() < divisor.deg())
         return std::make_pair(Fpxelem(_f.get(0)), *this);
 
-    // Define the quotient of the corresponding size
-    Fpxelem quot(std::vector<Fpelem>(this->deg()-divisor.deg()+1,_f.get(0)));
+    Fpxelem quot(_f.get(0));
     Fpxelem rem(*this);
+
+    if(divisor.deg() == 0){
+        quot = *this;
+        for(auto &e : quot._v){
+            e/=divisor.lc();
+        }
+        return std::make_pair(quot, Fpxelem(this->_f.get(0)));
+    }
+
 
     // While the degree of the leading coefficient is greater
     //  or equal to the degree of the divisor
@@ -182,18 +190,18 @@ const Fpxelem::F Fpxelem::getField()const{return _f;}
 void Fpxelem::checkInSameField(const Fpxelem &rhs) const{
     if(_f != rhs._f){
         throw EOperationUnsupported(
-            "Polinomials not in the same field. Error when adding the polynomials " + this->to_string() +
-            " and " + rhs.to_string() +  ".");
+                "Polinomials not in the same field. Error when adding the polynomials " + this->to_string() +
+                " and " + rhs.to_string() +  ".");
     }
 }
 
 void Fpxelem::removeTrailingZeros(){
     _v.erase(
-        std::find_if(
-            _v.rbegin(),
-            _v.rend(),
-            std::bind1st(std::not_equal_to<Fpelem>(), _f.get(0))).base(),
-        _v.end());
+            std::find_if(
+                _v.rbegin(),
+                _v.rend(),
+                std::bind1st(std::not_equal_to<Fpelem>(), _f.get(0))).base(),
+            _v.end());
     // In case it was the polinomial equal to zero
     if(_v.size()==0)
         _v.push_back(_f.get(0));
@@ -210,7 +218,7 @@ std::string Fpxelem::to_string() const{
         return s;
     }
     if(_v.back() != 1)
-    	s+=_v.back().to_string();
+        s+=_v.back().to_string();
     s +=  "x^" + std::to_string(_v.size()-1);
 
     for(int i=_v.size()-2;i>=2;--i){
@@ -243,5 +251,5 @@ const Fpxelem unit(const Fpxelem &f){
 }
 
 const Fpxelem normalForm(const Fpxelem &f){
-	return Fpxelem(f)/Fpxelem(f.lc());
+    return Fpxelem(f)/Fpxelem(f.lc());
 }
