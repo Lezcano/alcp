@@ -47,6 +47,7 @@ int main (){
         std::cout << div2.first << std::endl << div2.second << std::endl;
         // Until here everything is ok
         */
+/*
     vector<Fpelem> v, w;
     Fp field(11);
     try{
@@ -59,7 +60,7 @@ int main (){
 		cout << qw[0];
 		cout << qw[1];
 		cout << qw[2];
-		/*
+
         for(int i=0;i<5;++i)
             v.push_back(field.get(7*i));
         for(int i=0;i<6;++i){
@@ -86,8 +87,17 @@ int main (){
         std::cout << div2.first << std::endl << div2.second << std::endl;
 */
 
-   }catch(ExcepALCP e){
-    cout << e << endl;
+    try{
+        Fp f (17);
+        vector<Fpelem> w;
+        for(int i=0;i<6;++i){
+            w.push_back(f.get(5*i+2));
+        }
+        cout << "ok2" << endl;
+        Fpxelem b(w);
+        cout << b / Fpxelem(f.get(3)) << endl;
+    }catch(ExcepALCP e){
+        cout << e << endl;
     }
 
 }

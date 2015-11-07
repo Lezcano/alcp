@@ -1,16 +1,20 @@
-#include<iosfwd>            // ostream
-#include<string>            // to_string
+#include <iosfwd>            // ostream
+#include <string>            // to_string
+#include <memory>           // unique_ptr
 #include "types.hpp"
 #include "exceptions.hpp"
 #include "fpelem.hpp"
 #include "fp.hpp"
 #include "generalPurpose.hpp" // ExtendedEuclideanAlgorithm (eea)
 
-Fpelem::~Fpelem(){delete _f;}
+Fpelem::Fpelem ( const Fpelem & other){
+    _num = other._num;
+    _f = std::unique_ptr<Fp>(new Fp(*other._f));
+}
 
 Fpelem & Fpelem::operator=(const Fpelem &rhs){
     if(&rhs != this){
-        if(_f->getSize() != rhs.getSize())
+        if(*_f != *rhs._f)
             throw ENotCompatible("Fpelem assignation failed. The elements " + this->to_string() + " and " + rhs.to_string()
                                  + " are in the fields F" + std::to_string(this->getSize()) + " and F" + std::to_string(rhs.getSize()) + " respectively.");
         _num = rhs._num;
@@ -19,12 +23,12 @@ Fpelem & Fpelem::operator=(const Fpelem &rhs){
 }
 
 Fpelem & Fpelem::operator=(ll rhs){
-    _num = _f->get(rhs)._num;
+    *this = _f->get(rhs);
     return *this;
 }
 
 bool Fpelem::operator==(const Fpelem &rhs)const{
-    return (_num == rhs._num && getSize() == rhs.getSize());
+    return (_num == rhs._num && *_f == *(rhs._f));
 }
 
 bool Fpelem::operator!=(const Fpelem &rhs)const{
@@ -119,7 +123,8 @@ const Fp Fpelem::getField()const{return *_f;}
 
 std::string Fpelem::to_string()const{return std::to_string(_num);}
 
-Fpelem::Fpelem(ll num, const F* f): _num(num), _f(f){
+Fpelem::Fpelem(ll num, std::unique_ptr<Fp> f): _num(num){
+    _f = std::move(f);
     ll p = _f->getSize();
     _num %= p;
     if(_num < 0)
