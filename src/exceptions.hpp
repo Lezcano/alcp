@@ -34,7 +34,7 @@ inline std::ostream &operator<<(std::ostream &out, const ExcepALCP &e) {
 #define DECLARE_EXCEPTION(Exception) \
 class Exception : public ExcepALCP { \
 public: \
-Exception() {}; \
+Exception() {} \
 Exception(const std::string &msg) : ExcepALCP(msg) {} \
 }
 
