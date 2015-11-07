@@ -5,12 +5,6 @@
 #define Felem typename Fxelem::Felem
 #define F typename Fxelem::F
 
-Fxelem normalization (const & Fxelem &v){
-	Felem leadCoef = v[v.getSize()];
-
-}
-
-
 /**
  * Input:
  *		1) A primitive polynomial pol
@@ -35,13 +29,14 @@ template <typename Fxelemi, Zx>
  *
  * */
 pair<Fxelem, Fxelem> HenselLifting (const Zx &pol, int p, const Fxelem &u1, const Fxelem &w1, bint bound){//Lo suyo sería devolver un struct...
-	ll leadCoef = pol[pol.getSize()];
-	pol *= leadCoef;
-	u1 =  pol.getField.get(leadCoef % p)  * (u1[u1.getSize()].inv() * u1);
-	w1 =  leadCoef  * (w1[w1.getSize()].inv() * w1);
+	ll leadCoef = ;
+	Felem lc(pol.lc());
+	pol *= pol.lc();
+	u1 *=  (lc * u1.lc().inv());
+	w1 *=  (lc * w1.lc().inv());
 
 	Fxelem s, t;
-	eea (u1, w1, &s, &t);//This always must be 1. Test it!!
+	eea (u1, w1, &s, &t);//This must always be 1. Test it!!
 
 	Zx u(u1); u[u.getSize()] = leadCoef;
 	Zx w(w1); w[w.getSize()] = leadCoef;
