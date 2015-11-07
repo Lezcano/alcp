@@ -6,7 +6,7 @@
 #include "fp.hpp"
 #include "generalPurpose.hpp" // ExtendedEuclideanAlgorithm (eea)
 
-Fpelem::Fpelem(const Fpelem&)=default;  // Default copy ctor
+~Fpelem(){delete _f;}
 
 Fpelem & Fpelem::operator=(const Fpelem &rhs){
     if(&rhs != this){
