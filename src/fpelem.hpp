@@ -12,7 +12,7 @@ class Fpelem{
         // Base field
         typedef Fp F;
 
-        ~Fpelem();
+        //~Fpelem();
 
         Fpelem & operator=(const Fpelem &rhs);
 

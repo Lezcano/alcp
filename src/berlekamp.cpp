@@ -59,6 +59,7 @@ std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typenam
 	bint n = mat.size();
 	bint i, j;
 	std::vector< std::vector< typename Fxelem::Felem > > result;
+
 	for (bint k = 0; k < n; ++k ){
 		//Search for pivot element
 		for (i = k; i < n && mat[k][i] == 0 ; ++i);
@@ -71,21 +72,28 @@ std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typenam
 				else if (mat[j][i] != 0) mat[j][i] *= inv;
 			}
 			//Interchange column i with column k
-			for (j = 0; j < n; ++j){
-				std::swap(mat[j][k], mat[j][i]);
+			if (i!=k){
+				for (j = 0; j < n; ++j){
+					std::swap(mat[j][k], mat[j][i]);
+				}
 			}
-			if (i==k) ++i;
+			i=0;
 			while(i < n){
-				for (j = 0; j < n ; ++j){
+				if (i==k) {
+					++i;
+					continue;
+				}
+				for (j = n-1; j >= k ; --j){//Se hace en este sentido para que el valor mat[k][i] sólo se pierda al final
 					mat[j][i] -= mat[j][k]*mat[k][i];
 				}
 				++i;
 			}
 		}
 	}
-	// M = M - I;
+	// M = M - I; //Note this is -1*(I-M)
 	for (i=0; i<n; ++i)
 		mat[i][i] -= 1;
+
 	//Return non zero rows
 	j=0;
 	while (j < n){
@@ -98,13 +106,8 @@ std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typenam
 		}
 		if (j >= n) break;
 		result.push_back(mat[j]);//TODO: Quizás se pueda optimizar con un move
+		++j;
 	}
-/*	for (int i =0; i<result.size(); ++i){
-		for (int j =0; i<result[j].size(); ++j)
-			cout << result[i][j] << " ";
-		cout << endl;
-	}
-	*/
 	return result; //result[0] should always be (1, 0, ... 0). (Test it!)
 }
 
@@ -131,7 +134,7 @@ template <typename Fxelem>
 std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	std::vector< Fxelem > factors;
 	factors.push_back(pol);
-	bint r=2;
+	bint r=1;
 	auto mat = formMatrix(pol);
 	int n = pol.deg();
 	for (int i=0; i<n; ++i)

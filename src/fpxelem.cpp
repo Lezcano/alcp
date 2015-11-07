@@ -8,6 +8,7 @@
 #include "fpelem.hpp"
 #include "fp.hpp"
 
+
 // Inmersion Fp \to Fp[X]
 Fpxelem::Fpxelem(const Fpelem &e): _v(std::vector<Fpelem>({e})), _f(F(e.getField())){}
 
@@ -242,5 +243,5 @@ const Fpxelem unit(const Fpxelem &f){
 }
 
 const Fpxelem normalForm(const Fpxelem &f){
-    return Fpxelem(f)/Fpxelem(f.lc());
+	return Fpxelem(f)/Fpxelem(f.lc());
 }

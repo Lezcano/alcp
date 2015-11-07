@@ -6,7 +6,7 @@
 #include "fp.hpp"
 #include "generalPurpose.hpp" // ExtendedEuclideanAlgorithm (eea)
 
-~Fpelem(){delete _f;}
+//~Fpelem(){delete _f;}
 
 Fpelem & Fpelem::operator=(const Fpelem &rhs){
     if(&rhs != this){
