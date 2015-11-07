@@ -128,7 +128,7 @@ Fpelem::Fpelem(ll num, std::unique_ptr<Fp> f): _num(num){
     ll p = _f->getSize();
     _num %= p;
     if(_num < 0)
-        _num = (_num + p) % p;
+        _num += p;
 }
 
 void Fpelem::checkInSameField(const Fpelem &rhs) const{
