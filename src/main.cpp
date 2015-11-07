@@ -47,7 +47,7 @@ int main (){
         std::cout << div2.first << std::endl << div2.second << std::endl;
         // Until here everything is ok
         */
-/*
+
     vector<Fpelem> v, w;
     Fp field(11);
     try{
@@ -57,10 +57,10 @@ int main (){
 		Fpxelem a(v);
 
 		std::vector< Fpxelem > qw = berlekamp_simple (a);
-		cout << qw[0];
-		cout << qw[1];
-		cout << qw[2];
-
+		cout << qw[0] << endl;
+		cout << qw[1] << endl;
+		cout << qw[2] << endl;
+/*
         for(int i=0;i<5;++i)
             v.push_back(field.get(7*i));
         for(int i=0;i<6;++i){
@@ -87,7 +87,7 @@ int main (){
         std::cout << div2.first << std::endl << div2.second << std::endl;
 */
 
-    try{
+ /*   try{
         Fp f (17);
         vector<Fpelem> w;
         for(int i=0;i<6;++i){
@@ -96,6 +96,7 @@ int main (){
         cout << "ok2" << endl;
         Fpxelem b(w);
         cout << b / Fpxelem(f.get(3)) << endl;
+        */
     }catch(ExcepALCP e){
         cout << e << endl;
     }

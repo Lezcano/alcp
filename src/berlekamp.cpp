@@ -5,7 +5,6 @@
 #include "fpxelem.hpp"
 #include "generalPurpose.hpp"
 #include "types.hpp"
-#include <iostream> //TODO Quitar
 
 
 template<typename T>
@@ -83,7 +82,7 @@ std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typenam
 					++i;
 					continue;
 				}
-				for (j = n-1; j >= k ; --j){//Se hace en este sentido para que el valor mat[k][i] sólo se pierda al final
+				for (j = n-1; j >= k ; --j){//It has to be backwards
 					mat[j][i] -= mat[j][k]*mat[k][i];
 				}
 				++i;
@@ -95,13 +94,12 @@ std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typenam
 		mat[i][i] -= 1;
 
 	//Return non zero rows
-	j=0;
+	j=1; //we do not need the first row
 	while (j < n){
 		//Look for the next non zero row
 		while (true){
 			if (j >=n) break;
-			for (i = 0; i < n && mat[j][i] == 0; ++i);
-			if (i==n) ++j;
+			if (mat[j][j] == 0) ++j; //The row is zero iff mat[j][j] == 0
 			else break;
 		}
 		if (j >= n) break;
@@ -109,6 +107,7 @@ std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typenam
 		++j;
 	}
 	return result; //result[0] should always be (1, 0, ... 0). (Test it!)
+
 }
 
 /* Berlekamp's algorithm
@@ -130,18 +129,43 @@ std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typenam
  *
  * */
 
+/* Detalles de la implementación:
+ * 	formMatrix:
+ * 		-En la función  el for interno se recorre en sentido
+ * 		descendente para poder hacer los calculos sin usar otro array.
+ * 		-Se lleva un contador en el for externo que cuenta hasta q
+ * 		para no tener que usar %
+ * 	kernelBasis:
+ * 		-El for de la linea 86 va en sentido descendente porque se
+ * 		necesita en todo momento el valor mat[k][i]. De esta manera
+ * 		éste se actualiza exactamente en la ultima operación
+ * 		-El for de la línea 94 debería calcular I-M pero eso es muy
+ * 		caro y nosotros sólo necesitamos una base, así que en lugar
+ * 		de eso, calculo M-I que también vale como base.
+ * 		- Linea 98 j=1 se hace (en vez de j=0) porque el primer elemento
+ * 		de la base es siempre (1, 0,..,0), (aunque como yo cojo la
+ * 		base con los números opuestos sería (-1, 0,..,0)) y no se usa
+ * 		para nada así que directamente no la calculo ni añado a result
+ * 		(esto hace que en berlekamp r se inicialize a 0 en vez de
+ * 		a 1 y que k se inicialize a base.size()+1
+ * 		-Línea 103, la fila j es nula si y solo si el elemento mat[j][j]
+ * 		es cero (en caso contrario es 1)
+ *  Berlekamp_simple:
+ *  	-Lo dicho antes sobre las inicializaciones de r y k
+ *
+ * */
+
 template <typename Fxelem>
 std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	std::vector< Fxelem > factors;
 	factors.push_back(pol);
-	bint r=1;
+	bint r=0;
 	auto mat = formMatrix(pol);
 	int n = pol.deg();
 	for (int i=0; i<n; ++i)
 		mat[i][i] -= 1;
-//matrix<typename Fxelem::Felem> kernelBasis (const matrix<typename Fxelem::Felem> & mat){
 	auto base = kernelBasis<Fxelem>(mat);
-	int k = base.size();
+	int k = base.size()+1;//we do not have computed the first element of the base, so have to add 1 to k
 	while (factors.size() < k){
 		for (int i = 0; i < factors.size(); ++i){
 			Fxelem v(base[r]);
