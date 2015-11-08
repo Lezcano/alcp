@@ -11,15 +11,18 @@ using namespace std;
 
 int main (){
 	vector<bint> m;
-	m.push_back(99);
-	m.push_back(97);
-	m.push_back(95);
+	m.push_back(7);
+	m.push_back(11);
+	m.push_back(13);
+	m.push_back(17);
+	m.push_back(19);
 	vector<bint> u;
-	u.push_back(49);
-	u.push_back(-21);
-	u.push_back(-30);
-	cout << integerCRA(m, u) << endl;
-
+	u.push_back(-2);
+	u.push_back(-4);
+	u.push_back(6);
+	u.push_back(-3);
+	u.push_back(7);
+	bint aux  = integerCRA(m, u);
 }
 
 

@@ -35,6 +35,7 @@ bint reciprocal (bint a, bint q){
  *
  */
 bint integerCRA (const std::vector<bint> & m, const std::vector<bint> & u){
+	//TODO: ¿Comprobar que u y m tienen el mismo tamaño?
 	int n = m.size()-1;
 	bint prod, aux;
 	std::vector<bint> inv, v;
@@ -49,7 +50,7 @@ bint integerCRA (const std::vector<bint> & m, const std::vector<bint> & u){
 		aux = v[k-1];
 		for (int j = k-2; j >=0; --j)
 			aux = (aux*m[j]+v[j])%m[k];
-		v[k] = ((u[k]-aux)*inv[k-1])%m[k];	//it is inv[k-1] because inv starts in 0
+		v.push_back(((u[k]-aux)*inv[k-1])%m[k]);	//it is inv[k-1] because inv starts in 0
 	}
 	bint result = v[n];
 	for (int k = n-1; k >= 0; --k ){
