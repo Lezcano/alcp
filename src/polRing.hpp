@@ -186,7 +186,9 @@ class PolinomialRing{
             if(_v.size() == 1)
                 return ::to_string(_v[0]);
             if(_v.size() == 2){
-                s = ::to_string(_v[1]) + "x";
+                if(_v[i]!=1)
+                    s = ::to_string(_v[1]);
+                s += "x";
                 if(_v[0] != 0)
                     s += "+" + ::to_string(_v[0]);
                 return s;
@@ -220,15 +222,16 @@ class PolinomialRing{
 
     private:
         void removeTrailingZeros(){
+            auto zero = getZero(this->lc());
             _v.erase(
                     std::find_if(
                         _v.rbegin(),
                         _v.rend(),
-                        std::bind1st(std::not_equal_to<Felem>(), getZero(this->lc()))).base(),
+                        std::bind1st(std::not_equal_to<Felem>(), zero)).base(),
                     _v.end());
             // In case it was the polinomial equal to zero
             if(_v.size()==0)
-                _v.push_back(getZero(this->lc()));
+                _v.push_back(zero);
         }
 
 

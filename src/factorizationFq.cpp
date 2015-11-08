@@ -186,7 +186,7 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 /*
 //Part I
 template<typename Fxelem>
-std::vector< Fxelem > squareFreeFactorization (const Fxelem &pol); 
+std::vector< Fxelem > squareFreeFactorization (const Fxelem &pol);
  */
 /*
 //Part II
@@ -210,8 +210,8 @@ std::vector< Fxelem > splitFactorsDD (const Fxelem &pol){
 }
 
 
-template std::vector< Fxelem > splitFactorsDD (const Fxelem &pol); 
-template std::vector< Fxelem > partialFactorDD (const Fxelem &pol); 
+template std::vector< Fxelem > splitFactorsDD (const Fxelem &pol);
+template std::vector< Fxelem > partialFactorDD (const Fxelem &pol);
 
 */
 template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);
