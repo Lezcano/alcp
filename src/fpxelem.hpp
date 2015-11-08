@@ -1,82 +1,30 @@
 // Implementation of a GF(p) field
-#ifndef __FPXELEM_HPP
-#define __FPXELEM_HPP
+#ifndef __FPXELEM2_HPP
+#define __FPXELEM2_HPP
 
-#include <vector>
-#include <utility>          // pair, make_pair
-#include "types.hpp"
-#include "fpelem.hpp"
 #include "fp.hpp"
+#include "fpelem.hpp"
+#include "polRing.hpp"
 
-
-class Fpxelem{
+class Fpxelem : public PolinomialRing<Fpxelem, Fpelem>{
     public:
         // Base field
         using F = Fp;
         using Felem = Fpelem;
 
-        Fpxelem(const Fpelem &e);
-        Fpxelem(const std::vector<Fpelem> &v);
-
-        Fpxelem & operator=(const Fpxelem &rhs);
-
-        bool operator==(const Fpxelem &rhs)const;
-        bool operator==(ll rhs)const;
-
-        bool operator!=(const Fpxelem &rhs)const;
-        bool operator!=(ll rhs)const;
-
-        Fpxelem & operator+=(const Fpxelem &rhs);
-
-        const Fpxelem operator+(const Fpxelem &rhs) const;
-
-        const Fpxelem operator-() const;
-
-        Fpxelem & operator-=(const Fpxelem &rhs);
-
-        const Fpxelem operator-(const Fpxelem &rhs) const;
-
-        Fpxelem & operator*=(const Fpxelem &rhs);
-
-        const Fpxelem operator*(const Fpxelem &rhs) const;
-
-        std::pair<Fpxelem,Fpxelem> div2(const Fpxelem &divisor);
-
-        Fpxelem & operator/=(const Fpxelem &rhs);
-
-        const Fpxelem operator/(const Fpxelem &rhs) const;
-
-        Fpxelem & operator%=(const Fpxelem &rhs);
-
-        const Fpxelem operator%(const Fpxelem &rhs) const;
-
-        const Fpelem & operator[](int i) const;
-        Fpelem & operator[](int i);
-
-        // Leading coefficient
-        Fpelem lc()const;
-        // Degree of the polynomial
-        unsigned int deg()const;
-        // Prime p of the base field Fp[X]
-        ll getSize()const;
+        Fpxelem(const Fpelem & e);
+        Fpxelem(const std::vector<Fpelem> & v);
 
         const F getField()const;
-
-        friend std::ostream& operator<<(std::ostream& os, const Fpxelem &f);
-
-    private:
-        void checkInSameField(const Fpxelem &rhs) const;
-
-        void removeTrailingZeros();
-
-        std::string to_string() const;
-
-        std::vector<Fpelem> _v;
-        const F _f;
+        ll getSize()const;
 };
 
-const Fpxelem unit(const Fpxelem &f);
-const Fpxelem normalForm(const Fpxelem &f);
+const Fpelem unit(const Fpxelem &e);
+const Fpxelem normalForm(const Fpxelem &e);
+bool compatible(const Fpxelem &lhs, const Fpxelem &rhs);
+bool operator==(const Fpxelem &lhs, ll rhs);
+bool operator==(ll lhs, const Fpxelem &rhs);
+bool operator!=(const Fpxelem &lhs, ll rhs);
+bool operator!=(ll lhs, const Fpxelem &rhs );
 
-
-#endif // __FPXELEM_HPP
+#endif

@@ -15,7 +15,8 @@ Fpelem::Fpelem ( const Fpelem & other){
 Fpelem & Fpelem::operator=(const Fpelem &rhs){
     if(&rhs != this){
         if(*_f != *rhs._f)
-            throw ENotCompatible("Fpelem assignation failed. The elements " + to_string(*this) + " and " + to_string(rhs) + " are in the fields F" + std::to_string(this->getSize()) + " and F" + std::to_string(rhs.getSize()) + " respectively.");
+            throw ENotCompatible("Fpelem assignation failed. The elements " + this->to_string() + " and " + rhs.to_string()
+                                 + " are in the fields F" + std::to_string(this->getSize()) + " and F" + std::to_string(rhs.getSize()) + " respectively.");
         _num = rhs._num;
     }
     return *this;
@@ -184,6 +185,6 @@ bool operator!=(ll lhs, const Fpelem &rhs){
 }
 
 std::ostream& operator<<(std::ostream& os, const Fpelem &e){
-    os << to_string(e);
+    os << e.to_string();
     return os;
 }
