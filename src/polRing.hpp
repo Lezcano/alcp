@@ -186,7 +186,7 @@ class PolinomialRing{
             if(_v.size() == 1)
                 return ::to_string(_v[0]);
             if(_v.size() == 2){
-                if(_v[i]!=1)
+                if(_v[1]!=1)
                     s = ::to_string(_v[1]);
                 s += "x";
                 if(_v[0] != 0)

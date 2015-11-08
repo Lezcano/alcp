@@ -150,6 +150,7 @@ ll gcd(ll a, ll b){
 template<typename T>
 T eea (T a, T b, T &x, T &y){
     typename T::F f = a.getField();
+
     a = normalForm(a);
     b = normalForm(b);
 

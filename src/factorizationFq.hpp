@@ -14,10 +14,10 @@ std::vector< Fxelem > squareFreeFactorization (const Fxelem &pol);
 
 //Part II
 template<typename Fxelem>
-std::vector< Fxelem > partialFactorDD (const Fxelem &pol); 
+std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD (Fxelem &pol);
 
 //Part III
-template<typename Fxelem>
-std::vector< Fxelem > splitFactorsDD (const Fxelem &pol); 
+//template<typename Fxelem>
+//std::vector< Fxelem > splitFactorsDD (const Fxelem &pol);
 
 #endif // __FACTORIZATION_FQ

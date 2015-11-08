@@ -6,6 +6,7 @@
 #include "fpxelem.hpp"
 #include "generalPurpose.hpp"
 #include "types.hpp"
+#include <iostream> //TODO Quitar
 
 /* Detalles de la implementación:
  * 	formMatrix:
@@ -196,19 +197,28 @@ std::vector< Fxelem > squareFreeFactorization (const Fxelem &pol);
  *
  * */
 template<typename Fxelem>
-std::vector< std::pair< Fxelem, int> > partialFactorDD (const Fxelem &pol){
+std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem &pol){//TODO: Copiar el polinomio en vez de pasarlo por referencia??
 	int n = pol.deg();
 	auto mat = formMatrix(pol);
+/*
+	for (int i =0; i<mat.size(); ++i){
+		for (int j =0; j<mat[i].size(); ++j){
+			std::cout << mat[i][j] << " ";
+		}
+		std::cout << std::endl;
+
+	}
+*/
 	//First iteration is performed out of the loop because we have r in mat (there is no need to compute it)
 	std::vector<typename Fxelem::Felem> r = mat[1];
 	//result[i] is will be a product of irreducible polynomials with degree i+1
-	std::vector< std::pair< Fxelem, int > > result;
-	int i = 1;
+	std::vector< std::pair< Fxelem, unsigned int > > result;
+	unsigned int i = 0;
 	r[1] -= 1;
-	result.push_back(std::make_pair< Fxelem, int >(gcd(Fxelem(r), pol), i);//No estoy seguro a nivel teórico de si así funciona, o es necesario hacerlo con el pol original
+	result.push_back(std::make_pair(gcd(Fxelem(r), pol), i+1));//No estoy seguro a nivel teórico de si así funciona, o es necesario hacerlo con el pol original
 	r[1] += 1;
-	if (result[i] != 1)
-		pol /= result[i];
+	if (result[i].first != 1)
+		pol /= result[i].first;
 	++i;
 	while (i <= pol.deg()/2){
 		std::vector<typename Fxelem::Felem> aux = r;
@@ -218,16 +228,16 @@ std::vector< std::pair< Fxelem, int> > partialFactorDD (const Fxelem &pol){
 				r[j] += aux[k]*mat[k][j];
 			}
 		}//This is just r = r*mat;
-		
 		r[1] -= 1;
-		result.push_back(make_pair< Fxelem, int >(gcd(Fxelem(r), pol), i));//No estoy seguro a nivel teórico de si así funciona, o es necesario hacerlo con el pol original
+		std::cout << Fxelem(r) << std::endl;
+		result.push_back(std::make_pair(gcd(Fxelem(r), pol), i+1));//No estoy seguro a nivel teórico de si así funciona, o es necesario hacerlo con el pol original
 		r[1] += 1;
-		if (result[i] != 1)
-			pol /= result[i];
+		if (result[i].first != 1)
+			pol /= result[i].first;
 		++i;
 	}
 	if (pol != 1)
-		result.push_back(make_pair< Fxelem, int >(pol, pol.deg()));
+		result.push_back(std::make_pair(pol, pol.deg()));
 
 	return result;	
 }
@@ -242,4 +252,5 @@ template std::vector< Fxelem > splitFactorsDD (const Fxelem &pol);
 template std::vector< Fxelem > partialFactorDD (const Fxelem &pol);
 
 */
+template std::vector< std::pair< Fpxelem, unsigned int> > partialFactorDD ( Fpxelem &pol);
 template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);
