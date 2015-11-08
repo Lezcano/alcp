@@ -200,25 +200,19 @@ template<typename Fxelem>
 std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem &pol){//TODO: Copiar el polinomio en vez de pasarlo por referencia??
 	int n = pol.deg();
 	auto mat = formMatrix(pol);
-/*
-	for (int i =0; i<mat.size(); ++i){
-		for (int j =0; j<mat[i].size(); ++j){
-			std::cout << mat[i][j] << " ";
-		}
-		std::cout << std::endl;
 
-	}
-*/
 	//First iteration is performed out of the loop because we have r in mat (there is no need to compute it)
 	std::vector<typename Fxelem::Felem> r = mat[1];
 	//result[i] is will be a product of irreducible polynomials with degree i+1
 	std::vector< std::pair< Fxelem, unsigned int > > result;
-	unsigned int i = 0;
+	unsigned int i = 1;
 	r[1] -= 1;
-	result.push_back(std::make_pair(gcd(Fxelem(r), pol), i+1));//No estoy seguro a nivel teórico de si así funciona, o es necesario hacerlo con el pol original
+	result.push_back(std::make_pair(gcd(Fxelem(r), pol), i));//No estoy seguro a nivel teórico de si así funciona, o es necesario hacerlo con el pol original
+
 	r[1] += 1;
-	if (result[i].first != 1)
-		pol /= result[i].first;
+	if (result.back().first != 1)
+		pol /= result.back().first;
+
 	++i;
 	while (i <= pol.deg()/2){
 		std::vector<typename Fxelem::Felem> aux = r;
@@ -229,11 +223,12 @@ std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem &pol){/
 			}
 		}//This is just r = r*mat;
 		r[1] -= 1;
-		std::cout << Fxelem(r) << std::endl;
-		result.push_back(std::make_pair(gcd(Fxelem(r), pol), i+1));//No estoy seguro a nivel teórico de si así funciona, o es necesario hacerlo con el pol original
+		result.push_back(std::make_pair(gcd(Fxelem(r), pol), i+1));//gcd (a_1, w (mod a)) = gcd (a_1, w (mod a_1)) where a_1 divides a (because (w (mod a))(mod a_1) = w (mod a_1))
 		r[1] += 1;
-		if (result[i].first != 1)
-			pol /= result[i].first;
+		if (result.back().first != 1)
+			pol /= result.back().first;
+		else
+			result.pop_back();
 		++i;
 	}
 	if (pol != 1)

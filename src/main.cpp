@@ -15,16 +15,16 @@ int main (){
     try{
 		int c[7]= {1, -3, -1, -3, 1, -3, 1};
 		v.push_back(field.get(-1));
-        for(int i=1;i<15;++i)
+        for(int i=1;i<=10;++i)
         	v.push_back(field.get(0));
         v.push_back(field.get(1));
 		Fpxelem a(v);
 		cout << a << endl;
 		std::vector< pair < Fpxelem, unsigned int > > qw = partialFactorDD (a);
 		cout << qw.size() << endl;
-		cout << qw[0].first << qw[0].second << endl;
-		cout << qw[1].first << qw[1].second << endl;
-		cout << qw[2].first << qw[2].second << endl;
+		cout << qw[0].first << " " << qw[0].second << endl;
+		cout << qw[1].first << " " << qw[1].second << endl;
+		cout << qw[2].first << " " << qw[2].second << endl;
     }catch(ExcepALCP e){
         cout << e << endl;
     }

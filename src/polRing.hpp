@@ -115,7 +115,7 @@ class PolinomialRing{
                         "Polinomials not in the same ring. Error when dividing the polynomials " + this->to_string() +
                         " and " + divisor.to_string() +  ".");
 
-            if(divisor.deg()==1 && divisor._v[0] == 0)
+            if(divisor.deg()==0 && divisor._v[0] == 0)
                 throw EOperationUnsupported("Error. Cannot divide by the polynomial 0");
             if(this->deg() < divisor.deg())
                 return std::make_pair(Fxelem(getZero(this->lc())), static_cast<Fxelem&>(*this));
