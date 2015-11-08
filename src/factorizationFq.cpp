@@ -193,13 +193,20 @@ std::vector< Fxelem > squareFreeFactorization (const Fxelem &pol);
 template<typename Fxelem>
 std::vector< Fxelem > partialFactorDD (const Fxelem &pol){
 	int i = 1;
-	
+	auto mat = formMatrix(pol);
+	std::vector<typename Fxelem::Felem> r = mat[1];
+	//result[i] is will be a product of irreducible polynomials with degree i+1
+	std::vector< Fxelem > result;
+	r[1] -= 1;
+	result[i] = gcd(Fxelem(r), pol);//No estoy seguro a nivel teórico de si así funciona, o es necesario hacerlo con el pol original
+	if (result[i] != 1)
+		pol /= result[i];
+	r[1] +=1;
 }
 
 //Part III
 template<typename Fxelem>
 std::vector< Fxelem > splitFactorsDD (const Fxelem &pol){
-
 }
 
 
