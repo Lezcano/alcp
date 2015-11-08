@@ -1,5 +1,6 @@
 #include <vector>
 #include <algorithm>
+#include <utility>
 #include "fp.hpp"
 #include "fpelem.hpp"
 #include "fpxelem.hpp"
@@ -188,22 +189,49 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 template<typename Fxelem>
 std::vector< Fxelem > squareFreeFactorization (const Fxelem &pol);
  */
-/*
+
 //Part II
+/*
+ *
+ *
+ * */
 template<typename Fxelem>
-std::vector< Fxelem > partialFactorDD (const Fxelem &pol){
-	int i = 1;
+std::vector< std::pair< Fxelem, int> > partialFactorDD (const Fxelem &pol){
+	int n = pol.deg();
 	auto mat = formMatrix(pol);
+	//First iteration is performed out of the loop because we have r in mat (there is no need to compute it)
 	std::vector<typename Fxelem::Felem> r = mat[1];
 	//result[i] is will be a product of irreducible polynomials with degree i+1
-	std::vector< Fxelem > result;
+	std::vector< std::pair< Fxelem, int > > result;
+	int i = 1;
 	r[1] -= 1;
-	result[i] = gcd(Fxelem(r), pol);//No estoy seguro a nivel teórico de si así funciona, o es necesario hacerlo con el pol original
+	result.push_back(std::make_pair< Fxelem, int >(gcd(Fxelem(r), pol), i);//No estoy seguro a nivel teórico de si así funciona, o es necesario hacerlo con el pol original
+	r[1] += 1;
 	if (result[i] != 1)
 		pol /= result[i];
-	r[1] +=1;
-}
+	++i;
+	while (i <= pol.deg()/2){
+		std::vector<typename Fxelem::Felem> aux = r;
+		for (int j = 0; j < n; ++j){
+				r[j] = aux[0]*mat[0][j] ;
+			for (int k = 1; k < n; ++k ){
+				r[j] += aux[k]*mat[k][j];
+			}
+		}//This is just r = r*mat;
+		
+		r[1] -= 1;
+		result.push_back(make_pair< Fxelem, int >(gcd(Fxelem(r), pol), i));//No estoy seguro a nivel teórico de si así funciona, o es necesario hacerlo con el pol original
+		r[1] += 1;
+		if (result[i] != 1)
+			pol /= result[i];
+		++i;
+	}
+	if (pol != 1)
+		result.push_back(make_pair< Fxelem, int >(pol, pol.deg()));
 
+	return result;	
+}
+/*
 //Part III
 template<typename Fxelem>
 std::vector< Fxelem > splitFactorsDD (const Fxelem &pol){
