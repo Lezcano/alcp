@@ -6,9 +6,23 @@
 #include "fpxelem.hpp"
 #include "exceptions.hpp"
 #include "berlekamp.hpp"
+#include "integerCRA.hpp"
 using namespace std;
 
 int main (){
+	vector<bint> m;
+	m.push_back(99);
+	m.push_back(97);
+	m.push_back(95);
+	vector<bint> u;
+	u.push_back(49);
+	u.push_back(-21);
+	u.push_back(-30);
+	cout << integerCRA(m, u) << endl;
+
+}
+
+
     /*
     Fp field(5);
     Fpelem f = field.get(3);
@@ -47,7 +61,7 @@ int main (){
         std::cout << div2.first << std::endl << div2.second << std::endl;
         // Until here everything is ok
         */
-
+/*Para berlekamp
     vector<Fpelem> v, w;
     Fp field(11);
     try{
@@ -60,6 +74,11 @@ int main (){
 		cout << qw[0] << endl;
 		cout << qw[1] << endl;
 		cout << qw[2] << endl;
+    }catch(ExcepALCP e){
+        cout << e << endl;
+    }
+
+}*/
 /*
         for(int i=0;i<5;++i)
             v.push_back(field.get(7*i));
@@ -96,12 +115,13 @@ int main (){
         cout << "ok2" << endl;
         Fpxelem b(w);
         cout << b / Fpxelem(f.get(3)) << endl;
-        */
+
     }catch(ExcepALCP e){
         cout << e << endl;
     }
 
 }
+*/
 /*
 TEST(AddPolTest, Some){
     vector<Fpelem> v, w;
