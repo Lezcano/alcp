@@ -1,8 +1,10 @@
-#ifndef __BERLEKAMP
-#define __BERLEKAMP
+#ifndef __integerCRA
+#define __integerCRA
 
-#include <"types.hpp">
+#include "types.hpp"
+#include <vector>
 
-const bint& integerCRA (const vector<bint> & m, const vector<bint> & u);
+bint integerCRA (const std::vector<bint> & m, const std::vector<bint> & u);
 
-#endif // __BERLEKAMP
+
+#endif // __integerCRA

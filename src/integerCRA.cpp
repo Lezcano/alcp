@@ -1,6 +1,6 @@
 #include <vector>
-#include "fp.hpp"
 #include "types.hpp"
+#include "generalPurpose.hpp"
 
 /* Auxiliary function. Finds x such that
  * ax = 1 (mod q)
@@ -34,12 +34,14 @@ bint reciprocal (bint a, bint q){
  *  O(n^2)
  *
  */
-const bint& integerCRA (const std::vector<bint> & m, const std::vector<bint> & u){
+bint integerCRA (const std::vector<bint> & m, const std::vector<bint> & u){
+	//TODO: ¿Comprobar que u y m tienen el mismo tamaño?
 	int n = m.size()-1;
 	bint prod, aux;
 	std::vector<bint> inv, v;
 	for (int k = 1; k <= n; ++k ){
-		for	(int i = 0 ; i <= k-1; ++i)
+		prod = m[0]%m[k];
+		for	(int i = 1 ; i <= k-1; ++i)
 			prod = (prod*m[i])%m[k];
 		inv.push_back(reciprocal(prod, m[k]));	//inv starts in 0, in the book it starts in 1
 	}
@@ -48,7 +50,7 @@ const bint& integerCRA (const std::vector<bint> & m, const std::vector<bint> & u
 		aux = v[k-1];
 		for (int j = k-2; j >=0; --j)
 			aux = (aux*m[j]+v[j])%m[k];
-		v[k] = ((u[k]-aux)*inv[k-1])%m[k];	//it is inv[k-1] because inv starts in 0
+		v.push_back(((u[k]-aux)*inv[k-1])%m[k]);	//it is inv[k-1] because inv starts in 0
 	}
 	bint result = v[n];
 	for (int k = n-1; k >= 0; --k ){
