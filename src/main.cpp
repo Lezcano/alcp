@@ -5,24 +5,26 @@
 #include "fpelem.hpp"
 #include "fpxelem.hpp"
 #include "exceptions.hpp"
-#include "berlekamp.hpp"
+#include "factorizationFq.hpp"
 #include "integerCRA.hpp"
 using namespace std;
 
 int main (){
-	vector<bint> m;
-	m.push_back(7);
-	m.push_back(11);
-	m.push_back(13);
-	m.push_back(17);
-	m.push_back(19);
-	vector<bint> u;
-	u.push_back(-2);
-	u.push_back(-4);
-	u.push_back(6);
-	u.push_back(-3);
-	u.push_back(7);
-	bint aux  = integerCRA(m, u);
+    vector<Fpelem> v, w;
+    Fp field(11);
+    try{
+		int c[7]= {1, -3, -1, -3, 1, -3, 1};
+        for(int i=0;i<7;++i)
+            v.push_back(field.get(c[i]));
+		Fpxelem a(v);
+
+		std::vector< Fpxelem > qw = berlekamp_simple (a);
+		cout << qw[0] << endl;
+		cout << qw[1] << endl;
+		cout << qw[2] << endl;
+    }catch(ExcepALCP e){
+        cout << e << endl;
+    }
 }
 
 
