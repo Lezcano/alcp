@@ -6,6 +6,31 @@
 #include "generalPurpose.hpp"
 #include "types.hpp"
 
+/* Detalles de la implementación:
+ * 	formMatrix:
+ * 		-En la función  el for interno se recorre en sentido
+ * 		descendente para poder hacer los calculos sin usar otro array.
+ * 		-Se lleva un contador en el for externo que cuenta hasta q
+ * 		para no tener que usar %
+ * 	kernelBasis:
+ * 		-El for de la linea 86 va en sentido descendente porque se
+ * 		necesita en todo momento el valor mat[k][i]. De esta manera
+ * 		éste se actualiza exactamente en la ultima operación
+ * 		-El for de la línea 94 debería calcular I-M pero eso es muy
+ * 		caro y nosotros sólo necesitamos una base, así que en lugar
+ * 		de eso, calculo M-I que también vale como base.
+ * 		- Linea 98 j=1 se hace (en vez de j=0) porque el primer elemento
+ * 		de la base es siempre (1, 0,..,0), (aunque como yo cojo la
+ * 		base con los números opuestos sería (-1, 0,..,0)) y no se usa
+ * 		para nada así que directamente no la calculo ni añado a result
+ * 		(esto hace que en berlekamp r se inicialize a 0 en vez de
+ * 		a 1 y que k se inicialize a base.size()+1
+ * 		-Línea 103, la fila j es nula si y solo si el elemento mat[j][j]
+ * 		es cero (en caso contrario es 1)
+ *  berlekamp_simple:
+ *  	-Lo dicho antes sobre las inicializaciones de r y k
+ *
+ * */
 
 template<typename T>
 using matrix = std::vector< std::vector<T> >;
@@ -15,7 +40,7 @@ using matrix = std::vector< std::vector<T> >;
  * Input: a polynomial pol over a field of size q
  * Output: Matrix Q with x^0, x^q, x^{2q},..., x^{(n-1)*q} (mod pol) as rows
  * Complexity: O(q n^2) where n is deg(pol)
- * There is a solution in O(log(q)n^2 + n^3) it is better for big q and small n
+ * There is a solution in O(log(q)n^2 + n^3), it is better for big q and small n
  */
 template <typename Fxelem>
 matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
@@ -129,31 +154,6 @@ std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typenam
  *
  * */
 
-/* Detalles de la implementación:
- * 	formMatrix:
- * 		-En la función  el for interno se recorre en sentido
- * 		descendente para poder hacer los calculos sin usar otro array.
- * 		-Se lleva un contador en el for externo que cuenta hasta q
- * 		para no tener que usar %
- * 	kernelBasis:
- * 		-El for de la linea 86 va en sentido descendente porque se
- * 		necesita en todo momento el valor mat[k][i]. De esta manera
- * 		éste se actualiza exactamente en la ultima operación
- * 		-El for de la línea 94 debería calcular I-M pero eso es muy
- * 		caro y nosotros sólo necesitamos una base, así que en lugar
- * 		de eso, calculo M-I que también vale como base.
- * 		- Linea 98 j=1 se hace (en vez de j=0) porque el primer elemento
- * 		de la base es siempre (1, 0,..,0), (aunque como yo cojo la
- * 		base con los números opuestos sería (-1, 0,..,0)) y no se usa
- * 		para nada así que directamente no la calculo ni añado a result
- * 		(esto hace que en berlekamp r se inicialize a 0 en vez de
- * 		a 1 y que k se inicialize a base.size()+1
- * 		-Línea 103, la fila j es nula si y solo si el elemento mat[j][j]
- * 		es cero (en caso contrario es 1)
- *  Berlekamp_simple:
- *  	-Lo dicho antes sobre las inicializaciones de r y k
- *
- * */
 
 template <typename Fxelem>
 std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
@@ -183,4 +183,28 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	return factors;
 }
 
+/*
+//Part I
+template<typename Fxelem>
+std::vector< Fxelem > squareFreeFactorization (const Fxelem &pol); 
+ */
+/*
+//Part II
+template<typename Fxelem>
+std::vector< Fxelem > partialFactorDD (const Fxelem &pol){
+	int i = 1;
+	
+}
+
+//Part III
+template<typename Fxelem>
+std::vector< Fxelem > splitFactorsDD (const Fxelem &pol){
+
+}
+
+
+template std::vector< Fxelem > splitFactorsDD (const Fxelem &pol); 
+template std::vector< Fxelem > partialFactorDD (const Fxelem &pol); 
+
+*/
 template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);
