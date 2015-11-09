@@ -62,13 +62,13 @@ matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
     typename Fxelem::F f = pol.getField();
 	bint q = f.getSize(), cont = 1;
 	int n = pol.deg();
-	//typename Fxelem::Felem aux = f.get(0);
+
 	std::vector<typename Fxelem::Felem> r(n, f.get(0));
 	r[0] = 1; //r == (1, 0, ..., 0)
 	matrix<typename Fxelem::Felem> result;
 	result.push_back(r);
 	for (bint i = 1; i<= (n-1)*q; ++i, ++cont){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
-		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*a_{n-1})
+		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
 		auto aux = r[n-1];
 		for (ll j = n-1; j >= 1; --j){
 			r[j] = r[j-1]-aux*pol[j];
@@ -249,13 +249,56 @@ std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem &pol){/
 
 	return result;	
 }
-/*
 //Part III
 template<typename Fxelem>
-std::vector< Fxelem > splitFactorsDD (const Fxelem &pol){
+std::vector< Fxelem > splitFactorsDD (const Fxelem &pol, int n){
+	int polDeg = pol.deg();
+	if (polDeg <= n){
+		std::vector< Fxelem > factors;
+		factors.push_back(pol);
+		return factors;
+	}
+	int m = polDeg/n;
+
+	std::vector < Fxelem > pwrsX; //vector with x^polDeg, x^{polDeg+1}, ..., x^{2*polDeg-2} (mod pol); Used to perform fast powers mod pol
+ 	std::vector<typename Fxelem::Felem> r(polDeg, 0);
+	r[polDeg-1] = 1; //r == (0, 0, ..., 1)
+	for (int i = polDeg; i<= 2*polDeg +1; ++i){
+		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
+		auto aux = r[n-1];
+		for (ll j = n-1; j >= 1; --j){
+			r[j] = r[j-1]-aux*pol[j];
+		}
+		r[0] = -aux*pol[0];
+		pwrsX.push_back(Fxelem(r));
+	}
+
+	while (true){
+		Fxelem v = randomPol(2*n-1); //TODO
+		if (p == 2){
+			Fxelem aux = v;
+			for (int i = 1; i<= n*m-1; ++i){
+				aux = fastPowModPol (aux, 2);//TODO
+				v += aux;
+			}
+		}
+		else{
+			v = fastPowModPol (v, (q^n -1)/2) -1; //TODO
+		}	
+		Fxelem g = gcd (pol, v);
+		if (g != 1 && g != pol){
+			std:vector< Fxelem > factors = splitFactorsDD(g);
+			std:vector< Fxelem > factors2 = splitFactorsDD(pol/g);
+			factors.insert( 
+				factors.end(),
+				std::make_move_iterator(factors2.begin()),
+				std::make_move_iterator(factors2.end())
+			);
+			return factors;
+		}
+	}
 }
-
-
+/*
 template std::vector< Fxelem > splitFactorsDD (const Fxelem &pol);
 template std::vector< Fxelem > partialFactorDD (const Fxelem &pol);
 
