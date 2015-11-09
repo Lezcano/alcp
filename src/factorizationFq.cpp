@@ -10,17 +10,17 @@
 
 /* Detalles de la implementación:
  * 	formMatrix:
- * 		-En la función  el for interno se recorre en sentido
- * 		descendente para poder hacer los calculos sin usar otro array.
- * 		-Se lleva un contador en el for externo que cuenta hasta q
- * 		para no tener que usar %
+ * 		-En la función  el for interno se recorre en sentido descendente para
+ * 		poder hacer los calculos sin usar otro array.
+ * 		-Se lleva un contador en el for externo que cuenta hasta q para no
+ * 		tener que usar %
  * 	kernelBasis:
- * 		-El for de la linea 86 va en sentido descendente porque se
- * 		necesita en todo momento el valor mat[k][i]. De esta manera
- * 		éste se actualiza exactamente en la ultima operación
- * 		-El for de la línea 94 debería calcular I-M pero eso es muy
- * 		caro y nosotros sólo necesitamos una base, así que en lugar
- * 		de eso, calculo M-I que también vale como base.
+ * 		-El for de la linea 86 va en sentido descendente porque se necesita en
+ * 		todo momento el valor mat[k][i]. De esta manera éste se actualiza
+ * 		exactamente en la ultima operación.
+ * 		-El for de la línea 94 debería calcular I-M pero eso es muy	caro y
+ * 		nosotros sólo necesitamos una base, así que en lugar de eso, calculo 
+ * 		M-I que también vale como base.
  * 		- Linea 98 j=1 se hace (en vez de j=0) porque el primer elemento
  * 		de la base es siempre (1, 0,..,0), (aunque como yo cojo la
  * 		base con los números opuestos sería (-1, 0,..,0)) y no se usa
@@ -31,8 +31,21 @@
  * 		es cero (en caso contrario es 1)
  *  berlekamp_simple:
  *  	-Lo dicho antes sobre las inicializaciones de r y k
+ *	partialFactorDD:
+ *		-Resulta que para elevar (en mod pol) un polinomio a la q, lo
+ *		unico que hay que hacer es multiplicar sus coeficientes por
+ *		la matriz de formMatrix, así que para calcular x^{iq}-x (mod pol) 
+ *		lo que hago es cogerme el x^{(i-1)q} que tenía de antes, multiplico
+ *		sus	coeficientes por la matriz y ya tengo x^{iq} (mod pol)
+ *		-La primera iteración no la hago dentro del bucle porque x^q es la
+ *		segunda fila de la matriz, así que no tengo que calcularlo.
+ *		-En el result.push_back de dentro del while hago 
+ *		gcd(x^{qi}-x(mod pol), pol1) donde pol es el polinomio original y pol1
+ *		es un divisor. En el libro hacen modulo pol1 en vez de pol, pero notese que al ser pol multiplo de pol1 se tiene que
+ *		(x^{qi}-x(mod pol)) (mod pol1) = x^{qi}-x(mod pol1)
+ *		así que por la propiedad del algorimo de euclides el gcd es el mismo.
  *
- * */
+ *		*/
 
 template<typename T>
 using matrix = std::vector< std::vector<T> >;
@@ -201,13 +214,13 @@ std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem &pol){/
 	int n = pol.deg();
 	auto mat = formMatrix(pol);
 
-	//First iteration is performed out of the loop because we have r in mat (there is no need to compute it)
+	//first iteration is performed out of the loop because we have r in mat (there is no need to compute it again)
 	std::vector<typename Fxelem::Felem> r = mat[1];
-	//result[i] is will be a product of irreducible polynomials with degree i+1
+	//result[i].first will be a product of irreducible polynomials with degree result[i].second
 	std::vector< std::pair< Fxelem, unsigned int > > result;
 	unsigned int i = 1;
 	r[1] -= 1;
-	result.push_back(std::make_pair(gcd(Fxelem(r), pol), i));//No estoy seguro a nivel teórico de si así funciona, o es necesario hacerlo con el pol original
+	result.push_back(std::make_pair(gcd(Fxelem(r), pol), i));
 
 	r[1] += 1;
 	if (result.back().first != 1)
