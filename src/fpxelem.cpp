@@ -1,6 +1,8 @@
 #include <vector>
-#include "fpelem.hpp"
+
 #include "fpxelem.hpp"
+#include "generalPurpose.hpp" // fastPowMod
+// Fpelem included in fpxelem.hpp
 
 Fpxelem::Fpxelem(const Fpelem & e) : PolinomialRing<Fpxelem, Fpelem>(e){}
 Fpxelem::Fpxelem(const std::vector<Fpelem> & v) : PolinomialRing<Fpxelem, Fpelem>(v){}
@@ -13,9 +15,23 @@ ll Fpxelem::getSize()const{
     return this->getField().getSize();
 }
 
+// TODO comentar!!
+// TODO probar!!
+bool Fpxelem::irreducible()const{
+    Fpxelem x({this->getField.get(0), this->getField.get(1)});
+    Fpxelem xpk = x; // x^(p^k)
+
+    for(int i=0;i<this->degree()/2){
+        xpk = fastPowMod(xpk, this->getSize(), *this);
+        g = gcd(*this, xpk-x);
+        if(g.deg()!=0)
+            return false;
+    }
+    return true;
+}
+
 
 const Fpelem unit(const Fpxelem &e){ return e.lc(); }
-const Fpxelem normalForm(const Fpxelem &e){ return e/unit(e); }
 
 bool compatible(const Fpxelem &lhs, const Fpxelem &rhs){
     return lhs.getField()==rhs.getField();

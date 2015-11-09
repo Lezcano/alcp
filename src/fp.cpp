@@ -1,6 +1,8 @@
 #include <vector>
 #include <string>
+
 #include "fp.hpp"
+// types.hpp included in fp.hpp
 #include "fpelem.hpp"
 #include "exceptions.hpp"
 #include "generalPurpose.hpp" // Miller Rabin

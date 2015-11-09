@@ -17,7 +17,8 @@
  * Complexity:
  *  O((b*log(a))) supposing multiplication in O(1)
  */
-ll fastPowMod(ll a, ll b, ll p){
+template<typename T>
+T fastPowMod(T a, ll b, T p){
     if(b==0)return 1;
     if(b%2 != 0){
     	return (a*fastPowMod(a,b-1,p))%p;
@@ -150,6 +151,18 @@ ll gcd(ll a, ll b){
 template<typename T>
 T eea (T a, T b, T &x, T &y){
     typename T::F f = a.getField();
+    if(a == 0){
+        if(b == 0)
+            throw EOperationUnsupported("Cannot compute the greatest common divisor of two zero elements.");
+        x = f.get(0);
+        y = unit(a);
+        return normalForm(b);
+    }
+    if(b == 0){
+        x = unit(a);
+        y = f.get(0);
+        return normalForm(a);
+    }
     a = normalForm(a);
     b = normalForm(b);
 

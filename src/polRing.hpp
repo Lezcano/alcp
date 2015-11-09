@@ -6,8 +6,11 @@
 #include <algorithm>        // find_if
 #include <utility>          // pair, make_pair
 #include <string>           // to_string
+
 #include "types.hpp"
 #include "exceptions.hpp"
+
+
 
 template<typename Fxelem, typename Felem>
 class PolinomialRing{
@@ -115,7 +118,7 @@ class PolinomialRing{
                         "Polinomials not in the same ring. Error when dividing the polynomials " + this->to_string() +
                         " and " + divisor.to_string() +  ".");
 
-            if(divisor.deg()==1 && divisor._v[0] == 0)
+            if(divisor.deg()==0 && divisor._v[0] == 0)
                 throw EOperationUnsupported("Error. Cannot divide by the polynomial 0");
             if(this->deg() < divisor.deg())
                 return std::make_pair(Fxelem(getZero(this->lc())), static_cast<Fxelem&>(*this));
@@ -181,12 +184,15 @@ class PolinomialRing{
         // Degree of the polynomial
         unsigned int deg()const{return _v.size()-1;}
 
+        // Normal form of the polinomial. It ensures the unicity of gdc for example
+        friend const Fxelem normalForm(const Fxelem &e){ return e/unit(e); }
+
         std::string to_string() const{
             std::string s = "";
             if(_v.size() == 1)
                 return ::to_string(_v[0]);
             if(_v.size() == 2){
-                if(_v[i]!=1)
+                if(_v[1] != 1)
                     s = ::to_string(_v[1]);
                 s += "x";
                 if(_v[0] != 0)
@@ -198,20 +204,20 @@ class PolinomialRing{
             s +=  "x^" + std::to_string(_v.size()-1);
 
             for(int i=_v.size()-2;i>=2;--i){
-                if(_v[i]!=0){
+                if(_v[i] != 0){
                     s+="+";
-                    if(_v[i]!=1)
+                    if(_v[i] != 1)
                         s += ::to_string(_v[i]);
                     s += "x^" + std::to_string(i);
                 }
             }
-            if(_v[1]!=0){
+            if(_v[1] != 0){
                 s += "+";
-                if(_v[1]!=1)
+                if(_v[1] != 1)
                     s += ::to_string(_v[1]);
                 s += "x";
             }
-            if(_v[0]!=0)
+            if(_v[0] != 0)
                 s += "+"+ ::to_string(_v[0]);
             return s;
         }

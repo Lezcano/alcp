@@ -1,10 +1,10 @@
 #include <iosfwd>            // ostream
 #include <string>            // to_string
 #include <memory>           // unique_ptr
-#include <iostream> // debug!!
-#include "types.hpp"
+
 #include "exceptions.hpp"
 #include "fpelem.hpp"
+// types.hpp defined in fpelem.hpp
 #include "fp.hpp"
 #include "generalPurpose.hpp" // ExtendedEuclideanAlgorithm (eea)
 
@@ -125,6 +125,10 @@ std::string to_string(const Fpelem &e){return std::to_string(e._num);}
 const Fpelem getZero(const Fpelem &e){return e.getField().get(0);}
 const Fpelem getOne(const Fpelem &e){return e.getField().get(1);}
 
+bool compatible(const Fpelem &lhs, const Fpelem &rhs){
+    return lhs.getField()==rhs.getField();
+}
+
 Fpelem::Fpelem(ll num, std::unique_ptr<Fp> f): _num(num){
     _f = std::move(f);
     ll p = _f->getSize();
@@ -134,7 +138,7 @@ Fpelem::Fpelem(ll num, std::unique_ptr<Fp> f): _num(num){
 }
 
 void Fpelem::checkInSameField(const Fpelem &rhs) const{
-    if(getSize() != rhs.getSize())
+    if(this->getField() != rhs.getField())
         throw EOperationUnsupported(
             "Error. Is not possible to add the number " + std::to_string(_num) +
             " in F" + std::to_string(getSize()) +

@@ -2,8 +2,8 @@
 #define __FIELDP_HPP
 
 #include <vector>
+
 #include "types.hpp"
-#include "fpelem.hpp"
 
 class Fpelem;
 

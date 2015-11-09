@@ -11,7 +11,7 @@ class Fp;
 class Fpelem{
     public:
         // Base field
-        typedef Fp F;
+        using F = Fp;
 
         Fpelem ( const Fpelem & );
         Fpelem & operator=(const Fpelem &rhs);
@@ -75,7 +75,9 @@ Fpelem & operator-=(Fpelem &lhs, ll rhs);
 const Fpelem operator-(const Fpelem &lhs, ll rhs);
 const Fpelem operator-(ll lhs, const Fpelem & rhs);
 
+bool compatible(const Fpelem &lhs, const Fpelem &rhs);
 const Fpelem getZero(const Fpelem &e);
 const Fpelem getOne(const Fpelem &e);
 std::string to_string(const Fpelem &e);
+
 #endif // __FPELEM_HPP

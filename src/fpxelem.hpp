@@ -6,6 +6,7 @@
 #include "fpelem.hpp"
 #include "polRing.hpp"
 
+
 class Fpxelem : public PolinomialRing<Fpxelem, Fpelem>{
     public:
         // Base field
@@ -15,12 +16,12 @@ class Fpxelem : public PolinomialRing<Fpxelem, Fpelem>{
         Fpxelem(const Fpelem & e);
         Fpxelem(const std::vector<Fpelem> & v);
 
+        bool irreducible()const;
         const F getField()const;
         ll getSize()const;
 };
 
 const Fpelem unit(const Fpxelem &e);
-const Fpxelem normalForm(const Fpxelem &e);
 bool compatible(const Fpxelem &lhs, const Fpxelem &rhs);
 bool operator==(const Fpxelem &lhs, ll rhs);
 bool operator==(ll lhs, const Fpxelem &rhs);
