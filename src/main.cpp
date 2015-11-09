@@ -21,14 +21,17 @@ int main (){
     Fp field(11);
     try{
 		int c[7]= {1, -3, -1, -3, 1, -3, 1};
-        for(int i=0;i<7;++i)
-            v.push_back(field.get(c[i]));
+		v.push_back(field.get(-1));
+        for(int i=1;i<=10;++i)
+        	v.push_back(field.get(0));
+        v.push_back(field.get(1));
 		Fpxelem a(v);
-
-		std::vector< Fpxelem > qw = berlekamp_simple (a);
-		cout << qw[0] << endl;
-		cout << qw[1] << endl;
-		cout << qw[2] << endl;
+		cout << a << endl;
+		std::vector< pair < Fpxelem, unsigned int > > qw = partialFactorDD (a);
+		cout << qw.size() << endl;
+		cout << qw[0].first << " " << qw[0].second << endl;
+		cout << qw[1].first << " " << qw[1].second << endl;
+		cout << qw[2].first << " " << qw[2].second << endl;
     }catch(ExcepALCP e){
         cout << e << endl;
     }

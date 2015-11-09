@@ -2,6 +2,7 @@
 #include "exceptions.hpp"
 #include "types.hpp"
 #include "fpxelem.hpp"
+#include <iostream> //TODO: quitar
 
 /**
  * Exponentiation by Squaring

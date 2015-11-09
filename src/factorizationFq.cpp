@@ -1,10 +1,12 @@
 #include <vector>
 #include <algorithm>
+#include <utility>
 #include "fp.hpp"
 #include "fpelem.hpp"
 #include "fpxelem.hpp"
 #include "generalPurpose.hpp"
 #include "types.hpp"
+#include <iostream> //TODO Quitar
 
 /* Detalles de la implementación:
  * 	formMatrix:
@@ -188,18 +190,56 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 template<typename Fxelem>
 std::vector< Fxelem > squareFreeFactorization (const Fxelem &pol);
  */
-/*
+
 //Part II
+/*
+ *
+ *
+ * */
 template<typename Fxelem>
-std::vector< Fxelem > partialFactorDD (const Fxelem &pol){
-	int i = 1;
+std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem &pol){//TODO: Copiar el polinomio en vez de pasarlo por referencia??
+	int n = pol.deg();
+	auto mat = formMatrix(pol);
 
+	//First iteration is performed out of the loop because we have r in mat (there is no need to compute it)
+	std::vector<typename Fxelem::Felem> r = mat[1];
+	//result[i] is will be a product of irreducible polynomials with degree i+1
+	std::vector< std::pair< Fxelem, unsigned int > > result;
+	unsigned int i = 1;
+	r[1] -= 1;
+	result.push_back(std::make_pair(gcd(Fxelem(r), pol), i));//No estoy seguro a nivel teórico de si así funciona, o es necesario hacerlo con el pol original
+
+	r[1] += 1;
+	if (result.back().first != 1)
+		pol /= result.back().first;
+
+	++i;
+	while (i <= pol.deg()/2){
+		std::vector<typename Fxelem::Felem> aux = r;
+		for (int j = 0; j < n; ++j){
+				r[j] = aux[0]*mat[0][j] ;
+			for (int k = 1; k < n; ++k ){
+				r[j] += aux[k]*mat[k][j];
+			}
+		}//This is just r = r*mat;
+		r[1] -= 1;
+		result.push_back(std::make_pair(gcd(Fxelem(r), pol), i+1));//gcd (a_1, w (mod a)) = gcd (a_1, w (mod a_1)) where a_1 divides a (because (w (mod a))(mod a_1) = w (mod a_1))
+		r[1] += 1;
+		if (result.back().first != 1)
+			pol /= result.back().first;
+		else
+			result.pop_back();
+		++i;
+	}
+	if (pol != 1)
+		result.push_back(std::make_pair(pol, pol.deg()));
+
+	return result;	
 }
-
+/*
 //Part III
 template<typename Fxelem>
 std::vector< Fxelem > splitFactorsDD (const Fxelem &pol){
-
 }
 
 
@@ -207,4 +247,5 @@ template std::vector< Fxelem > splitFactorsDD (const Fxelem &pol);
 template std::vector< Fxelem > partialFactorDD (const Fxelem &pol);
 
 */
+template std::vector< std::pair< Fpxelem, unsigned int> > partialFactorDD ( Fpxelem &pol);
 template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);
