@@ -17,7 +17,8 @@ using namespace std;
 int main (){
     vector<bint> v({1, -3, -1, -3, 1, -3, 1}), w;
     Zxelem a(v);
-    Fq(2,4);
+    Fq(2,60); // 60 15 1
+    Fq(3,4);
 
     /*
     vector<Fpelem> v, w;
