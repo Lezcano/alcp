@@ -7,5 +7,5 @@ template<typename T> T fastPowMod(T a, ll b, T p);
 bool millerRabin(ll n, int k = 35);
 template<typename T> T eea (T a, T b, T &x, T &y);
 template<typename T> T gcd(T a, T b);
-template<typename T> T fastPow (T a, ll b);
+
 #endif // __GENERAL_PURPOSE_H

@@ -1,9 +1,9 @@
 #ifndef __FIELDP_HPP
 #define __FIELDP_HPP
 
-#include <vector>
-
 #include "types.hpp"
+
+#include <vector>
 
 class Fpelem;
 

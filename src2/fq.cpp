@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <string>
+#include <iostream> //debug
 
 // Auxiliary function
 bool increment(std::vector<Fpelem>& act) {
@@ -18,7 +19,7 @@ bool increment(std::vector<Fpelem>& act) {
 }
 
 Fq::Fq(ll p, int n): _p(p), _n(n), _base(p), _mod(_base.get(0)){ // _mod must be explicitly initialized
-    std::vector<Fpelem> v (_n+1, _base.get(0));
+    std::vector<Fpelem> v (_n, _base.get(0));
 
     v.back() = _base.get(1);
     v[0] = _base.get(1);
@@ -26,11 +27,10 @@ Fq::Fq(ll p, int n): _p(p), _n(n), _base(p), _mod(_base.get(0)){ // _mod must be
     //  Maybe set a timer?
     //  The probability of getting an irreducible polinomial
     //   in each iteration is 1/n
-    while(!Fpxelem(v).irreducible()){
+    while(!Fpxelem(v).irreducible())
         increment(v);
-        if(v[0] == 0) // It's divisible by the polinomial p(x) = x
-            increment(v);
-    }
+
+    std::cout << Fpxelem(v) << std::endl;
     _mod = Fpxelem(v);
 }
 

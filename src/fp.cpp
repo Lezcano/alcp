@@ -1,11 +1,11 @@
-#include <vector>
-#include <string>
-
 #include "fp.hpp"
 // types.hpp included in fp.hpp
 #include "fpelem.hpp"
 #include "exceptions.hpp"
 #include "generalPurpose.hpp" // Miller Rabin
+
+#include <vector>
+#include <string>
 
 Fp::Fp(ll p): _p(p){
     // TODO create a look-up table for p < 2^16

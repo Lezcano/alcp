@@ -1,12 +1,47 @@
-#include "fpelem.hpp"
-// types.hpp defined in fpelem.hpp
 #include "fp.hpp"
-#include "generalPurpose.hpp" // ExtendedEuclideanAlgorithm (eea)
+#include "fpelem.hpp"
+#include "fpxelem.hpp"
+// types.hpp included in fp.hpp
+#include "fpelem.hpp"
 #include "exceptions.hpp"
+#include "generalPurpose.hpp" // Miller Rabin
 
+#include <vector>
 #include <iosfwd>            // ostream
 #include <string>            // to_string
 #include <memory>           // unique_ptr
+
+
+////////////////////////////// Fp //////////////////////////////
+
+Fp::Fp(ll p): _p(p){
+    // TODO create a look-up table for p < 2^16
+    if(p<=0 || !millerRabin(p))
+        throw EpNotPrime("Could not create F" + std::to_string(p) + ". " + std::to_string(p) + " is not prime.");
+}
+
+Fpelem Fp::get(ll n)const{
+    return Fpelem(n, std::unique_ptr<Fp>(new Fp(*this)));
+}
+
+ll Fp::getSize()const{return _p;}
+
+bool Fp::operator==(const Fp &rhs)const{return _p == rhs._p;}
+bool Fp::operator!=(const Fp &rhs)const{return _p != rhs._p;}
+
+std::vector<Fpelem> Fp::getElems()const{
+    std::vector<Fpelem> ret;
+    for(ll i=0;i<_p;++i)
+        ret.push_back(this->get(i));
+    return ret;
+}
+
+//////////////////////////////   Fp   //////////////////////////////
+
+////////////////////////////// Fpelem //////////////////////////////
+
+
+
 
 Fpelem::Fpelem ( const Fpelem & other){
     _num = other._num;
@@ -192,3 +227,61 @@ std::ostream& operator<<(std::ostream& os, const Fpelem &e){
     os << to_string(e);
     return os;
 }
+
+////////////////////////////// Fpelem //////////////////////////////
+
+////////////////////////////// Fxpelem //////////////////////////////
+
+
+Fpxelem::Fpxelem(const Fpelem & e) : PolinomialRing<Fpxelem, Fpelem>(e){}
+Fpxelem::Fpxelem(const std::vector<Fpelem> & v) : PolinomialRing<Fpxelem, Fpelem>(v){}
+
+const Fpxelem::F Fpxelem::getField()const{
+    return this->lc().getField();
+}
+
+ll Fpxelem::getSize()const{
+    return this->getField().getSize();
+}
+
+// TODO comentar!!
+// TODO probar!!
+bool Fpxelem::irreducible()const{
+    Fpxelem x({this->getField().get(0), this->getField().get(1)});
+    Fpxelem xpk = x; // x^(p^k)
+
+    for(int i=0;i<this->deg()/2;++i){
+        xpk = fastPowMod<Fpxelem>(xpk, this->getSize(), *this);
+        if(gcd(*this, xpk-x).deg()!=0)
+            return false;
+    }
+    return true;
+}
+
+Fpxelem getZero(const Fpxelem &e){return Fpxelem(e.getField().get(0));}
+Fpxelem getOne(const Fpxelem &e){return Fpxelem(e.getField().get(1));}
+
+
+const Fpelem unit(const Fpxelem &e){ return e.lc(); }
+
+bool compatible(const Fpxelem &lhs, const Fpxelem &rhs){
+    return lhs.getField()==rhs.getField();
+}
+
+bool operator==(const Fpxelem &lhs, ll rhs){
+    return lhs.deg()==0 && lhs.lc()==lhs.getField().get(rhs);
+}
+
+bool operator==(ll lhs, const Fpxelem &rhs){
+    return rhs == lhs;
+}
+
+bool operator!=(const Fpxelem &lhs, ll rhs){
+    return !(lhs == rhs);
+}
+
+bool operator!=(ll lhs, const Fpxelem &rhs ){
+    return !(rhs == lhs);
+}
+
+////////////////////////////// Fxpelem //////////////////////////////

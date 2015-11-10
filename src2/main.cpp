@@ -15,6 +15,10 @@
 using namespace std;
 
 int main (){
+    vector<bint> v({1, -3, -1, -3, 1, -3, 1}), w;
+    Zxelem a(v);
+    Fq(2,4);
+
     /*
     vector<Fpelem> v, w;
     Fp field(11);
@@ -34,8 +38,10 @@ int main (){
     }catch(ExcepALCP e){
         cout << e << endl;
     }
+}*/
+
 }
-}
+    /*
     Fp field(5);
     Fpelem f = field.get(3);
     Fpelem g = field.get(4);

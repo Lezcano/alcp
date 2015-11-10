@@ -1,2 +1,0 @@
-/home/lezkus/Documentos/Álgebra Computacional/alcp/gtest/lib/CMakeFiles/gtest_main.dir
-/home/lezkus/Documentos/Álgebra Computacional/alcp/gtest/lib/CMakeFiles/gtest.dir

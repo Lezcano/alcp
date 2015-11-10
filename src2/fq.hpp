@@ -1,13 +1,45 @@
-#ifndef __FQELEM_HPP
-#define __FQELEM_HPP
+#ifndef __FIELDQ_HPP
+#define __FIELDQ_HPP
 
 #include "types.hpp"
-// I don't think this is necessary
-#include "fq.hpp"
+#include "fp.hpp"
+#include "fpxelem.hpp"
+
 #include <iosfwd>           // ostream
 #include <memory>           // unique_ptr
+#include <vector>
 
-class Fq;
+
+////////////////////////////// Fq //////////////////////////////
+class Fqelem;
+
+class Fq{
+    public:
+        Fq(ll p, int n);
+
+        Fqelem get(ll n)const;
+
+        Fqelem get(Fpxelem f)const;
+
+        ll getSize()const;
+
+        std::vector<Fqelem> getElems()const;
+
+        bool operator==(const Fq &rhs)const;
+        bool operator!=(const Fq &rhs)const;
+
+        friend std::string to_string(const Fq &e);
+    private:
+
+        ll _p;
+        int _n;
+        Fp _base;
+        Fpxelem _mod;
+};
+
+
+
+////////////////////////////// Fqelem //////////////////////////////
 
 class Fqelem{
     public:
@@ -82,4 +114,8 @@ const Fqelem getZero(const Fqelem &e);
 const Fqelem getOne(const Fqelem &e);
 std::string to_string(const Fqelem &e);
 
-#endif // __FQELEM_HPP
+////////////////////////////// Fqelem //////////////////////////////
+
+
+
+#endif // __FQ_HPP
