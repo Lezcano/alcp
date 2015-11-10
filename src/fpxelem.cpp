@@ -17,6 +17,7 @@ ll Fpxelem::getSize()const{
 
 // TODO comentar!!
 // TODO probar!!
+/*
 bool Fpxelem::irreducible()const{
     Fpxelem x({this->getField.get(0), this->getField.get(1)});
     Fpxelem xpk = x; // x^(p^k)
@@ -29,7 +30,7 @@ bool Fpxelem::irreducible()const{
     }
     return true;
 }
-
+*/
 
 const Fpelem unit(const Fpxelem &e){ return e.lc(); }
 

@@ -1,6 +1,8 @@
 #include <vector>
 #include <algorithm>
 #include <utility>
+#include <random>
+#include <chrono>
 #include "fp.hpp"
 #include "fpelem.hpp"
 #include "fpxelem.hpp"
@@ -249,6 +251,54 @@ std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem &pol){/
 
 	return result;	
 }
+template <typename Fxelem>
+void fastPowModPol (Fxelem & a, bint b, std::vector<Fxelem> pwrsX, int deg){
+	if (b == 0){
+		a = Fxelem (a.getField().get(1));
+	}
+	else{
+		Fxelem aux = a;
+		a = Fxelem(a.getField().get(1));
+		while (b != 0){
+			if (b % 2 == 0){
+				aux*=aux;
+				for (int i = deg; i <= aux.deg(); ++i){//aux.deg is always <= 2*deg-2
+					if (aux[i] != 0)
+						aux += Fxelem(aux[i])*pwrsX[i];
+				}
+				b /= 2;
+			}	
+			else{
+				a *= aux;
+				for (int i = deg; i <= a.deg(); ++i){//a.deg is always <= 2*deg-2
+					if (a[i] != 0)
+						a += Fxelem(a[i])*pwrsX[i];
+				}
+				aux *= aux;
+				for (int i = deg; i <= aux.deg(); ++i){//aux.deg is always <= 2*deg-2
+					if (aux[i] != 0)
+						aux += Fxelem(aux[i])*pwrsX[i];
+				}
+				b -= 1;
+			}
+		}
+	}
+}
+
+
+
+template <typename Fxelem >
+Fxelem randomPol (const typename Fxelem::F & field, int degree){
+	//TODO esto genera números aleatorios de 64, parece suficiente, pero si q es mayor que 2^63 en realidad no lo es...
+	std::mt19937_64 generator(std::chrono::system_clock::now().time_since_epoch().count());
+	std::vector< typename Fxelem::Felem > r;
+	for (int i = 0; i<= degree; ++i){
+		r.push_back(field.get(generator()));
+	}
+	return Fxelem(r);
+}
+
+
 //Part III
 template<typename Fxelem>
 std::vector< Fxelem > splitFactorsDD (const Fxelem &pol, int n){
@@ -260,35 +310,44 @@ std::vector< Fxelem > splitFactorsDD (const Fxelem &pol, int n){
 	}
 	int m = polDeg/n;
 
-	std::vector < Fxelem > pwrsX; //vector with x^polDeg, x^{polDeg+1}, ..., x^{2*polDeg-2} (mod pol); Used to perform fast powers mod pol
- 	std::vector<typename Fxelem::Felem> r(polDeg, 0);
+	//TODO explain this vector
+	std::vector < Fxelem > pwrsX; //vector with x^polDeg (mod pol)- x^polDeg, ..., x^{2*polDeg-2} (mod pol); Used to perform fast powers mod pol
+ 	std::vector<typename Fxelem::Felem> r(2*polDeg-1, pol.getField().get(0));
 	r[polDeg-1] = 1; //r == (0, 0, ..., 1)
-	for (int i = polDeg; i<= 2*polDeg +1; ++i){
+	for (int i = polDeg; i<= 2*polDeg-2; ++i){
 		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
-		auto aux = r[n-1];
-		for (ll j = n-1; j >= 1; --j){
+		auto aux = r[polDeg-1];
+		for (ll j = polDeg-1; j >= 1; --j){
 			r[j] = r[j-1]-aux*pol[j];
 		}
 		r[0] = -aux*pol[0];
+		r[i] = -1;
 		pwrsX.push_back(Fxelem(r));
+		r[i] = 0;
 	}
 
 	while (true){
-		Fxelem v = randomPol(2*n-1); //TODO
-		if (p == 2){
+		Fxelem v = randomPol<Fxelem>(pol.getField(), 2*n-1);
+		if (pol.getField().getSize() == 2){//size %2 == 0 iff p %2 == 0
 			Fxelem aux = v;
 			for (int i = 1; i<= n*m-1; ++i){
-				aux = fastPowModPol (aux, 2);//TODO
+				aux*=aux;
+				//This loop performs the operation (mod pol)
+				for (int i = polDeg; i <= aux.deg(); ++i){//aux.deg is always <= 2*polDeg-2
+					if (aux[i] != 0)
+						aux += Fxelem(aux[i])*pwrsX[i];
+				}
 				v += aux;
 			}
 		}
 		else{
-			v = fastPowModPol (v, (q^n -1)/2) -1; //TODO
+			fastPowModPol<Fxelem> (v, (fastPow(pol.getField().getSize(), n) -1)/2, pwrsX, pol.deg());
+			v -= pol.getField().get(1);
 		}	
 		Fxelem g = gcd (pol, v);
 		if (g != 1 && g != pol){
-			std:vector< Fxelem > factors = splitFactorsDD(g);
-			std:vector< Fxelem > factors2 = splitFactorsDD(pol/g);
+			std::vector< Fxelem > factors = splitFactorsDD(g, n);
+			std::vector< Fxelem > factors2 = splitFactorsDD(pol/g, n);
 			factors.insert( 
 				factors.end(),
 				std::make_move_iterator(factors2.begin()),
@@ -304,4 +363,6 @@ template std::vector< Fxelem > partialFactorDD (const Fxelem &pol);
 
 */
 template std::vector< std::pair< Fpxelem, unsigned int> > partialFactorDD ( Fpxelem &pol);
+template std::vector< Fpxelem > splitFactorsDD (const Fpxelem &pol, int n);
+template Fpxelem randomPol (const typename Fpxelem::F &field, int degree);
 template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);

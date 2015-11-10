@@ -14,9 +14,9 @@ using namespace std;
 
 int main (){
     
-    vector<bint> v({1, -3, -1, -3, 1, -3, 1}), w;
-    Zxelem a(v);
-    /*
+    //vector<bint> v({1, -3, -1, -3, 1, -3, 1}), w;
+    //Zxelem a(v);
+
     vector<Fpelem> v, w;
     Fp field(11);
     try{
@@ -35,8 +35,8 @@ int main (){
     }catch(ExcepALCP e){
         cout << e << endl;
     }
-}*/
-
+}
+/*
 }
     /*
     Fp field(5);

@@ -9,5 +9,5 @@ ll eea (ll a, ll b, ll& x, ll& y);
 ll gcd(ll a, ll b);
 template<typename T> T eea (T a, T b, T &x, T &y);
 template<typename T> T gcd(T a, T b);
-
+template<typename T> T fastPow (T a, ll b);
 #endif // __GENERAL_PURPOSE_H

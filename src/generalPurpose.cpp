@@ -200,3 +200,29 @@ T gcd(T a, T b){
     return eea(a,b,x,y);
 }
 template Fpxelem gcd(Fpxelem a, Fpxelem b);
+
+
+
+template<typename T>
+T fastPow (T a, ll b){
+	if (b == 0)
+		return 1;
+	else{
+		T aux = a; 
+		T result = 1;
+		while (b != 0){
+			if (b % 2 == 0){
+				aux*=aux;
+				b /= 2;
+			}	
+			else{
+				result *= aux;
+				aux *= aux;
+				b -= 1;
+			}
+		}
+		return a;
+	}
+	
+}
+template bint fastPow (bint a, ll b);
