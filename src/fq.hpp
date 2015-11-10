@@ -33,4 +33,4 @@ class Fq{
         Fpxelem _mod;
 };
 
-#endif // __FP_HPP
+#endif // __FIELDQ_HPP
