@@ -1,12 +1,12 @@
-#include <iosfwd>            // ostream
-#include <string>            // to_string
-#include <memory>           // unique_ptr
-
-#include "exceptions.hpp"
 #include "fpelem.hpp"
 // types.hpp defined in fpelem.hpp
 #include "fp.hpp"
 #include "generalPurpose.hpp" // ExtendedEuclideanAlgorithm (eea)
+#include "exceptions.hpp"
+
+#include <iosfwd>            // ostream
+#include <string>            // to_string
+#include <memory>           // unique_ptr
 
 Fpelem::Fpelem ( const Fpelem & other){
     _num = other._num;

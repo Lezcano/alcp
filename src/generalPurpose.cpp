@@ -1,8 +1,8 @@
 #include <cstdlib> // abs function for long long ints
 #include "exceptions.hpp"
 #include "types.hpp"
+#include "zelem.hpp" // getZero y tal
 #include "fpxelem.hpp"
-#include <iostream> //TODO: quitar
 
 /**
  * Exponentiation by Squaring
@@ -20,15 +20,17 @@
  */
 template<typename T>
 T fastPowMod(T a, ll b, T p){
-    if(b==0)return 1;
+    if(b==0)return getOne(a);
     if(b%2 != 0){
     	return (a*fastPowMod(a,b-1,p))%p;
     }
     else{
-    	ll aux = fastPowMod(a,b/2,p);
+    	T aux = fastPowMod(a,b/2,p);
     	return (aux*aux)%p;
     }
 }
+template ll fastPowMod(ll a, ll b, ll p);
+template Fpxelem fastPowMod(Fpxelem a, ll b, Fpxelem p);
 
 /**
  * Miller Rabin: Primality Test
@@ -151,17 +153,16 @@ ll gcd(ll a, ll b){
  */
 template<typename T>
 T eea (T a, T b, T &x, T &y){
-    typename T::F f = a.getField();
     if(a == 0){
         if(b == 0)
             throw EOperationUnsupported("Cannot compute the greatest common divisor of two zero elements.");
-        x = f.get(0);
-        y = unit(a);
+        x = getZero(a);
+        y = unit(b);
         return normalForm(b);
     }
     if(b == 0){
         x = unit(a);
-        y = f.get(0);
+        y = getZero(b);
         return normalForm(a);
     }
     a = normalForm(a);
@@ -169,8 +170,8 @@ T eea (T a, T b, T &x, T &y){
 
     T ua = unit(a), ub = unit(b);
 
-      x = T(f.get(1)); y = T(f.get(0));
-    T xx = T(f.get(0)), yy = T(f.get(1));
+      x = getOne(a); y = getZero(b);
+    T xx = getZero(a), yy = getOne(b);
     while(b!=0){
         // The following invariant holds:
         //  a = x*|a|+y*|b|
@@ -192,11 +193,12 @@ T eea (T a, T b, T &x, T &y){
 }
 
 template Fpxelem eea (Fpxelem a, Fpxelem b, Fpxelem &x, Fpxelem &y);
+template ll eea (ll a, ll b, ll &x, ll &y);
 
 template<typename T>
 T gcd(T a, T b){
-    typename T::F f = a.getField();
-    T x = f.get(0), y = f.get(0);
+    T x = getZero(a), y = getZero(b);
     return eea(a,b,x,y);
 }
+template ll gcd(ll a, ll b);
 template Fpxelem gcd(Fpxelem a, Fpxelem b);

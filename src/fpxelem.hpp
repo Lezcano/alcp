@@ -21,6 +21,8 @@ class Fpxelem : public PolinomialRing<Fpxelem, Fpelem>{
         ll getSize()const;
 };
 
+Fpxelem getZero(const Fpxelem &e);
+Fpxelem getOne(const Fpxelem &e);
 const Fpelem unit(const Fpxelem &e);
 bool compatible(const Fpxelem &lhs, const Fpxelem &rhs);
 bool operator==(const Fpxelem &lhs, ll rhs);

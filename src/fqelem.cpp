@@ -1,15 +1,15 @@
-#include <iosfwd>            // ostream
-#include <string>            // to_string
-#include <memory>           // unique_ptr
-
 #include "exceptions.hpp"
 #include "fqelem.hpp"
 // types.hpp defined in fpelem.hpp
+#include "fpelem.hpp"
+#include "fpxelem.hpp"
 #include "fq.hpp"
 #include "generalPurpose.hpp" // ExtendedEuclideanAlgorithm (eea)
 
-Fqelem::Fqelem ( const Fqelem & other){
-    _num = other._num;
+#include <iosfwd>            // ostream
+#include <memory>           // unique_ptr
+
+Fqelem::Fqelem ( const Fqelem & other) : _num(other._num), _mod(other._mod){
     _f = std::unique_ptr<Fqelem::F>(new Fqelem::F(*other._f));
 }
 
@@ -47,7 +47,7 @@ const Fqelem Fqelem::operator+(const Fqelem &rhs) const{
 }
 
 const Fqelem Fqelem::operator-() const{
-    return -_num;
+    return _f->get(-_num);
 }
 
 Fqelem & Fqelem::operator-=(const Fqelem &rhs){
@@ -76,7 +76,7 @@ const Fqelem Fqelem::operator*(const Fqelem &rhs) const{
 const Fqelem Fqelem::inv() const{
     if(_num == 0)
         throw EOperationUnsupported("Error. Zero has no inverse.");
-    Fpxelem res = Fpxelem(_f->get(0)), aux = Fpxelem(_f->get(0));
+    Fpxelem res = _f->get(0)._num, aux = _f->get(0)._num;
     eea(_num, _mod, res, aux);
     return _f->get(res);
 }
@@ -94,7 +94,7 @@ const Fqelem Fqelem::operator/(const Fqelem &rhs) const{
     return Fqelem(*this) /= rhs;
 }
 
-int deg(const Fqelem &e){return e._num;}
+int deg(const Fqelem &e){return e._num.deg();}
 
 // In a field the division has reminder zero
 const Fqelem Fqelem::operator%(const Fqelem &rhs) const{return _f->get(0);}
@@ -103,7 +103,7 @@ ll Fqelem::getSize()const{return _f->getSize();}
 
 const Fqelem::F Fqelem::getField()const{return *_f;}
 
-std::string to_string(const Fqelem &e){return e._num.to_string();}
+std::string to_string(const Fqelem &e){return to_string(e._num);}
 const Fqelem getZero(const Fqelem &e){return e.getField().get(0);}
 const Fqelem getOne(const Fqelem &e){return e.getField().get(1);}
 
@@ -118,9 +118,9 @@ Fqelem::Fqelem(Fpxelem num, Fpxelem mod,  std::unique_ptr<Fqelem::F> f): _num(nu
 void Fqelem::checkInSameField(const Fqelem &rhs) const{
     if(this->getField() != rhs.getField())
         throw EOperationUnsupported(
-            "Error. Is not possible to add the number " + std::to_string(_num) +
+            "Error. Is not possible to add the number " + to_string(_num) +
             " in " + to_string(this->getField()) +
-            " with the number " + std::to_string(rhs._num) +
+            " with the number " + to_string(rhs._num) +
             " in F" + to_string(rhs.getField()));
 }
 

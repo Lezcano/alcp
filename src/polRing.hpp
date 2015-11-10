@@ -2,13 +2,13 @@
 #ifndef __POL_RING_HPP
 #define __POL_RING_HPP
 
+#include "types.hpp"
+#include "exceptions.hpp"
+
 #include <vector>
 #include <algorithm>        // find_if
 #include <utility>          // pair, make_pair
 #include <string>           // to_string
-
-#include "types.hpp"
-#include "exceptions.hpp"
 
 
 
@@ -32,7 +32,7 @@ class PolinomialRing{
         Fxelem & operator=(const Fxelem &rhs){
             if(&rhs != this){
                 if(!compatible(this->lc(), rhs.lc()))
-                    throw ENotCompatible("Asignation failed. The vectors "+ this->to_string()+ " and " + rhs.to_string() + " are not in the same ring.");
+                    throw ENotCompatible("Asignation failed. The vectors "+ to_string(static_cast<Fxelem&>(*this))+ " and " + to_string(rhs) + " are not in the same ring.");
                 _v = rhs._v;
             }
             return static_cast<Fxelem&>(*this);
@@ -49,8 +49,8 @@ class PolinomialRing{
         Fxelem & operator+=(const Fxelem &rhs){
             if(!compatible(static_cast<Fxelem&>(*this),rhs))
                 throw EOperationUnsupported(
-                        "Polinomials not in the same ring. Error when adding the polynomials " + this->to_string() +
-                        " and " + rhs.to_string() +  ".");
+                        "Polinomials not in the same ring. Error when adding the polynomials " + to_string(static_cast<Fxelem&>(*this)) +
+                        " and " + to_string(rhs) +  ".");
             auto v1 = _v.begin();
             auto v2 = rhs._v.begin();
             while(v1 != _v.end() && v2 != rhs._v.end()){
@@ -92,8 +92,8 @@ class PolinomialRing{
         Fxelem & operator*=(const Fxelem &rhs){
             if(!compatible(static_cast<Fxelem&>(*this),rhs))
                 throw EOperationUnsupported(
-                        "Polinomials not in the same ring. Error when multiplying the polynomials " + this->to_string() +
-                        " and " + rhs.to_string() +  ".");
+                        "Polinomials not in the same ring. Error when multiplying the polynomials " + to_string(static_cast<Fxelem&>(*this)) +
+                        " and " + to_string(rhs) +  ".");
 
             std::vector<Felem> ret(rhs._v.size()+_v.size()-1,getZero(this->lc()));
             for(size_t i=0;i<_v.size();++i)
@@ -115,8 +115,8 @@ class PolinomialRing{
         std::pair<Fxelem,Fxelem> div2(const Fxelem &divisor){
             if(!compatible(static_cast<Fxelem&>(*this),divisor))
                 throw EOperationUnsupported(
-                        "Polinomials not in the same ring. Error when dividing the polynomials " + this->to_string() +
-                        " and " + divisor.to_string() +  ".");
+                        "Polinomials not in the same ring. Error when dividing the polynomials " + to_string(static_cast<Fxelem&>(*this)) +
+                        " and " + to_string(divisor) +  ".");
 
             if(divisor.deg()==0 && divisor._v[0] == 0)
                 throw EOperationUnsupported("Error. Cannot divide by the polynomial 0");
@@ -187,43 +187,43 @@ class PolinomialRing{
         // Normal form of the polinomial. It ensures the unicity of gdc for example
         friend const Fxelem normalForm(const Fxelem &e){ return e/unit(e); }
 
-        std::string to_string() const{
+        friend std::string to_string(const Fxelem &f){
             std::string s = "";
-            if(_v.size() == 1)
-                return ::to_string(_v[0]);
-            if(_v.size() == 2){
-                if(_v[1] != 1)
-                    s = ::to_string(_v[1]);
+            if(f._v.size() == 1)
+                return to_string(f._v[0]);
+            if(f._v.size() == 2){
+                if(f._v[1] != 1)
+                    s = to_string(f._v[1]);
                 s += "x";
-                if(_v[0] != 0)
-                    s += "+" + ::to_string(_v[0]);
+                if(f._v[0] != 0)
+                    s += "+" + to_string(f._v[0]);
                 return s;
             }
-            if(_v.back() != 1)
-                s += ::to_string(_v.back());
-            s +=  "x^" + std::to_string(_v.size()-1);
+            if(f._v.back() != 1)
+                s += to_string(f._v.back());
+            s +=  "x^" + std::to_string(f._v.size()-1);
 
-            for(int i=_v.size()-2;i>=2;--i){
-                if(_v[i] != 0){
+            for(int i=f._v.size()-2;i>=2;--i){
+                if(f._v[i] != 0){
                     s+="+";
-                    if(_v[i] != 1)
-                        s += ::to_string(_v[i]);
+                    if(f._v[i] != 1)
+                        s += to_string(f._v[i]);
                     s += "x^" + std::to_string(i);
                 }
             }
-            if(_v[1] != 0){
+            if(f._v[1] != 0){
                 s += "+";
-                if(_v[1] != 1)
-                    s += ::to_string(_v[1]);
+                if(f._v[1] != 1)
+                    s += to_string(f._v[1]);
                 s += "x";
             }
-            if(_v[0] != 0)
-                s += "+"+ ::to_string(_v[0]);
+            if(f._v[0] != 0)
+                s += "+"+ to_string(f._v[0]);
             return s;
         }
 
         friend std::ostream& operator<<(std::ostream& os, const Fxelem &f){
-            return os << f.to_string();
+            return os << to_string(f);
         }
 
     private:

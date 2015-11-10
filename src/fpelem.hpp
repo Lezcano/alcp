@@ -1,10 +1,11 @@
 #ifndef __FPELEM_HPP
 #define __FPELEM_HPP
 
+#include "fp.hpp"
+#include "types.hpp"
+
 #include <iosfwd>           // ostream
 #include <memory>           // unique_ptr
-#include "types.hpp"
-#include "fp.hpp"
 
 class Fp;
 

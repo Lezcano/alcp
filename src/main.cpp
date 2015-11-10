@@ -6,6 +6,8 @@
 #include "fp.hpp"
 #include "fpelem.hpp"
 #include "fpxelem.hpp"
+#include "fq.hpp"
+#include "fqelem.hpp"
 #include "zxelem.hpp"
 #include "exceptions.hpp"
 #include "factorizationFq.hpp"
@@ -13,9 +15,10 @@
 using namespace std;
 
 int main (){
-    
     vector<bint> v({1, -3, -1, -3, 1, -3, 1}), w;
     Zxelem a(v);
+    Fq(2,4);
+
     /*
     vector<Fpelem> v, w;
     Fp field(11);

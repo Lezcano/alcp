@@ -1,17 +1,21 @@
 #ifndef __FIELDQ_HPP
 #define __FIELDQ_HPP
 
-#include <vector>
-
 #include "types.hpp"
+#include "fp.hpp"
+#include "fpxelem.hpp"
+
+#include <vector>
 
 class Fqelem;
 
 class Fq{
     public:
-        Fq(ll p);
+        Fq(ll p, int n);
 
-        Fqelem get(ll p, int n)const;
+        Fqelem get(ll n)const;
+
+        Fqelem get(Fpxelem f)const;
 
         ll getSize()const;
 
@@ -22,11 +26,10 @@ class Fq{
 
         friend std::string to_string(const Fq &e);
     private:
-        bool increase(std::vector<Fpelem &act);
 
         ll _p;
         int _n;
-        Fpelem _base
+        Fp _base;
         Fpxelem _mod;
 };
 
