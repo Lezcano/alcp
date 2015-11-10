@@ -31,7 +31,6 @@ Fq::Fq(ll p, int n): _p(p), _n(n), _base(p), _mod(_base.get(0)){ // _mod must be
         if(v[0] == 0) // It's divisible by the polinomial p(x) = x
             increment(v);
     }
-
     _mod = Fpxelem(v);
 }
 

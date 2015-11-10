@@ -19,6 +19,7 @@ int main (){
     Zxelem a(v);
     Fq(2,60); // 60 15 1
     Fq(3,4);
+    Fq(5,5); //100041
 
     /*
     vector<Fpelem> v, w;
