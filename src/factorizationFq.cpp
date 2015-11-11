@@ -21,7 +21,7 @@
  * 		todo momento el valor mat[k][i]. De esta manera éste se actualiza
  * 		exactamente en la ultima operación.
  * 		-El for de la línea 94 debería calcular I-M pero eso es muy	caro y
- * 		nosotros sólo necesitamos una base, así que en lugar de eso, calculo 
+ * 		nosotros sólo necesitamos una base, así que en lugar de eso, calculo
  * 		M-I que también vale como base.
  * 		- Linea 98 j=1 se hace (en vez de j=0) porque el primer elemento
  * 		de la base es siempre (1, 0,..,0), (aunque como yo cojo la
@@ -36,12 +36,12 @@
  *	partialFactorDD:
  *		-Resulta que para elevar (en mod pol) un polinomio a la q, lo
  *		unico que hay que hacer es multiplicar sus coeficientes por
- *		la matriz de formMatrix, así que para calcular x^{iq}-x (mod pol) 
+ *		la matriz de formMatrix, así que para calcular x^{iq}-x (mod pol)
  *		lo que hago es cogerme el x^{(i-1)q} que tenía de antes, multiplico
  *		sus	coeficientes por la matriz y ya tengo x^{iq} (mod pol)
  *		-La primera iteración no la hago dentro del bucle porque x^q es la
  *		segunda fila de la matriz, así que no tengo que calcularlo.
- *		-En el result.push_back de dentro del while hago 
+ *		-En el result.push_back de dentro del while hago
  *		gcd(x^{qi}-x(mod pol), pol1) donde pol es el polinomio original y pol1
  *		es un divisor. En el libro hacen modulo pol1 en vez de pol, pero notese que al ser pol multiplo de pol1 se tiene que
  *		(x^{qi}-x(mod pol)) (mod pol1) = x^{qi}-x(mod pol1)
@@ -146,7 +146,7 @@ std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typenam
 		result.push_back(mat[j]);//TODO: Quizás se pueda optimizar con un move
 		++j;
 	}
-	return result; //result[0] should always be (1, 0, ... 0). (Test it!)
+	return result;
 
 }
 
@@ -247,7 +247,7 @@ std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem &pol){/
 	if (pol != 1)
 		result.push_back(std::make_pair(pol, pol.deg()));
 
-	return result;	
+	return result;
 }
 template <typename Fxelem>
 void fastPowModPol (Fxelem & a, bint b, std::vector<Fxelem> pwrsX, int deg){
@@ -265,7 +265,7 @@ void fastPowModPol (Fxelem & a, bint b, std::vector<Fxelem> pwrsX, int deg){
 						aux += Fxelem(aux[i])*pwrsX[i];
 				}
 				b /= 2;
-			}	
+			}
 			else{
 				a *= aux;
 				for (int i = deg; i <= a.deg(); ++i){//a.deg is always <= 2*deg-2
@@ -326,7 +326,7 @@ std::vector< Fxelem > splitFactorsDD (const Fxelem &pol, int n){
 
 	while (true){
 		Fxelem v = randomPol<Fxelem>(pol.getField(), 2*n-1);
-		if (pol.getField().getSize() == 2){//size %2 == 0 iff p %2 == 0
+		if (pol.getField().getSize() % 2 == 0){//size %2 == 0 iff p %2 == 0
 			Fxelem aux = v;
 			for (int i = 1; i<= n*m-1; ++i){
 				aux*=aux;
@@ -341,12 +341,12 @@ std::vector< Fxelem > splitFactorsDD (const Fxelem &pol, int n){
 		else{
 			fastPowModPol<Fxelem> (v, (fastPow(pol.getField().getSize(), n) -1)/2, pwrsX, pol.deg());
 			v -= pol.getField().get(1);
-		}	
+		}
 		Fxelem g = gcd (pol, v);
 		if (g != 1 && g != pol){
 			std::vector< Fxelem > factors = splitFactorsDD(g, n);
 			std::vector< Fxelem > factors2 = splitFactorsDD(pol/g, n);
-			factors.insert( 
+			factors.insert(
 				factors.end(),
 				std::make_move_iterator(factors2.begin()),
 				std::make_move_iterator(factors2.end())
