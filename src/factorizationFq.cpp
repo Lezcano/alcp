@@ -62,24 +62,22 @@ using matrix = std::vector< std::vector<T> >;
 template <typename Fxelem>
 matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
     typename Fxelem::F f = pol.getField();
-	bint q = f.getSize(), cont = 1;
+	bint q = f.getSize(); 
 	int n = pol.deg();
 
 	std::vector<typename Fxelem::Felem> r(n, f.get(0));
 	r[0] = 1; //r == (1, 0, ..., 0)
 	matrix<typename Fxelem::Felem> result;
 	result.push_back(r);
-	for (bint i = 1; i<= (n-1)*q; ++i, ++cont){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
+	for (bint i = 1; i<= (n-1)*q; ++i){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
 		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
 		auto aux = r[n-1];
 		for (ll j = n-1; j >= 1; --j){
 			r[j] = r[j-1]-aux*pol[j];
 		}
 		r[0] = -aux*pol[0];
-		if (cont == q){ //This avoids computing i%q
+		if ( i % q == 0)
 			result.push_back(r);
-			cont = 0;
-		}
 	}
 	return result;
 }
