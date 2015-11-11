@@ -223,7 +223,7 @@ T fastPow (T a, ll b){
 				b -= 1;
 			}
 		}
-		return a;
+		return result;
 	}
 	
 }

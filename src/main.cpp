@@ -15,6 +15,19 @@
 using namespace std;
 
 int main (){
+	int c[11]= {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+	Fp field(11);
+	vector<Fpelem> v;
+	for(int i=0;i<=10;++i)
+		v.push_back(field.get(c[i]));
+	Fpxelem a(v);
+	std::vector< Fpxelem > factors = splitFactorsDD (a, 2);
+	for (int i =0; i< factors.size(); i++){
+			cout << factors[i] << endl;
+	}
+}
+
+
     /*
     vector<Fpelem> v, w;
     Fp field(11);

@@ -260,22 +260,22 @@ void fastPowModPol (Fxelem & a, bint b, std::vector<Fxelem> pwrsX, int deg){
 		while (b != 0){
 			if (b % 2 == 0){
 				aux*=aux;
-				for (int i = deg; i <= aux.deg(); ++i){//aux.deg is always <= 2*deg-2
-					if (aux[i] != 0)
-						aux += Fxelem(aux[i])*pwrsX[i];
+				for (int i = 0; i <= (int)(aux.deg())-deg; ++i){//aux.deg is always <= 2*deg-2
+					if (aux[i+deg] != 0)
+						aux += Fxelem(aux[i+deg])*pwrsX[i];
 				}
 				b /= 2;
 			}
 			else{
 				a *= aux;
-				for (int i = deg; i <= a.deg(); ++i){//a.deg is always <= 2*deg-2
-					if (a[i] != 0)
-						a += Fxelem(a[i])*pwrsX[i];
+				for (int i = 0; i <= (int)(a.deg())-deg; ++i){//a.deg is always <= 2*deg-2
+					if (a[i+deg] != 0)
+						a += Fxelem(a[i+deg])*pwrsX[i];
 				}
 				aux *= aux;
-				for (int i = deg; i <= aux.deg(); ++i){//aux.deg is always <= 2*deg-2
-					if (aux[i] != 0)
-						aux += Fxelem(aux[i])*pwrsX[i];
+				for (int i = 0; i <= (int)(aux.deg())-deg; ++i){//aux.deg is always <= 2*deg-2
+					if (aux[i+deg] != 0)
+						aux += Fxelem(aux[i+deg])*pwrsX[i];
 				}
 				b -= 1;
 			}
@@ -333,7 +333,7 @@ std::vector< Fxelem > splitFactorsDD (const Fxelem &pol, int n){
 				//This loop performs the operation (mod pol)
 				for (int i = polDeg; i <= aux.deg(); ++i){//aux.deg is always <= 2*polDeg-2
 					if (aux[i] != 0)
-						aux += Fxelem(aux[i])*pwrsX[i];
+						aux += Fxelem(aux[i])*pwrsX[i-polDeg];
 				}
 				v += aux;
 			}
