@@ -4,8 +4,8 @@
 #include <vector>
 // Fqelem included in fpxelem.hpp
 
-Fqxelem::Fqxelem(const Fqelem & e) : PolinomialRing<Fqxelem, Fqelem>(e){}
-Fqxelem::Fqxelem(const std::vector<Fqelem> & v) : PolinomialRing<Fqxelem, Fqelem>(v){}
+Fqxelem::Fqxelem(const Fqelem & e) : PolynomialRing<Fqxelem, Fqelem>(e){}
+Fqxelem::Fqxelem(const std::vector<Fqelem> & v) : PolynomialRing<Fqxelem, Fqelem>(v){}
 
 const Fqxelem::F Fqxelem::getField()const{
     return this->lc().getField();

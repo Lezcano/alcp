@@ -4,8 +4,8 @@
 #include <vector>
 // Fpelem included in fpxelem.hpp
 
-Fpxelem::Fpxelem(const Fpelem & e) : PolinomialRing<Fpxelem, Fpelem>(e){}
-Fpxelem::Fpxelem(const std::vector<Fpelem> & v) : PolinomialRing<Fpxelem, Fpelem>(v){}
+Fpxelem::Fpxelem(const Fpelem & e) : PolynomialRing<Fpxelem, Fpelem>(e){}
+Fpxelem::Fpxelem(const std::vector<Fpelem> & v) : PolynomialRing<Fpxelem, Fpelem>(v){}
 
 const Fpxelem::F Fpxelem::getField()const{
     return this->lc().getField();

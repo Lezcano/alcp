@@ -7,7 +7,7 @@
 #include "polRing.hpp"
 
 
-class Zxelem : public PolinomialRing<Zxelem, bint>{
+class Zxelem : public PolynomialRing<Zxelem, bint>{
     public:
         Zxelem(const bint & e);
         Zxelem(const std::vector<bint> & v);

@@ -10,15 +10,13 @@
 #include <utility>          // pair, make_pair
 #include <string>           // to_string
 
-
-
 template<typename Fxelem, typename Felem>
-class PolinomialRing{
+class PolynomialRing{
     public:
         // Inmersion from the base field
-        PolinomialRing(const Felem &e): _v(std::vector<Felem>({e})){}
+        PolynomialRing(const Felem &e): _v(std::vector<Felem>({e})){}
 
-        PolinomialRing(const std::vector<Felem> &v): _v(v){
+        PolynomialRing(const std::vector<Felem> &v): _v(v){
             if(v.size()==0)
                 throw EEmptyVector("The vector used to define the element of R[X] is empty.");
             // Remove trailing zeros
@@ -49,7 +47,7 @@ class PolinomialRing{
         Fxelem & operator+=(const Fxelem &rhs){
             if(!compatible(static_cast<Fxelem&>(*this),rhs))
                 throw EOperationUnsupported(
-                        "Polinomials not in the same ring. Error when adding the polynomials " + to_string(static_cast<Fxelem&>(*this)) +
+                        "Polynomials not in the same ring. Error when adding the polynomials " + to_string(static_cast<Fxelem&>(*this)) +
                         " and " + to_string(rhs) +  ".");
             auto v1 = _v.begin();
             auto v2 = rhs._v.begin();
@@ -92,7 +90,7 @@ class PolinomialRing{
         Fxelem & operator*=(const Fxelem &rhs){
             if(!compatible(static_cast<Fxelem&>(*this),rhs))
                 throw EOperationUnsupported(
-                        "Polinomials not in the same ring. Error when multiplying the polynomials " + to_string(static_cast<Fxelem&>(*this)) +
+                        "Polynomials not in the same ring. Error when multiplying the polynomials " + to_string(static_cast<Fxelem&>(*this)) +
                         " and " + to_string(rhs) +  ".");
 
             std::vector<Felem> ret(rhs._v.size()+_v.size()-1,getZero(this->lc()));
@@ -115,7 +113,7 @@ class PolinomialRing{
         std::pair<Fxelem,Fxelem> div2(const Fxelem &divisor){
             if(!compatible(static_cast<Fxelem&>(*this),divisor))
                 throw EOperationUnsupported(
-                        "Polinomials not in the same ring. Error when dividing the polynomials " + to_string(static_cast<Fxelem&>(*this)) +
+                        "Polynomials not in the same ring. Error when dividing the polynomials " + to_string(static_cast<Fxelem&>(*this)) +
                         " and " + to_string(divisor) +  ".");
 
             if(divisor.deg()==0 && divisor._v[0] == 0)
@@ -184,7 +182,7 @@ class PolinomialRing{
         // Degree of the polynomial
         unsigned int deg()const{return _v.size()-1;}
 
-        // Normal form of the polinomial. It ensures the unicity of gdc for example
+        // Normal form of the polynomial. It ensures the unicity of gdc for example
         friend const Fxelem normalForm(const Fxelem &e){ return e/unit(e); }
 
         friend std::string to_string(const Fxelem &f){
@@ -235,7 +233,7 @@ class PolinomialRing{
                         _v.rend(),
                         std::bind1st(std::not_equal_to<Felem>(), zero)).base(),
                     _v.end());
-            // In case it was the polinomial equal to zero
+            // In case it was the polynomial equal to zero
             if(_v.size()==0)
                 _v.push_back(zero);
         }
