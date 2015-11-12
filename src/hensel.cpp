@@ -19,14 +19,14 @@
 
 /* Cosas que necesito
  * 		Polinomios en Z, es decir Z[x]
- *		Multiplicar un bint por un Zx
+ *		Multiplicar un big_int por un Zx
  *		Comparación del un polinomio en Zx con el número 0
  *		Dividir un polinomio en Zx por un entero
  *		Sumar polinomios en Z_p[x] con polinomios en Z[x]
  *
  * */
-bool HenselLifting (const Zx &polynomial, int p, const Fpxelem &u1, const Fpxelem &w1, bint bound, Zx & u, Zx & w){
-	bint leadCoef = polynomial.lc();
+bool HenselLifting (const Zx &polynomial, int p, const Fpxelem &u1, const Fpxelem &w1, big_int bound, Zx & u, Zx & w){
+	big_int leadCoef = polynomial.lc();
 	Zx pol = polynomial * leadCoef;
 	Fpxelem::Felem lc(leadCoef);
 	u1 *=  (lc * u1.lc().inv()); //This is more efficient than normalize and then multiply by lc
@@ -38,7 +38,7 @@ bool HenselLifting (const Zx &polynomial, int p, const Fpxelem &u1, const Fpxele
 	u = Zx(u1); u[u.getSize()] = leadCoef;
 	w = Zx(w1); w[w.getSize()] = leadCoef;
 	Zx err = pol - u*w;
-	bint modulus = p;
+	big_int modulus = p;
 	bound = 2*bound*leadCoef;
 
 	while (err != 0 && modulus < bound ){
@@ -51,7 +51,7 @@ bool HenselLifting (const Zx &polynomial, int p, const Fpxelem &u1, const Fpxele
 	}
 
 	if (err == 0){
-		bint delta = cont(u);
+		big_int delta = cont(u);
 		u /= delta;
 		w /= (leadCoef / delta); //delta must be a divisor of leadCoef (Test it!!)
 		return true;

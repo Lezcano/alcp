@@ -3,11 +3,11 @@
 #include "zxelem.hpp"
 // types.hpp included en zxelem.hpp
 
-Zxelem::Zxelem(const bint & e) : PolynomialRing<Zxelem, bint>(e){}
-Zxelem::Zxelem(const std::vector<bint> & v) : PolynomialRing<Zxelem, bint>(v){}
+Zxelem::Zxelem(const big_int & e) : PolynomialRing<Zxelem, big_int>(e){}
+Zxelem::Zxelem(const std::vector<big_int> & v) : PolynomialRing<Zxelem, big_int>(v){}
 
 
-const bint unit(const Zxelem &e){
+const big_int unit(const Zxelem &e){
     return unit(e.lc());
 }
 

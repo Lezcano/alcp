@@ -4,7 +4,7 @@
 #include "types.hpp"
 #include <vector>
 
-bint integerCRA (const std::vector<bint> & m, const std::vector<bint> & u);
+big_int integerCRA (const std::vector<big_int> & m, const std::vector<big_int> & u);
 
 
 #endif // __integerCRA

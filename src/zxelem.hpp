@@ -7,12 +7,12 @@
 #include "polRing.hpp"
 
 
-class Zxelem : public PolynomialRing<Zxelem, bint>{
+class Zxelem : public PolynomialRing<Zxelem, big_int>{
     public:
-        Zxelem(const bint & e);
-        Zxelem(const std::vector<bint> & v);
+        Zxelem(const big_int & e);
+        Zxelem(const std::vector<big_int> & v);
 };
 
-const bint unit(const Zxelem &e);
+const big_int unit(const Zxelem &e);
 
 #endif

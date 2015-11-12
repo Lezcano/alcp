@@ -62,14 +62,14 @@ using matrix = std::vector< std::vector<T> >;
 template <typename Fxelem>
 matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
     typename Fxelem::F f = pol.getField();
-	bint q = f.getSize(); 
+	big_int q = f.getSize(); 
 	int n = pol.deg();
 
 	std::vector<typename Fxelem::Felem> r(n, f.get(0));
 	r[0] = 1; //r == (1, 0, ..., 0)
 	matrix<typename Fxelem::Felem> result;
 	result.push_back(r);
-	for (bint i = 1; i<= (n-1)*q; ++i){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
+	for (big_int i = 1; i<= (n-1)*q; ++i){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
 		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
 		auto aux = r[n-1];
 		for (ll j = n-1; j >= 1; --j){
@@ -95,11 +95,11 @@ matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
  */
 template <typename Fxelem>
 std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typename Fxelem::Felem> & mat){
-	bint n = mat.size();
-	bint i, j;
+	big_int n = mat.size();
+	big_int i, j;
 	std::vector< std::vector< typename Fxelem::Felem > > result;
 
-	for (bint k = 0; k < n; ++k ){
+	for (big_int k = 0; k < n; ++k ){
 		//Search for pivot element
 		for (i = k; i < n && mat[k][i] == 0 ; ++i);
 
@@ -174,7 +174,7 @@ template <typename Fxelem>
 std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	std::vector< Fxelem > factors;
 	factors.push_back(pol);
-	bint r=0;
+	big_int r=0;
 	auto mat = formMatrix(pol);
 	int n = pol.deg();
 	for (int i=0; i<n; ++i)
@@ -250,7 +250,7 @@ std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem &pol){/
 	return result;
 }
 template <typename Fxelem>
-void fastPowModPol (Fxelem & a, bint b, std::vector<Fxelem> pwrsX, int deg){
+void fastPowModPol (Fxelem & a, big_int b, std::vector<Fxelem> pwrsX, int deg){
 	if (b == 0){
 		a = Fxelem (a.getField().get(1));
 	}

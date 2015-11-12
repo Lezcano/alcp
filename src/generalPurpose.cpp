@@ -227,4 +227,4 @@ T fastPow (T a, ll b){
 	}
 	
 }
-template bint fastPow (bint a, ll b);
+template big_int fastPow (big_int a, ll b);

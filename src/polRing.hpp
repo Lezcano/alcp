@@ -121,16 +121,17 @@ class PolynomialRing{
             if(this->deg() < divisor.deg())
                 return std::make_pair(Fxelem(getZero(this->lc())), static_cast<Fxelem&>(*this));
 
-            Fxelem quot(getZero(this->lc()));
-            Fxelem rem(static_cast<Fxelem&>(*this));
-
             if(divisor.deg() == 0){
-                quot = static_cast<Fxelem&>(*this);
+                Fxelem quot = static_cast<Fxelem&>(*this);
+				Fxelem rem(static_cast<Fxelem&>(*this));
                 for(auto &e : quot._v){
                     e/=divisor.lc();
                 }
                 return std::make_pair(quot, Fxelem(getZero(this->lc())));
             }
+
+            Fxelem quot(getZero(this->lc()));
+            Fxelem rem(static_cast<Fxelem&>(*this));
 
             while(rem.deg() >= divisor.deg()){
                 std::vector<Felem> paddingZeros(rem.deg() - divisor.deg(), getZero(this->lc()));

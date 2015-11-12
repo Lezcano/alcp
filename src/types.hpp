@@ -3,7 +3,7 @@
 
 typedef long long ll;
 typedef unsigned long long ull;
-typedef long long int bint;
+typedef long long int big_int;
 
 
 
