@@ -2,15 +2,14 @@
 #define __FACTORIZATION_FQ
 
 #include<vector>
+#include<utility>
 
 template<typename Fxelem>
 std::vector< Fxelem > berlekamp_simple (const Fxelem &pol);
 
-/*
 //Part I
 template<typename Fxelem>
-std::vector< Fxelem > squareFreeFactorization (const Fxelem &pol); 
- */
+std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (const Fxelem & a);
 
 //Part II
 template<typename Fxelem>

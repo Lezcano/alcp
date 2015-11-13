@@ -65,13 +65,14 @@ std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (const Fxelem & a) 
 		while (w != 1){
 			Fxelem y = gcd (w, c);
 			Fxelem z = w/y;
-			result.push_back(make_pair< Fxelem, unsigned int >(z, i));
+			result.push_back(std::make_pair< Fxelem, unsigned int >(z, i));
 			i++;
 			w = y;
 			c = c/y;
 		}
 		if  (c != 1){
-			big_int exponent = fastPow (a.getP(), a.getM()-1);
+			// c is now of the form: c_0 + c_p x^p + ... c_{kp} x^{kp} 
+			big_int exponent = fastPow (c.getP(), c.getM()-1);
 			//This for computes c = c^{1/p}
 			for (int j = 0; j < c.deg(); ++j )
 				if (c[j] != 0)
@@ -410,11 +411,11 @@ std::vector< Fxelem > splitFactorsDD (const Fxelem &pol, int n){
 		}
 	}
 }
-/*
-template std::vector< Fxelem > splitFactorsDD (const Fxelem &pol);
-template std::vector< Fxelem > partialFactorDD (const Fxelem &pol);
 
-*/
+
+
+
+
 template std::vector< std::pair< Fpxelem, unsigned int> > squareFreeFF (const Fpxelem & a);
 template std::vector< std::pair< Fpxelem, unsigned int> > partialFactorDD ( Fpxelem &pol);
 template std::vector< Fpxelem > splitFactorsDD (const Fpxelem &pol, int n);
