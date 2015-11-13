@@ -52,9 +52,14 @@
 template<typename T>
 using matrix = std::vector< std::vector<T> >;
 
+matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol);
 
-template <typename Fxelem>
+//Part I
 //Outputs a vector of pairs with the factors and multiplicities of the square free factorization (not necesarily sorted by multiplicity)
+/*
+ *
+ * */
+template <typename Fxelem>
 std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (const Fxelem & a) {
 	int i = 1;
 	Fxelem result;
@@ -72,13 +77,13 @@ std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (const Fxelem & a) 
 		}
 		if  (c != 1){
 			// c is now of the form: c_0 + c_p x^p + ... c_{kp} x^{kp} 
-			big_int exponent = fastPow (c.getP(), c.getM()-1);
+			big_int exponent = fastPow (c.getField().getP(), c.getField().getM()-1);
 			//This for computes c = c^{1/p}
 			for (int j = 0; j < c.deg(); ++j )
 				if (c[j] != 0)
 					c[j] = fastPow(c[j], exponent);
 			auto aux = squareFreeFF(c);
-			big_int p = c.getP();
+			big_int p = c.getField().getP();
 			for (auto pair: aux){
 				pair.second *= p;
 			}
@@ -90,13 +95,13 @@ std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (const Fxelem & a) 
 		}
 	}
 	else{ // a is of the form: a_0 + a_p x^p + ... a_{kp} x^{kp} (because its derivative is zero)
-		big_int exponent = fastPow (a.getP(), a.getM()-1);
+		big_int exponent = fastPow (a.getField().getP(), a.getField().getM()-1);
 		//This for computes a = a^{1/p}
 		for (int j = 0; j < a.deg(); ++j )
 			if (a[j] != 0)
 				a[j] = fastPow(a[j], exponent);
 		auto aux = squareFreeFF(a);
-		big_int p = a.getP();
+		big_int p = a.getField().getP();
 		for (auto pair: aux){
 			pair.second *= p;
 		}
@@ -107,6 +112,160 @@ std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (const Fxelem & a) 
 		);
 	}
 	return result;
+}
+
+//Part II
+/*
+ *
+ *
+ * */
+template<typename Fxelem>
+std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem &pol){//TODO: Copiar el polinomio en vez de pasarlo por referencia??
+	int n = pol.deg();
+	auto mat = formMatrix(pol);
+
+	//first iteration is performed out of the loop because we have r in mat (there is no need to compute it again)
+	std::vector<typename Fxelem::Felem> r = mat[1];
+	//result[i].first will be a product of irreducible polynomials with degree result[i].second
+	std::vector< std::pair< Fxelem, unsigned int > > result;
+	unsigned int i = 1;
+	r[1] -= 1;
+	result.push_back(std::make_pair(gcd(Fxelem(r), pol), i));
+
+	r[1] += 1;
+	if (result.back().first != 1)
+		pol /= result.back().first;
+
+	++i;
+	while (i <= pol.deg()/2){
+		std::vector<typename Fxelem::Felem> aux = r;
+		for (int j = 0; j < n; ++j){
+				r[j] = aux[0]*mat[0][j] ;
+			for (int k = 1; k < n; ++k ){
+				r[j] += aux[k]*mat[k][j];
+			}
+		}//This is just r = r*mat;
+		r[1] -= 1;
+		result.push_back(std::make_pair(gcd(Fxelem(r), pol), i+1));//gcd (a_1, w (mod a)) = gcd (a_1, w (mod a_1)) where a_1 divides a (because (w (mod a))(mod a_1) = w (mod a_1))
+		r[1] += 1;
+		if (result.back().first != 1)
+			pol /= result.back().first;
+		else
+			result.pop_back();
+		++i;
+	}
+	if (pol != 1)
+		result.push_back(std::make_pair(pol, pol.deg()));
+
+	return result;
+}
+template <typename Fxelem>
+void fastPowModPol (Fxelem & a, big_int b, std::vector<Fxelem> pwrsX, int deg){
+	if (b == 0){
+		a = Fxelem (a.getField().get(1));
+	}
+	else{
+		Fxelem aux = a;
+		a = Fxelem(a.getField().get(1));
+		while (b != 0){
+			if (b % 2 == 0){
+				aux*=aux;
+				for (int i = 0; i <= (int)(aux.deg())-deg; ++i){//aux.deg is always <= 2*deg-2
+					if (aux[i+deg] != 0)
+						aux += Fxelem(aux[i+deg])*pwrsX[i];
+				}
+				b /= 2;
+			}
+			else{
+				a *= aux;
+				for (int i = 0; i <= (int)(a.deg())-deg; ++i){//a.deg is always <= 2*deg-2
+					if (a[i+deg] != 0)
+						a += Fxelem(a[i+deg])*pwrsX[i];
+				}
+				aux *= aux;
+				for (int i = 0; i <= (int)(aux.deg())-deg; ++i){//aux.deg is always <= 2*deg-2
+					if (aux[i+deg] != 0)
+						aux += Fxelem(aux[i+deg])*pwrsX[i];
+				}
+				b -= 1;
+			}
+		}
+	}
+}
+
+
+
+template <typename Fxelem >
+Fxelem randomPol (const typename Fxelem::F & field, int degree){
+	//TODO esto genera números aleatorios de 64, parece suficiente, pero si q es mayor que 2^63 en realidad no lo es...
+	std::mt19937_64 generator(std::chrono::system_clock::now().time_since_epoch().count());
+	std::vector< typename Fxelem::Felem > r;
+	for (int i = 0; i<= degree; ++i){
+		r.push_back(field.get(generator()));
+	}
+	return Fxelem(r);
+}
+
+
+//Part III
+/*
+ *
+ * */
+template<typename Fxelem>
+std::vector< Fxelem > splitFactorsDD (const Fxelem &pol, int n){
+	int polDeg = pol.deg();
+	if (polDeg <= n){
+		std::vector< Fxelem > factors;
+		factors.push_back(pol);
+		return factors;
+	}
+	int m = polDeg/n;
+
+	std::vector < Fxelem > pwrsX;
+ 	std::vector<typename Fxelem::Felem> r(2*polDeg-1, pol.getField().get(0));
+	r[polDeg-1] = 1; //r == (0, 0, ..., 1)
+	for (int i = polDeg; i<= 2*polDeg-2; ++i){
+		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
+		auto aux = r[polDeg-1];
+		for (ll j = polDeg-1; j >= 1; --j){
+			r[j] = r[j-1]-aux*pol[j];
+		}
+		r[0] = -aux*pol[0];
+		r[i] = -1;
+		pwrsX.push_back(Fxelem(r));
+		r[i] = 0;
+	}
+
+	while (true){
+		Fxelem v = randomPol<Fxelem>(pol.getField(), 2*n-1);
+		if (pol.getField().getSize() % 2 == 0){//size %2 == 0 iff p %2 == 0
+			Fxelem aux = v;
+			for (int i = 1; i<= n*m-1; ++i){
+				aux*=aux;
+				//This loop performs the operation (mod pol)
+				for (int i = polDeg; i <= aux.deg(); ++i){//aux.deg is always <= 2*polDeg-2
+					if (aux[i] != 0)
+						aux += Fxelem(aux[i])*pwrsX[i-polDeg];
+				}
+				v += aux;
+			}
+		}
+		else{
+			fastPowModPol<Fxelem> (v, (fastPow(pol.getField().getSize(), n) -1)/2, pwrsX, pol.deg());
+			v -= pol.getField().get(1);
+		}
+		Fxelem g = gcd (pol, v);
+		if (g != 1 && g != pol){
+			std::vector< Fxelem > factors = splitFactorsDD(g, n);
+			std::vector< Fxelem > factors2 = splitFactorsDD(pol/g, n);
+			factors.insert(
+				factors.end(),
+				std::make_move_iterator(factors2.begin()),
+				std::make_move_iterator(factors2.end())
+			);
+			return factors;
+		}
+	}
 }
 
 
@@ -225,8 +384,6 @@ std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typenam
  *  O(k q n^2 +n^3)
  *
  * */
-
-
 template <typename Fxelem>
 std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	std::vector< Fxelem > factors;
@@ -255,164 +412,15 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	return factors;
 }
 
-/*
-//Part I
-template<typename Fxelem>
-std::vector< Fxelem > squareFreeFactorization (const Fxelem &pol);
- */
-
-//Part II
-/*
- *
- *
- * */
-template<typename Fxelem>
-std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem &pol){//TODO: Copiar el polinomio en vez de pasarlo por referencia??
-	int n = pol.deg();
-	auto mat = formMatrix(pol);
-
-	//first iteration is performed out of the loop because we have r in mat (there is no need to compute it again)
-	std::vector<typename Fxelem::Felem> r = mat[1];
-	//result[i].first will be a product of irreducible polynomials with degree result[i].second
-	std::vector< std::pair< Fxelem, unsigned int > > result;
-	unsigned int i = 1;
-	r[1] -= 1;
-	result.push_back(std::make_pair(gcd(Fxelem(r), pol), i));
-
-	r[1] += 1;
-	if (result.back().first != 1)
-		pol /= result.back().first;
-
-	++i;
-	while (i <= pol.deg()/2){
-		std::vector<typename Fxelem::Felem> aux = r;
-		for (int j = 0; j < n; ++j){
-				r[j] = aux[0]*mat[0][j] ;
-			for (int k = 1; k < n; ++k ){
-				r[j] += aux[k]*mat[k][j];
-			}
-		}//This is just r = r*mat;
-		r[1] -= 1;
-		result.push_back(std::make_pair(gcd(Fxelem(r), pol), i+1));//gcd (a_1, w (mod a)) = gcd (a_1, w (mod a_1)) where a_1 divides a (because (w (mod a))(mod a_1) = w (mod a_1))
-		r[1] += 1;
-		if (result.back().first != 1)
-			pol /= result.back().first;
-		else
-			result.pop_back();
-		++i;
-	}
-	if (pol != 1)
-		result.push_back(std::make_pair(pol, pol.deg()));
-
-	return result;
-}
-template <typename Fxelem>
-void fastPowModPol (Fxelem & a, big_int b, std::vector<Fxelem> pwrsX, int deg){
-	if (b == 0){
-		a = Fxelem (a.getField().get(1));
-	}
-	else{
-		Fxelem aux = a;
-		a = Fxelem(a.getField().get(1));
-		while (b != 0){
-			if (b % 2 == 0){
-				aux*=aux;
-				for (int i = 0; i <= (int)(aux.deg())-deg; ++i){//aux.deg is always <= 2*deg-2
-					if (aux[i+deg] != 0)
-						aux += Fxelem(aux[i+deg])*pwrsX[i];
-				}
-				b /= 2;
-			}
-			else{
-				a *= aux;
-				for (int i = 0; i <= (int)(a.deg())-deg; ++i){//a.deg is always <= 2*deg-2
-					if (a[i+deg] != 0)
-						a += Fxelem(a[i+deg])*pwrsX[i];
-				}
-				aux *= aux;
-				for (int i = 0; i <= (int)(aux.deg())-deg; ++i){//aux.deg is always <= 2*deg-2
-					if (aux[i+deg] != 0)
-						aux += Fxelem(aux[i+deg])*pwrsX[i];
-				}
-				b -= 1;
-			}
-		}
-	}
+std::vector< std::pair< Fxelem, unsigned int> > factorBerlekamp (const Fxelem & a){
+	return NULL;
 }
 
 
 
-template <typename Fxelem >
-Fxelem randomPol (const typename Fxelem::F & field, int degree){
-	//TODO esto genera números aleatorios de 64, parece suficiente, pero si q es mayor que 2^63 en realidad no lo es...
-	std::mt19937_64 generator(std::chrono::system_clock::now().time_since_epoch().count());
-	std::vector< typename Fxelem::Felem > r;
-	for (int i = 0; i<= degree; ++i){
-		r.push_back(field.get(generator()));
-	}
-	return Fxelem(r);
+std::vector< std::pair< Fxelem, unsigned int> > factorCantorZassenhaus (const Fxelem & a){
+	return NULL;
 }
-
-
-//Part III
-template<typename Fxelem>
-std::vector< Fxelem > splitFactorsDD (const Fxelem &pol, int n){
-	int polDeg = pol.deg();
-	if (polDeg <= n){
-		std::vector< Fxelem > factors;
-		factors.push_back(pol);
-		return factors;
-	}
-	int m = polDeg/n;
-
-	std::vector < Fxelem > pwrsX;
- 	std::vector<typename Fxelem::Felem> r(2*polDeg-1, pol.getField().get(0));
-	r[polDeg-1] = 1; //r == (0, 0, ..., 1)
-	for (int i = polDeg; i<= 2*polDeg-2; ++i){
-		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
-		auto aux = r[polDeg-1];
-		for (ll j = polDeg-1; j >= 1; --j){
-			r[j] = r[j-1]-aux*pol[j];
-		}
-		r[0] = -aux*pol[0];
-		r[i] = -1;
-		pwrsX.push_back(Fxelem(r));
-		r[i] = 0;
-	}
-
-	while (true){
-		Fxelem v = randomPol<Fxelem>(pol.getField(), 2*n-1);
-		if (pol.getField().getSize() % 2 == 0){//size %2 == 0 iff p %2 == 0
-			Fxelem aux = v;
-			for (int i = 1; i<= n*m-1; ++i){
-				aux*=aux;
-				//This loop performs the operation (mod pol)
-				for (int i = polDeg; i <= aux.deg(); ++i){//aux.deg is always <= 2*polDeg-2
-					if (aux[i] != 0)
-						aux += Fxelem(aux[i])*pwrsX[i-polDeg];
-				}
-				v += aux;
-			}
-		}
-		else{
-			fastPowModPol<Fxelem> (v, (fastPow(pol.getField().getSize(), n) -1)/2, pwrsX, pol.deg());
-			v -= pol.getField().get(1);
-		}
-		Fxelem g = gcd (pol, v);
-		if (g != 1 && g != pol){
-			std::vector< Fxelem > factors = splitFactorsDD(g, n);
-			std::vector< Fxelem > factors2 = splitFactorsDD(pol/g, n);
-			factors.insert(
-				factors.end(),
-				std::make_move_iterator(factors2.begin()),
-				std::make_move_iterator(factors2.end())
-			);
-			return factors;
-		}
-	}
-}
-
-
 
 
 
@@ -422,8 +430,14 @@ template std::vector< Fpxelem > splitFactorsDD (const Fpxelem &pol, int n);
 template Fpxelem randomPol (const typename Fpxelem::F &field, int degree);
 template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);
 
+template std::vector< std::pair< Fpxelem, unsigned int> > factorBerlekamp (const Fpxelem & a);
+template std::vector< std::pair< Fpxelem, unsigned int> > factorCantorZassenhaus (const Fpxelem & a);
+
 template std::vector< std::pair< Fqxelem, unsigned int> > squareFreeFF (const Fqxelem & a);
 template std::vector< std::pair< Fqxelem, unsigned int> > partialFactorDD ( Fqxelem &pol);
 template std::vector< Fqxelem > splitFactorsDD (const Fqxelem &pol, int n);
 template Fqxelem randomPol (const typename Fqxelem::F &field, int degree);
 template std::vector< Fqxelem > berlekamp_simple (const Fqxelem &pol);
+
+template std::vector< std::pair< Fqxelem, unsigned int> > factorBerlekamp (const Fqxelem & a);
+template std::vector< std::pair< Fqxelem, unsigned int> > factorCantorZassenhaus (const Fqxelem & a);
