@@ -1,5 +1,6 @@
-#include<iostream>
-#include<vector>
+#include <iostream>
+#include <vector>
+#include <boost/multiprecision/cpp_int.hpp>
 //#include"gtest/gtest.h"
 
 
@@ -14,8 +15,12 @@
 #include "factorizationFq.hpp"
 #include "integerCRA.hpp"
 using namespace std;
+using namespace boost::multiprecision;
 
 int main (){
+    cpp_int fact= (cpp_int(1)<<128)-1;
+    cout << fact << endl;
+}
 	int c[11]= {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
 	Fp field(11);
 	vector<Fpelem> v;
