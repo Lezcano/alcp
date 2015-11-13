@@ -191,8 +191,6 @@ T fastPow (const T& a, U b){
 }
 
 template big_int fastPowMod<big_int, big_int>(const big_int &a, big_int b, const big_int & p);
-template Fpelem fastPowMod<Fpelem, big_int>(const Fpelem &a, big_int b, const Fpelem& p);
-template Fqelem fastPowMod<Fqelem, big_int>(const Fqelem &a, big_int b, const Fqelem& p);
 
 template big_int fastPow<big_int, int>(const big_int& a, int b);
 template big_int fastPow<big_int, big_int>(const big_int& a, big_int b);
