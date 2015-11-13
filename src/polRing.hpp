@@ -179,15 +179,15 @@ class PolynomialRing{
 
         const Fxelem derivative()const{
             if(this->deg()==0)
-                return Fxelem(getZero(this->lc()));
+                return Fxelem(0);
             std::vector<Felem> v(_v);
             for(int i=1;i<v.size();++i)
                 v[i-1]=v[i]*i;
             v.pop_back();
             Fxelem ret(v);
-            ret.removeTrailingZeros();
+            v.removeTrailingZeros();
 
-            return ret;
+            return v;
         }
 
         // Leading coefficient
