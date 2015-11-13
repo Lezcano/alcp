@@ -76,6 +76,9 @@ const Fqelem operator+(big_int lhs, const Fqelem & rhs);
 Fqelem & operator-=(Fqelem &lhs, big_int rhs);
 const Fqelem operator-(const Fqelem &lhs, big_int rhs);
 const Fqelem operator-(big_int lhs, const Fqelem & rhs);
+Fqelem & operator*=(Fqelem &lhs, big_int rhs);
+const Fqelem operator*(const Fqelem &lhs, big_int rhs);
+const Fqelem operator*(big_int lhs, const Fqelem & rhs);
 
 bool compatible(const Fqelem &lhs, const Fqelem &rhs);
 const Fqelem getZero(const Fqelem &e);

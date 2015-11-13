@@ -150,6 +150,19 @@ const Fqelem operator-(big_int lhs, const Fqelem & rhs){
     return rhs.getField().get(lhs) - rhs;
 }
 
+Fqelem & operator*=(Fqelem &lhs, big_int rhs){
+    lhs*=lhs.getField().get(rhs);
+    return lhs;
+}
+
+const Fqelem operator*(const Fqelem &lhs, big_int rhs){
+    return lhs * lhs.getField().get(rhs);
+}
+
+const Fqelem operator*(big_int lhs, const Fqelem & rhs){
+    return rhs.getField().get(lhs) * rhs;
+}
+
 bool operator==(const Fqelem & lhs, big_int rhs){
     return lhs == lhs.getField().get(rhs);
 }
