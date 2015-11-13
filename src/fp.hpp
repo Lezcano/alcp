@@ -15,6 +15,9 @@ class Fp{
 
         big_int getSize()const;
 
+        big_int getP()const;
+        big_int getM()const;
+
         std::vector<Fpelem> getElems()const;
 
         bool operator==(const Fp &rhs)const;

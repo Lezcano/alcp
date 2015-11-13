@@ -177,6 +177,19 @@ class PolynomialRing{
         const Felem & operator[](int i) const {return _v[i];}
         Felem & operator[](int i) {return _v[i];}
 
+        const Fxelem derivative(){
+            if(this->deg()==0)
+                return Fxelem(0);
+            std::vector<Felem> v(_v);
+            for(int i=1;i<v.size();++i)
+                v[i-1]=i*v[i];
+            v.pop_back();
+            Fxelem ret(v);
+            v.removeTrailingZeros();
+
+            return v;
+        }
+
         // Leading coefficient
         Felem lc()const{return _v.back();}
 

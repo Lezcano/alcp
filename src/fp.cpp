@@ -20,6 +20,9 @@ Fpelem Fp::get(big_int n)const{
 
 big_int Fp::getSize()const{return _p;}
 
+big_int Fp::getP()const{return _p;}
+big_int Fp::getM()const{return 1;}
+
 bool Fp::operator==(const Fp &rhs)const{return _p == rhs._p;}
 bool Fp::operator!=(const Fp &rhs)const{return _p != rhs._p;}
 
