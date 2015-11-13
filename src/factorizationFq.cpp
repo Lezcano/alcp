@@ -4,8 +4,8 @@
 #include <random>
 #include <chrono>
 #include "fp.hpp"
-#include "fpelem.hpp"
 #include "fpxelem.hpp"
+#include "fqxelem.hpp"
 #include "generalPurpose.hpp"
 #include "types.hpp"
 #include <iostream> //TODO Quitar
@@ -62,7 +62,7 @@ using matrix = std::vector< std::vector<T> >;
 template <typename Fxelem>
 matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
     typename Fxelem::F f = pol.getField();
-	big_int q = f.getSize(); 
+	big_int q = f.getSize();
 	int n = pol.deg();
 
 	std::vector<typename Fxelem::Felem> r(n, f.get(0));

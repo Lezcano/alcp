@@ -11,7 +11,7 @@ const Fpxelem::F Fpxelem::getField()const{
     return this->lc().getField();
 }
 
-ll Fpxelem::getSize()const{
+big_int Fpxelem::getSize()const{
     return this->getField().getSize();
 }
 
@@ -20,7 +20,7 @@ bool Fpxelem::irreducible()const{
     Fpxelem xpk = x; // x^(p^k)
 
     for(int i=0;i<this->deg()/2;++i){
-        xpk = fastPowMod<Fpxelem>(xpk, this->getSize(), *this);
+        xpk = fastPowMod<Fpxelem, ll>(xpk, this->getSize(), *this);
         if(gcd(*this, xpk-x).deg()!=0)
             return false;
     }

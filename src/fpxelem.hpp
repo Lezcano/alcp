@@ -18,7 +18,7 @@ class Fpxelem : public PolynomialRing<Fpxelem, Fpelem>{
 
         bool irreducible()const;
         const F getField()const;
-        ll getSize()const;
+        big_int getSize()const;
 };
 
 Fpxelem getZero(const Fpxelem &e);

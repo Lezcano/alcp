@@ -1,4 +1,3 @@
-// Implementation of a GF(p) field
 #ifndef __ZXELEM_HPP
 #define __ZXELEM_HPP
 
