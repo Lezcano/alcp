@@ -45,6 +45,10 @@ Fqelem Fq::get(Fpxelem f)const{
 
 big_int Fq::getSize()const{return fastPow(_p,_n);}
 
+big_int Fq::getP()const{return _p;}
+big_int Fq::getM()const{return _n;}
+
+
 bool Fq::operator==(const Fq &rhs)const{return _p == rhs._p && _n == rhs._n;}
 bool Fq::operator!=(const Fq &rhs)const{return _p != rhs._p && _n != rhs._n;}
 
