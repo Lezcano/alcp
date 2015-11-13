@@ -20,7 +20,7 @@ using namespace boost::multiprecision;
 int main (){
     cpp_int fact= (cpp_int(1)<<128)-1;
     cout << fact << endl;
-}
+
 	int c[11]= {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
 	Fp field(11);
 	vector<Fpelem> v;

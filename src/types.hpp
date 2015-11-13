@@ -1,11 +1,12 @@
 #ifndef __TYPES_HPP
 #define __TYPES_HPP
 
-#include<boost/multiprecision/gmp.hpp>
+#include<boost/multiprecision/cpp_int.hpp>
 
-typedef long long ll;
-typedef unsigned long long ull;
-typedef boost::multiprecision::mpz_int big_int;
+using ll = long long;
+using ull = unsigned long long;
+using big_int = boost::multiprecision::cpp_int;
+//using big_int = boost::multiprecision::cpp_int;
 
 
 

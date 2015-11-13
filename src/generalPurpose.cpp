@@ -3,6 +3,7 @@
 #include "types.hpp"
 #include "zelem.hpp" // getZero y tal
 #include "fpxelem.hpp"
+#include "fqxelem.hpp"
 
 /**
  * Exponentiation by Squaring
@@ -29,9 +30,6 @@ T fastPowMod(T a, U b, T p){
     	return (aux*aux)%p;
     }
 }
-//template ll fastPowMod(ll a, ll b, ll p);
-template big_int fastPowMod(big_int a, ll b, big_int p);
-template Fpxelem fastPowMod(Fpxelem a, ll b, Fpxelem p);
 
 /**
  * Miller Rabin: Primality Test
@@ -145,11 +143,6 @@ ll eea(ll a, ll b, ll& x, ll& y){
     return std::abs(a);
 }
 
-ll gcd(ll a, ll b){
-    ll x,y;
-    return eea(a,b,x,y);
-}
-
 /**
  * Extended Euclidean Algorithm for an arbitrary DFU
  */
@@ -194,17 +187,12 @@ T eea (T a, T b, T &x, T &y){
     return normalForm(a);
 }
 
-template Fpxelem eea (Fpxelem a, Fpxelem b, Fpxelem &x, Fpxelem &y);
-//template ll eea (ll a, ll b, ll &x, ll &y);
 
 template<typename T>
 T gcd(T a, T b){
     T x = getZero(a), y = getZero(b);
     return eea(a,b,x,y);
 }
-template big_int gcd(big_int a, big_int b);
-template Fpxelem gcd(Fpxelem a, Fpxelem b);
-
 
 
 template<typename T>
@@ -212,13 +200,13 @@ T fastPow (T a, ll b){
 	if (b == 0)
 		return 1;
 	else{
-		T aux = a; 
+		T aux = a;
 		T result = 1;
 		while (b != 0){
 			if (b % 2 == 0){
 				aux*=aux;
 				b /= 2;
-			}	
+			}
 			else{
 				result *= aux;
 				aux *= aux;
@@ -227,6 +215,19 @@ T fastPow (T a, ll b){
 		}
 		return result;
 	}
-	
+
 }
-template big_int fastPow (big_int a, ll b);
+template big_int fastPowMod<big_int, ll>(big_int a, ll b, big_int p);
+template Fpxelem fastPowMod<Fpxelem, ll>(Fpxelem a, ll b, Fpxelem p);
+
+template big_int fastPow<big_int>(big_int a, ll b);
+
+//template ll gcd<ll>(ll a, ll b);
+template big_int gcd<big_int>(big_int a, big_int b);
+template Fpxelem gcd<Fpxelem>(Fpxelem a, Fpxelem b);
+template Fqxelem gcd<Fqxelem>(Fqxelem a, Fqxelem b);
+
+//template ll eea<ll>(ll a, ll b, ll &x, ll &y);
+template big_int eea<big_int>(big_int a, big_int b, big_int &x, big_int &y);
+template Fpxelem eea<Fpxelem>(Fpxelem a, Fpxelem b, Fpxelem &x, Fpxelem &y);
+//template Fpxelem eea<Fqxelem>(Fqxelem a, Fqxelem b, Fqxelem &x, Fqxelem &y);
