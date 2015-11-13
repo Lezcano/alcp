@@ -21,14 +21,20 @@
  */
 template<typename T, typename U>
 T fastPowMod(T a, U b, T p){
-    if(b==0)return getOne(a);
-    if(b%2 != 0){
-    	return (a*fastPowMod(a,b-1,p))%p;
+    T aux = a;
+    T result = getOne(a);
+    while (b != 0){
+        if (b % 2 == 0){
+            aux = (aux*aux)%p;
+            b /= 2;
+        }
+        else{
+            result = (result*aux)%p;
+            aux = (aux*aux)%p;
+            b -= 1;
+        }
     }
-    else{
-    	T aux = fastPowMod(a,b/2,p);
-    	return (aux*aux)%p;
-    }
+    return result;
 }
 
 /**
@@ -59,7 +65,7 @@ T fastPowMod(T a, U b, T p){
  */
 bool millerRabin(big_int n, int k /*= 35*/){
     big_int s=n-1, a;
-    ll r=0;
+    int r=0;
 
     // Discards edge cases for the random generation process
     if(n==2 || n==3) return true;
@@ -97,7 +103,7 @@ bool millerRabin(big_int n, int k /*= 35*/){
 }
 
 /**
- * Extended Euclidean Algorithm
+ * Extended Euclidean Algorithm for an arbitrary DE
  *
  * Description:
  *  Given two integers a, b it computes:
@@ -112,39 +118,6 @@ bool millerRabin(big_int n, int k /*= 35*/){
  * Complexity:
  *  O(log(min(a,b)))
  *
- */
-ll eea(ll a, ll b, ll& x, ll& y){
-    // We set a = |a| and b = |b| and set a flag if the sign was changed
-    bool ca = false, cb = false;
-    if(a < 0)a = -a, ca = true;
-    if(b < 0)b = -b, cb = true;
-
-    x = 1; y = 0;
-    ll xx = 0, yy = 1;
-    ll q, r, r1, r2;
-    while(b){
-        // The following invariant holds:
-        //  a = x*|a|+y*|b|
-        //  b = xx*|a|+yy*|b|
-
-        // Compute quotient and reminder
-        q = a/b; r = a-q*b;
-
-        // After this r = r1*|a|+r2*|b| holds
-        r1 = x-q*xx; r2 = y-q*yy;
-
-        // Iterate
-        a = b; x = xx; y = yy;
-        b = r; xx = r1; yy = r2;
-    }
-    if(ca) x = -x;
-    if(cb) y = -y;
-
-    return std::abs(a);
-}
-
-/**
- * Extended Euclidean Algorithm for an arbitrary DFU
  */
 template<typename T>
 T eea (T a, T b, T &x, T &y){
@@ -195,39 +168,34 @@ T gcd(T a, T b){
 }
 
 
-template<typename T>
-T fastPow (T a, ll b){
-	if (b == 0)
-		return 1;
-	else{
-		T aux = a;
-		T result = 1;
-		while (b != 0){
-			if (b % 2 == 0){
-				aux*=aux;
-				b /= 2;
-			}
-			else{
-				result *= aux;
-				aux *= aux;
-				b -= 1;
-			}
-		}
-		return result;
-	}
-
+template<typename T, typename U>
+T fastPow (T a, U b){
+    T aux = a;
+    T result = getOne(a);
+    while (b != 0){
+        if (b % 2 == 0){
+            aux*=aux;
+            b /= 2;
+        }
+        else{
+            result *= aux;
+            aux *= aux;
+            b -= 1;
+        }
+    }
+    return result;
 }
-template big_int fastPowMod<big_int, ll>(big_int a, ll b, big_int p);
-template Fpxelem fastPowMod<Fpxelem, ll>(Fpxelem a, ll b, Fpxelem p);
 
-template big_int fastPow<big_int>(big_int a, ll b);
+template big_int fastPowMod<big_int, big_int>(big_int a, big_int b, big_int p);
+template Fpxelem fastPowMod<Fpxelem, big_int>(Fpxelem a, big_int b, Fpxelem p);
 
-//template ll gcd<ll>(ll a, ll b);
+template big_int fastPow<big_int, int>(big_int a, int b);
+template big_int fastPow<big_int, big_int>(big_int a, big_int b);
+
 template big_int gcd<big_int>(big_int a, big_int b);
 template Fpxelem gcd<Fpxelem>(Fpxelem a, Fpxelem b);
 template Fqxelem gcd<Fqxelem>(Fqxelem a, Fqxelem b);
 
-//template ll eea<ll>(ll a, ll b, ll &x, ll &y);
 template big_int eea<big_int>(big_int a, big_int b, big_int &x, big_int &y);
 template Fpxelem eea<Fpxelem>(Fpxelem a, Fpxelem b, Fpxelem &x, Fpxelem &y);
-//template Fpxelem eea<Fqxelem>(Fqxelem a, Fqxelem b, Fqxelem &x, Fqxelem &y);
+template Fqxelem eea<Fqxelem>(Fqxelem a, Fqxelem b, Fqxelem &x, Fqxelem &y);

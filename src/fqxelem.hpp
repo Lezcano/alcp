@@ -17,16 +17,16 @@ class Fqxelem : public PolynomialRing<Fqxelem, Fqelem>{
         Fqxelem(const std::vector<Fqelem> & v);
 
         const F getField()const;
-        ll getSize()const;
+        big_int getSize()const;
 };
 
 Fqxelem getZero(const Fqxelem &e);
 Fqxelem getOne(const Fqxelem &e);
 const Fqelem unit(const Fqxelem &e);
 bool compatible(const Fqxelem &lhs, const Fqxelem &rhs);
-bool operator==(const Fqxelem &lhs, ll rhs);
-bool operator==(ll lhs, const Fqxelem &rhs);
-bool operator!=(const Fqxelem &lhs, ll rhs);
-bool operator!=(ll lhs, const Fqxelem &rhs );
+bool operator==(const Fqxelem &lhs, big_int rhs);
+bool operator==(big_int lhs, const Fqxelem &rhs);
+bool operator!=(const Fqxelem &lhs, big_int rhs);
+bool operator!=(big_int lhs, const Fqxelem &rhs );
 
 #endif

@@ -20,7 +20,7 @@ bool Fpxelem::irreducible()const{
     Fpxelem xpk = x; // x^(p^k)
 
     for(int i=0;i<this->deg()/2;++i){
-        xpk = fastPowMod<Fpxelem, ll>(xpk, this->getSize(), *this);
+        xpk = fastPowMod(xpk, this->getSize(), *this);
         if(gcd(*this, xpk-x).deg()!=0)
             return false;
     }

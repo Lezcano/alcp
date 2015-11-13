@@ -11,13 +11,13 @@ class Fqelem;
 
 class Fq{
     public:
-        Fq(ll p, int n);
+        Fq(big_int p, int n);
 
-        Fqelem get(ll n)const;
+        Fqelem get(big_int n)const;
 
         Fqelem get(Fpxelem f)const;
 
-        ll getSize()const;
+        big_int getSize()const;
 
         std::vector<Fqelem> getElems()const;
 
@@ -27,7 +27,7 @@ class Fq{
         friend std::string to_string(const Fq &e);
     private:
 
-        ll _p;
+        big_int _p;
         int _n;
         Fp _base;
         Fpxelem _mod;

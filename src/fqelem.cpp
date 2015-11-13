@@ -21,7 +21,7 @@ Fqelem & Fqelem::operator=(const Fqelem &rhs){
     return *this;
 }
 
-Fqelem & Fqelem::operator=(ll rhs){
+Fqelem & Fqelem::operator=(big_int rhs){
     *this = _f->get(rhs);
     return *this;
 }
@@ -99,7 +99,7 @@ int deg(const Fqelem &e){return e._num.deg();}
 // In a field the division has reminder zero
 const Fqelem Fqelem::operator%(const Fqelem &rhs) const{return _f->get(0);}
 
-ll Fqelem::getSize()const{return _f->getSize();}
+big_int Fqelem::getSize()const{return _f->getSize();}
 
 const Fqelem::F Fqelem::getField()const{return *_f;}
 
@@ -124,45 +124,45 @@ void Fqelem::checkInSameField(const Fqelem &rhs) const{
             " in F" + to_string(rhs.getField()));
 }
 
-Fqelem & operator+=(Fqelem &lhs, ll rhs){
+Fqelem & operator+=(Fqelem &lhs, big_int rhs){
     lhs+=lhs.getField().get(rhs);
     return lhs;
 }
 
-const Fqelem operator+(const Fqelem &lhs, ll rhs){
+const Fqelem operator+(const Fqelem &lhs, big_int rhs){
     return lhs + lhs.getField().get(rhs);
 }
 
-const Fqelem operator+(ll lhs, const Fqelem & rhs){
+const Fqelem operator+(big_int lhs, const Fqelem & rhs){
     return rhs.getField().get(lhs) + rhs;
 }
 
-Fqelem & operator-=(Fqelem &lhs, ll rhs){
+Fqelem & operator-=(Fqelem &lhs, big_int rhs){
     lhs-=lhs.getField().get(rhs);
     return lhs;
 }
 
-const Fqelem operator-(const Fqelem &lhs, ll rhs){
+const Fqelem operator-(const Fqelem &lhs, big_int rhs){
     return lhs - lhs.getField().get(rhs);
 }
 
-const Fqelem operator-(ll lhs, const Fqelem & rhs){
+const Fqelem operator-(big_int lhs, const Fqelem & rhs){
     return rhs.getField().get(lhs) - rhs;
 }
 
-bool operator==(const Fqelem & lhs, ll rhs){
+bool operator==(const Fqelem & lhs, big_int rhs){
     return lhs == lhs.getField().get(rhs);
 }
 
-bool operator==(ll lhs, const Fqelem &rhs){
+bool operator==(big_int lhs, const Fqelem &rhs){
     return rhs == lhs;
 }
 
-bool operator!=(const Fqelem & lhs, ll rhs){
+bool operator!=(const Fqelem & lhs, big_int rhs){
     return !(lhs == rhs);
 }
 
-bool operator!=(ll lhs, const Fqelem &rhs){
+bool operator!=(big_int lhs, const Fqelem &rhs){
     return !(lhs == rhs);
 }
 

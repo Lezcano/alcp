@@ -17,7 +17,7 @@ class Fqelem{
         Fqelem ( const Fqelem & );
         Fqelem & operator=(const Fqelem &rhs);
 
-        Fqelem & operator=(ll rhs);
+        Fqelem & operator=(big_int rhs);
 
         bool operator==(const Fqelem &rhs)const;
 
@@ -48,7 +48,7 @@ class Fqelem{
 
         const Fqelem operator%(const Fqelem &rhs) const;
 
-        ll getSize()const;
+        big_int getSize()const;
 
         const F getField()const;
 
@@ -66,16 +66,16 @@ class Fqelem{
         Fpxelem _mod;
 };
 
-bool operator==(ll lhs, const Fqelem &rhs);
-bool operator==(const Fqelem &lhs, ll rhs);
-bool operator!=(ll lhs, const Fqelem &rhs);
-bool operator!=(const Fqelem &lhs, ll rhs);
-Fqelem & operator+=(Fqelem &lhs, ll rhs);
-const Fqelem operator+(const Fqelem &lhs, ll rhs);
-const Fqelem operator+(ll lhs, const Fqelem & rhs);
-Fqelem & operator-=(Fqelem &lhs, ll rhs);
-const Fqelem operator-(const Fqelem &lhs, ll rhs);
-const Fqelem operator-(ll lhs, const Fqelem & rhs);
+bool operator==(big_int lhs, const Fqelem &rhs);
+bool operator==(const Fqelem &lhs, big_int rhs);
+bool operator!=(big_int lhs, const Fqelem &rhs);
+bool operator!=(const Fqelem &lhs, big_int rhs);
+Fqelem & operator+=(Fqelem &lhs, big_int rhs);
+const Fqelem operator+(const Fqelem &lhs, big_int rhs);
+const Fqelem operator+(big_int lhs, const Fqelem & rhs);
+Fqelem & operator-=(Fqelem &lhs, big_int rhs);
+const Fqelem operator-(const Fqelem &lhs, big_int rhs);
+const Fqelem operator-(big_int lhs, const Fqelem & rhs);
 
 bool compatible(const Fqelem &lhs, const Fqelem &rhs);
 const Fqelem getZero(const Fqelem &e);

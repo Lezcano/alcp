@@ -11,7 +11,7 @@ const Fqxelem::F Fqxelem::getField()const{
     return this->lc().getField();
 }
 
-ll Fqxelem::getSize()const{
+big_int Fqxelem::getSize()const{
     return this->getField().getSize();
 }
 
@@ -25,19 +25,19 @@ bool compatible(const Fqxelem &lhs, const Fqxelem &rhs){
     return lhs.getField()==rhs.getField();
 }
 
-bool operator==(const Fqxelem &lhs, ll rhs){
+bool operator==(const Fqxelem &lhs, big_int rhs){
     return lhs.deg()==0 && lhs.lc()==lhs.getField().get(rhs);
 }
 
-bool operator==(ll lhs, const Fqxelem &rhs){
+bool operator==(big_int lhs, const Fqxelem &rhs){
     return rhs == lhs;
 }
 
-bool operator!=(const Fqxelem &lhs, ll rhs){
+bool operator!=(const Fqxelem &lhs, big_int rhs){
     return !(lhs == rhs);
 }
 
-bool operator!=(ll lhs, const Fqxelem &rhs ){
+bool operator!=(big_int lhs, const Fqxelem &rhs ){
     return !(rhs == lhs);
 }
 

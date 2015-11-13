@@ -2,6 +2,7 @@
 #include "fqelem.hpp"
 // Included in header "fpxelem.hpp"
 #include "exceptions.hpp"
+#include "zelem.hpp" // to_string
 #include "generalPurpose.hpp" // Miller Rabin
 
 #include <vector>
@@ -17,7 +18,7 @@ bool increment(std::vector<Fpelem>& act) {
     return false; // We are done
 }
 
-Fq::Fq(ll p, int n): _p(p), _n(n), _base(p), _mod(_base.get(0)){ // _mod must be explicitly initialized
+Fq::Fq(big_int p, int n): _p(p), _n(n), _base(p), _mod(_base.get(0)){ // _mod must be explicitly initialized
     std::vector<Fpelem> v (_n+1, _base.get(0));
 
     v.back() = _base.get(1);
@@ -34,7 +35,7 @@ Fq::Fq(ll p, int n): _p(p), _n(n), _base(p), _mod(_base.get(0)){ // _mod must be
     _mod = Fpxelem(v);
 }
 
-Fqelem Fq::get(ll n)const{
+Fqelem Fq::get(big_int n)const{
     return Fqelem(Fpxelem(_base.get(n)), _mod, std::unique_ptr<Fq>(new Fq(*this)));
 }
 
@@ -42,7 +43,7 @@ Fqelem Fq::get(Fpxelem f)const{
     return Fqelem(f, _mod, std::unique_ptr<Fq>(new Fq(*this)));
 }
 
-ll Fq::getSize()const{return (ll) std::pow((double)_p,(double)_n);}
+big_int Fq::getSize()const{return fastPow(_p,_n);}
 
 bool Fq::operator==(const Fq &rhs)const{return _p == rhs._p && _n == rhs._n;}
 bool Fq::operator!=(const Fq &rhs)const{return _p != rhs._p && _n != rhs._n;}
@@ -58,6 +59,6 @@ std::vector<Fqelem> Fq::getElems()const{
 }
 
 std::string to_string(const Fq &e){
-    return "GF(" + std::to_string(e._p) + "^" + std::to_string(e._n) + ")";
+    return "GF(" + to_string(e._p) + "^" + std::to_string(e._n) + ")";
 }
 

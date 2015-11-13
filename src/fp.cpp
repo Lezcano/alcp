@@ -2,6 +2,7 @@
 // types.hpp included in fp.hpp
 #include "fpelem.hpp"
 #include "exceptions.hpp"
+#include "zelem.hpp"
 #include "generalPurpose.hpp" // Miller Rabin
 
 #include <vector>
@@ -10,7 +11,7 @@
 Fp::Fp(big_int p): _p(p){
     // TODO create a look-up table for p < 2^16
     if(p<=0 || !millerRabin(p))
-        throw EpNotPrime("Could not create F" + std::to_string(p) + ". " + std::to_string(p) + " is not prime.");
+        throw EpNotPrime("Could not create F" + to_string(p) + ". " + to_string(p) + " is not prime.");
 }
 
 Fpelem Fp::get(big_int n)const{
