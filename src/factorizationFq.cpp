@@ -95,13 +95,13 @@ matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
  */
 template <typename Fxelem>
 std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typename Fxelem::Felem> & mat){
-	big_int n = mat.size();
-	big_int i, j;
+	int n = mat.size();
+	int i, j;
 	std::vector< std::vector< typename Fxelem::Felem > > result;
 
-	for (big_int k = 0; k < n; ++k ){
+	for (int k = 0; k < n; ++k ){
 		//Search for pivot element
-		for (i = k; i < n && mat[k][i] == 0 ; ++i);
+		for (i = k; i < n && mat[(size_t)k][i] == 0 ; ++i);
 
 		if (i<n){
 			//Normalize column i
@@ -183,7 +183,7 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	int k = base.size()+1;//we do not have computed the first element of the base, so have to add 1 to k
 	while (factors.size() < k){
 		for (int i = 0; i < factors.size(); ++i){
-			Fxelem v(base[r]);
+			Fxelem v(base[(size_t)r]);
 			for(auto &s : pol.getField().getElems()){
 				Fxelem g = gcd(v-s, factors[i]);
 				if (g != 1 && g != factors[i]){
@@ -192,8 +192,8 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 					if (factors.size() == k) return factors;
 				}
 			}
-			++r; //TODO: En el libro viene así, no me convence. Mirar.
 		}
+		++r;
 	}
 	return factors;
 }
@@ -364,3 +364,8 @@ template std::vector< std::pair< Fpxelem, unsigned int> > partialFactorDD ( Fpxe
 template std::vector< Fpxelem > splitFactorsDD (const Fpxelem &pol, int n);
 template Fpxelem randomPol (const typename Fpxelem::F &field, int degree);
 template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);
+
+template std::vector< std::pair< Fqxelem, unsigned int> > partialFactorDD ( Fqxelem &pol);
+template std::vector< Fqxelem > splitFactorsDD (const Fqxelem &pol, int n);
+template Fqxelem randomPol (const typename Fqxelem::F &field, int degree);
+template std::vector< Fqxelem > berlekamp_simple (const Fqxelem &pol);
