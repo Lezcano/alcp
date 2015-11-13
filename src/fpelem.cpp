@@ -22,7 +22,7 @@ Fpelem & Fpelem::operator=(const Fpelem &rhs){
     return *this;
 }
 
-Fpelem & Fpelem::operator=(ll rhs){
+Fpelem & Fpelem::operator=(big_int rhs){
     *this = _f->get(rhs);
     return *this;
 }
@@ -37,7 +37,7 @@ bool Fpelem::operator!=(const Fpelem &rhs)const{
 
 Fpelem & Fpelem::operator+=(const Fpelem &rhs){
     checkInSameField(rhs);
-    _num = (ll) ((ull)_num + (ull)rhs._num)%getSize();
+    _num = (big_int) ((ull)_num + (ull)rhs._num)%getSize();
     return *this;
 }
 
@@ -94,7 +94,7 @@ const Fpelem Fpelem::operator*(const Fpelem &rhs) const{
 const Fpelem Fpelem::inv() const{
     if(_num == 0)
         throw EOperationUnsupported("Error. Zero has no inverse.");
-    ll res, aux;
+    big_int res, aux;
     eea(_num, getSize(), res, aux);
     return _f->get(res);
 }
@@ -112,7 +112,7 @@ const Fpelem Fpelem::operator/(const Fpelem &rhs) const{
     return Fpelem(*this) /= rhs;
 }
 
-ll Fpelem::getSize()const{return _f->getSize();}
+big_int Fpelem::getSize()const{return _f->getSize();}
 
 const Fp Fpelem::getField()const{return *_f;}
 
@@ -124,9 +124,9 @@ bool compatible(const Fpelem &lhs, const Fpelem &rhs){
     return lhs.getField()==rhs.getField();
 }
 
-Fpelem::Fpelem(ll num, std::unique_ptr<Fp> f): _num(num){
+Fpelem::Fpelem(big_int num, std::unique_ptr<Fp> f): _num(num){
     _f = std::move(f);
-    ll p = _f->getSize();
+    big_int p = _f->getSize();
     _num %= p;
     if(_num < 0)
         _num += p;
@@ -141,45 +141,45 @@ void Fpelem::checkInSameField(const Fpelem &rhs) const{
             " in F" + std::to_string(rhs.getSize()));
 }
 
-Fpelem & operator+=(Fpelem &lhs, ll rhs){
+Fpelem & operator+=(Fpelem &lhs, big_int rhs){
     lhs+=lhs.getField().get(rhs);
     return lhs;
 }
 
-const Fpelem operator+(const Fpelem &lhs, ll rhs){
+const Fpelem operator+(const Fpelem &lhs, big_int rhs){
     return lhs + lhs.getField().get(rhs);
 }
 
-const Fpelem operator+(ll lhs, const Fpelem & rhs){
+const Fpelem operator+(big_int lhs, const Fpelem & rhs){
     return rhs.getField().get(lhs) + rhs;
 }
 
-Fpelem & operator-=(Fpelem &lhs, ll rhs){
+Fpelem & operator-=(Fpelem &lhs, big_int rhs){
     lhs-=lhs.getField().get(rhs);
     return lhs;
 }
 
-const Fpelem operator-(const Fpelem &lhs, ll rhs){
+const Fpelem operator-(const Fpelem &lhs, big_int rhs){
     return lhs - lhs.getField().get(rhs);
 }
 
-const Fpelem operator-(ll lhs, const Fpelem & rhs){
+const Fpelem operator-(big_int lhs, const Fpelem & rhs){
     return rhs.getField().get(lhs) - rhs;
 }
 
-bool operator==(const Fpelem & lhs, ll rhs){
+bool operator==(const Fpelem & lhs, big_int rhs){
     return lhs == lhs.getField().get(rhs);
 }
 
-bool operator==(ll lhs, const Fpelem &rhs){
+bool operator==(big_int lhs, const Fpelem &rhs){
     return rhs == lhs;
 }
 
-bool operator!=(const Fpelem & lhs, ll rhs){
+bool operator!=(const Fpelem & lhs, big_int rhs){
     return !(lhs == rhs);
 }
 
-bool operator!=(ll lhs, const Fpelem &rhs){
+bool operator!=(big_int lhs, const Fpelem &rhs){
     return !(lhs == rhs);
 }
 

@@ -9,11 +9,11 @@ class Fpelem;
 
 class Fp{
     public:
-        Fp(ll p);
+        Fp(big_int p);
 
-        Fpelem get(ll n)const;
+        Fpelem get(big_int n)const;
 
-        ll getSize()const;
+        big_int getSize()const;
 
         std::vector<Fpelem> getElems()const;
 
@@ -22,7 +22,7 @@ class Fp{
 
 
     private:
-        ll _p;
+        big_int _p;
 };
 
 #endif // __FP_HPP
