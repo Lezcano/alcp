@@ -37,8 +37,8 @@ const big_int unit(big_int e){
 }
 const big_int normalForm(big_int e){ return e/unit(e);}
 
-std::string to_string(big_int e){return e.convert_to<std::string>();}
-//std::string to_string(big_int e){return std::to_string(e);}
+//std::string to_string(big_int e){return e.convert_to<std::string>();}
+std::string to_string(big_int e){return std::to_string(e);}
 
 big_int getZero(big_int e){return (big_int)0;}
 big_int getOne(big_int e){return (big_int)1;}
