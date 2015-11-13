@@ -195,7 +195,6 @@ T gcd(T a, T b){
 }
 
 
-
 template<typename T>
 T fastPow (T a, ll b){
 	if (b == 0)

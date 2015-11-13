@@ -25,9 +25,9 @@ Fpxelem getZero(const Fpxelem &e);
 Fpxelem getOne(const Fpxelem &e);
 const Fpelem unit(const Fpxelem &e);
 bool compatible(const Fpxelem &lhs, const Fpxelem &rhs);
-bool operator==(const Fpxelem &lhs, ll rhs);
-bool operator==(ll lhs, const Fpxelem &rhs);
-bool operator!=(const Fpxelem &lhs, ll rhs);
-bool operator!=(ll lhs, const Fpxelem &rhs );
+bool operator==(const Fpxelem &lhs, big_int rhs);
+bool operator==(big_int lhs, const Fpxelem &rhs);
+bool operator!=(const Fpxelem &lhs, big_int rhs);
+bool operator!=(big_int lhs, const Fpxelem &rhs );
 
 #endif

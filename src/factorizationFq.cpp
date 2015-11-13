@@ -53,6 +53,39 @@ template<typename T>
 using matrix = std::vector< std::vector<T> >;
 
 
+template <typename Fxelem>
+Fxelem squareFreeFF (const Fxelem & a) {
+	int i = 1;
+	Fxelem result = 1;
+	Fxelem b = a.derivative();
+	if (b != 0){
+		Fxelem c = gcd (a, b);
+		Fxelem w = a/c;
+		while (w != 1){
+			Fxelem y = gcd (w, c);
+			Fxelem z = w/y;
+			result *= fastPow(z, i);
+			i++;
+			w = y;
+			c = c/y;
+		}
+		if  (c != 1){
+			
+			result *= fastPow(squareFreeFF(c), p);
+		}
+	}
+	else{ // a is of the form: a_0 + a_p x^p + ... a_{kp} x^{kp} (because its derivative is zero)
+		//This is a = a^{1/p}
+		big_int exponent = fastPow (a.getP(), a.getM()-1);
+		for (big_int j = 0; j < a.deg(); ++j )
+			if (a[j] != 0)
+				a[j] = fastPow(a[j], exponent);
+		result *= fastPow(squareFreeFF(a), p);
+	}
+	return result;
+}
+
+
 /**
  * Input: a polynomial pol over a field of size q
  * Output: Matrix Q with x^0, x^q, x^{2q},..., x^{(n-1)*q} (mod pol) as rows
@@ -143,7 +176,7 @@ std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typenam
 			else break;
 		}
 		if (j >= n) break;
-		result.push_back(mat[j]);//TODO: Quizás se pueda optimizar con un move
+		result.push_back(mat[j]);
 		++j;
 	}
 	return result;
@@ -308,8 +341,7 @@ std::vector< Fxelem > splitFactorsDD (const Fxelem &pol, int n){
 	}
 	int m = polDeg/n;
 
-	//TODO explain this vector
-	std::vector < Fxelem > pwrsX; //vector with x^polDeg (mod pol)- x^polDeg, ..., x^{2*polDeg-2} (mod pol); Used to perform fast powers mod pol
+	std::vector < Fxelem > pwrsX;
  	std::vector<typename Fxelem::Felem> r(2*polDeg-1, pol.getField().get(0));
 	r[polDeg-1] = 1; //r == (0, 0, ..., 1)
 	for (int i = polDeg; i<= 2*polDeg-2; ++i){

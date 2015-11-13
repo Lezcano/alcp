@@ -17,7 +17,7 @@ class Fpelem{
         Fpelem ( const Fpelem & );
         Fpelem & operator=(const Fpelem &rhs);
 
-        Fpelem & operator=(ll rhs);
+        Fpelem & operator=(big_int rhs);
 
         bool operator==(const Fpelem &rhs)const;
 
@@ -48,7 +48,7 @@ class Fpelem{
 
         const Fpelem operator%(const Fpelem &rhs) const;
 
-        ll getSize()const;
+        big_int getSize()const;
 
         const F getField()const;
 
@@ -58,23 +58,23 @@ class Fpelem{
     private:
         friend class Fp;
 
-        Fpelem(ll num, std::unique_ptr<F> f);
+        Fpelem(big_int num, std::unique_ptr<F> f);
         void checkInSameField(const Fpelem &rhs) const;
 
-        ll _num;
+        big_int _num;
         std::unique_ptr<F> _f;
 };
 
-bool operator==(ll lhs, const Fpelem &rhs);
-bool operator==(const Fpelem &lhs, ll rhs);
-bool operator!=(ll lhs, const Fpelem &rhs);
-bool operator!=(const Fpelem &lhs, ll rhs);
-Fpelem & operator+=(Fpelem &lhs, ll rhs);
-const Fpelem operator+(const Fpelem &lhs, ll rhs);
-const Fpelem operator+(ll lhs, const Fpelem & rhs);
-Fpelem & operator-=(Fpelem &lhs, ll rhs);
-const Fpelem operator-(const Fpelem &lhs, ll rhs);
-const Fpelem operator-(ll lhs, const Fpelem & rhs);
+bool operator==(big_int lhs, const Fpelem &rhs);
+bool operator==(const Fpelem &lhs, big_int rhs);
+bool operator!=(big_int lhs, const Fpelem &rhs);
+bool operator!=(const Fpelem &lhs, big_int rhs);
+Fpelem & operator+=(Fpelem &lhs, big_int rhs);
+const Fpelem operator+(const Fpelem &lhs, big_int rhs);
+const Fpelem operator+(big_int lhs, const Fpelem & rhs);
+Fpelem & operator-=(Fpelem &lhs, big_int rhs);
+const Fpelem operator-(const Fpelem &lhs, big_int rhs);
+const Fpelem operator-(big_int lhs, const Fpelem & rhs);
 
 bool compatible(const Fpelem &lhs, const Fpelem &rhs);
 const Fpelem getZero(const Fpelem &e);

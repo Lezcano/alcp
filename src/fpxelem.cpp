@@ -36,19 +36,19 @@ bool compatible(const Fpxelem &lhs, const Fpxelem &rhs){
     return lhs.getField()==rhs.getField();
 }
 
-bool operator==(const Fpxelem &lhs, ll rhs){
+bool operator==(const Fpxelem &lhs, big_int rhs){
     return lhs.deg()==0 && lhs.lc()==lhs.getField().get(rhs);
 }
 
-bool operator==(ll lhs, const Fpxelem &rhs){
+bool operator==(big_int lhs, const Fpxelem &rhs){
     return rhs == lhs;
 }
 
-bool operator!=(const Fpxelem &lhs, ll rhs){
+bool operator!=(const Fpxelem &lhs, big_int rhs){
     return !(lhs == rhs);
 }
 
-bool operator!=(ll lhs, const Fpxelem &rhs ){
+bool operator!=(big_int lhs, const Fpxelem &rhs ){
     return !(rhs == lhs);
 }
 
