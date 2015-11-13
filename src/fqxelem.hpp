@@ -7,7 +7,7 @@
 #include "polRing.hpp"
 
 
-class Fqxelem : public PolinomialRing<Fqxelem, Fqelem>{
+class Fqxelem : public PolynomialRing<Fqxelem, Fqelem>{
     public:
         // Base field
         using F = Fq;

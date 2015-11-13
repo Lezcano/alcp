@@ -5,8 +5,8 @@
 /* Auxiliary function. Finds x such that
  * ax = 1 (mod q)
  * */
-bint reciprocal (bint a, bint q){
-	bint x, y;
+big_int reciprocal (big_int a, big_int q){
+	big_int x, y;
 	eea (a, q, x, y);
 	return x;
 }
@@ -34,11 +34,11 @@ bint reciprocal (bint a, bint q){
  *  O(n^2)
  *
  */
-bint integerCRA (const std::vector<bint> & m, const std::vector<bint> & u){
+big_int integerCRA (const std::vector<big_int> & m, const std::vector<big_int> & u){
 	//TODO: ¿Comprobar que u y m tienen el mismo tamaño?
 	int n = m.size()-1;
-	bint prod, aux;
-	std::vector<bint> inv, v;
+	big_int prod, aux;
+	std::vector<big_int> inv, v;
 	for (int k = 1; k <= n; ++k ){
 		prod = m[0]%m[k];
 		for	(int i = 1 ; i <= k-1; ++i)
@@ -52,7 +52,7 @@ bint integerCRA (const std::vector<bint> & m, const std::vector<bint> & u){
 			aux = (aux*m[j]+v[j])%m[k];
 		v.push_back(((u[k]-aux)*inv[k-1])%m[k]);	//it is inv[k-1] because inv starts in 0
 	}
-	bint result = v[n];
+	big_int result = v[n];
 	for (int k = n-1; k >= 0; --k ){
 		result = result*m[k] + v[k];
 	}

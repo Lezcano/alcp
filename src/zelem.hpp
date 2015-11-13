@@ -4,11 +4,11 @@
 #include <string>
 #include "types.hpp"
 
-std::string to_string(bint e);
-bool compatible(bint lhs, bint rhs);
-const bint unit(bint e);
-const bint normalForm(bint e);
-bint getZero(bint e);
-bint getOne(bint e);
+std::string to_string(big_int e);
+bool compatible(big_int lhs, big_int rhs);
+const big_int unit(big_int e);
+const big_int normalForm(big_int e);
+big_int getZero(big_int e);
+big_int getOne(big_int e);
 
 #endif // __ZELEM_HPP

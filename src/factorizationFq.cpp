@@ -62,24 +62,22 @@ using matrix = std::vector< std::vector<T> >;
 template <typename Fxelem>
 matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
     typename Fxelem::F f = pol.getField();
-	bint q = f.getSize(), cont = 1;
+	big_int q = f.getSize(); 
 	int n = pol.deg();
 
 	std::vector<typename Fxelem::Felem> r(n, f.get(0));
 	r[0] = 1; //r == (1, 0, ..., 0)
 	matrix<typename Fxelem::Felem> result;
 	result.push_back(r);
-	for (bint i = 1; i<= (n-1)*q; ++i, ++cont){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
+	for (big_int i = 1; i<= (n-1)*q; ++i){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
 		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
 		auto aux = r[n-1];
 		for (ll j = n-1; j >= 1; --j){
 			r[j] = r[j-1]-aux*pol[j];
 		}
 		r[0] = -aux*pol[0];
-		if (cont == q){ //This avoids computing i%q
+		if ( i % q == 0)
 			result.push_back(r);
-			cont = 0;
-		}
 	}
 	return result;
 }
@@ -97,13 +95,13 @@ matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
  */
 template <typename Fxelem>
 std::vector< std::vector< typename Fxelem::Felem > > kernelBasis (matrix<typename Fxelem::Felem> & mat){
-	bint n = mat.size();
-	bint i, j;
+	int n = mat.size();
+	int i, j;
 	std::vector< std::vector< typename Fxelem::Felem > > result;
 
-	for (bint k = 0; k < n; ++k ){
+	for (int k = 0; k < n; ++k ){
 		//Search for pivot element
-		for (i = k; i < n && mat[k][i] == 0 ; ++i);
+		for (i = k; i < n && mat[(size_t)k][i] == 0 ; ++i);
 
 		if (i<n){
 			//Normalize column i
@@ -176,7 +174,7 @@ template <typename Fxelem>
 std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	std::vector< Fxelem > factors;
 	factors.push_back(pol);
-	bint r=0;
+	big_int r=0;
 	auto mat = formMatrix(pol);
 	int n = pol.deg();
 	for (int i=0; i<n; ++i)
@@ -185,7 +183,7 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	int k = base.size()+1;//we do not have computed the first element of the base, so have to add 1 to k
 	while (factors.size() < k){
 		for (int i = 0; i < factors.size(); ++i){
-			Fxelem v(base[r]);
+			Fxelem v(base[(size_t)r]);
 			for(auto &s : pol.getField().getElems()){
 				Fxelem g = gcd(v-s, factors[i]);
 				if (g != 1 && g != factors[i]){
@@ -194,8 +192,8 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 					if (factors.size() == k) return factors;
 				}
 			}
-			++r; //TODO: En el libro viene así, no me convence. Mirar.
 		}
+		++r;
 	}
 	return factors;
 }
@@ -252,7 +250,7 @@ std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem &pol){/
 	return result;
 }
 template <typename Fxelem>
-void fastPowModPol (Fxelem & a, bint b, std::vector<Fxelem> pwrsX, int deg){
+void fastPowModPol (Fxelem & a, big_int b, std::vector<Fxelem> pwrsX, int deg){
 	if (b == 0){
 		a = Fxelem (a.getField().get(1));
 	}
@@ -262,22 +260,22 @@ void fastPowModPol (Fxelem & a, bint b, std::vector<Fxelem> pwrsX, int deg){
 		while (b != 0){
 			if (b % 2 == 0){
 				aux*=aux;
-				for (int i = deg; i <= aux.deg(); ++i){//aux.deg is always <= 2*deg-2
-					if (aux[i] != 0)
-						aux += Fxelem(aux[i])*pwrsX[i];
+				for (int i = 0; i <= (int)(aux.deg())-deg; ++i){//aux.deg is always <= 2*deg-2
+					if (aux[i+deg] != 0)
+						aux += Fxelem(aux[i+deg])*pwrsX[i];
 				}
 				b /= 2;
 			}
 			else{
 				a *= aux;
-				for (int i = deg; i <= a.deg(); ++i){//a.deg is always <= 2*deg-2
-					if (a[i] != 0)
-						a += Fxelem(a[i])*pwrsX[i];
+				for (int i = 0; i <= (int)(a.deg())-deg; ++i){//a.deg is always <= 2*deg-2
+					if (a[i+deg] != 0)
+						a += Fxelem(a[i+deg])*pwrsX[i];
 				}
 				aux *= aux;
-				for (int i = deg; i <= aux.deg(); ++i){//aux.deg is always <= 2*deg-2
-					if (aux[i] != 0)
-						aux += Fxelem(aux[i])*pwrsX[i];
+				for (int i = 0; i <= (int)(aux.deg())-deg; ++i){//aux.deg is always <= 2*deg-2
+					if (aux[i+deg] != 0)
+						aux += Fxelem(aux[i+deg])*pwrsX[i];
 				}
 				b -= 1;
 			}
@@ -335,7 +333,7 @@ std::vector< Fxelem > splitFactorsDD (const Fxelem &pol, int n){
 				//This loop performs the operation (mod pol)
 				for (int i = polDeg; i <= aux.deg(); ++i){//aux.deg is always <= 2*polDeg-2
 					if (aux[i] != 0)
-						aux += Fxelem(aux[i])*pwrsX[i];
+						aux += Fxelem(aux[i])*pwrsX[i-polDeg];
 				}
 				v += aux;
 			}
@@ -366,3 +364,8 @@ template std::vector< std::pair< Fpxelem, unsigned int> > partialFactorDD ( Fpxe
 template std::vector< Fpxelem > splitFactorsDD (const Fpxelem &pol, int n);
 template Fpxelem randomPol (const typename Fpxelem::F &field, int degree);
 template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);
+
+template std::vector< std::pair< Fqxelem, unsigned int> > partialFactorDD ( Fqxelem &pol);
+template std::vector< Fqxelem > splitFactorsDD (const Fqxelem &pol, int n);
+template Fqxelem randomPol (const typename Fqxelem::F &field, int degree);
+template std::vector< Fqxelem > berlekamp_simple (const Fqxelem &pol);

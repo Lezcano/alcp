@@ -18,8 +18,8 @@
  * Complexity:
  *  O((b*log(a))) supposing multiplication in O(1)
  */
-template<typename T>
-T fastPowMod(T a, ll b, T p){
+template<typename T, typename U>
+T fastPowMod(T a, U b, T p){
     if(b==0)return getOne(a);
     if(b%2 != 0){
     	return (a*fastPowMod(a,b-1,p))%p;
@@ -29,7 +29,8 @@ T fastPowMod(T a, ll b, T p){
     	return (aux*aux)%p;
     }
 }
-template ll fastPowMod(ll a, ll b, ll p);
+//template ll fastPowMod(ll a, ll b, ll p);
+template big_int fastPowMod(big_int a, ll b, big_int p);
 template Fpxelem fastPowMod(Fpxelem a, ll b, Fpxelem p);
 
 /**
@@ -58,8 +59,9 @@ template Fpxelem fastPowMod(Fpxelem a, ll b, Fpxelem p);
  *   restrict ourselves to long long integers, it is enough to check with:
  *  a = 2,3,4,5,11,13,17,19,23,29,31 and 37
  */
-bool millerRabin(ll n, int k /*= 35*/){
-    ll s=n-1, r=0, a;
+bool millerRabin(big_int n, int k /*= 35*/){
+    big_int s=n-1, a;
+    ll r=0;
 
     // Discards edge cases for the random generation process
     if(n==2 || n==3) return true;
@@ -193,7 +195,7 @@ T eea (T a, T b, T &x, T &y){
 }
 
 template Fpxelem eea (Fpxelem a, Fpxelem b, Fpxelem &x, Fpxelem &y);
-template ll eea (ll a, ll b, ll &x, ll &y);
+//template ll eea (ll a, ll b, ll &x, ll &y);
 
 template<typename T>
 T gcd(T a, T b){
@@ -223,8 +225,8 @@ T fastPow (T a, ll b){
 				b -= 1;
 			}
 		}
-		return a;
+		return result;
 	}
 	
 }
-template bint fastPow (bint a, ll b);
+template big_int fastPow (big_int a, ll b);

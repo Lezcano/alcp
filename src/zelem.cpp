@@ -3,14 +3,15 @@
 #include "zelem.hpp"
 // Types inlcuded in zelem.hpp
 
-bool compatible(bint lhs, bint rhs){
+bool compatible(big_int lhs, big_int rhs){
     return true;
 }
-const bint unit(bint e){
-    return e >= 0 ? 1 : -1;
+const big_int unit(big_int e){
+    return e >= 0 ? (big_int)1 : (big_int)-1;
 }
-const bint normalForm(bint e){ return e/unit(e);}
+const big_int normalForm(big_int e){ return e/unit(e);}
 
-std::string to_string(bint e){return std::to_string(e);}
-bint getZero(bint e){return 0;}
-bint getOne(bint e){return 1;}
+std::string to_string(big_int e){return std::to_string(e);}
+
+big_int getZero(big_int e){return (big_int)0;}
+big_int getOne(big_int e){return (big_int)1;}

@@ -18,6 +18,6 @@ std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD (Fxelem &pol);
 
 //Part III
 template<typename Fxelem>
-std::vector< Fxelem > splitFactorsDD (const Fxelem &pol);
+std::vector< Fxelem > splitFactorsDD (const Fxelem &pol, int n);
 
 #endif // __FACTORIZATION_FQ

@@ -37,7 +37,7 @@ bool Fpelem::operator!=(const Fpelem &rhs)const{
 
 Fpelem & Fpelem::operator+=(const Fpelem &rhs){
     checkInSameField(rhs);
-    _num = (ll) ((_num + (ull)rhs._num)%getSize());
+    _num = (ll) ((ull)_num + (ull)rhs._num)%getSize();
     return *this;
 }
 
@@ -111,11 +111,6 @@ const Fpelem Fpelem::operator/(const Fpelem &rhs) const{
     // that will be done in the /= operator
     return Fpelem(*this) /= rhs;
 }
-
-int deg(const Fpelem &e){return e._num;}
-
-// In a field the division has reminder zero
-const Fpelem Fpelem::operator%(const Fpelem &rhs) const{return _f->get(0);}
 
 ll Fpelem::getSize()const{return _f->getSize();}
 

@@ -24,11 +24,11 @@ Fq::Fq(ll p, int n): _p(p), _n(n), _base(p), _mod(_base.get(0)){ // _mod must be
     v[0] = _base.get(1);
     // Hopefully this ends in a reasonable amount of time
     //  Maybe set a timer?
-    //  The probability of getting an irreducible polinomial
+    //  The probability of getting an irreducible polynomial
     //   in each iteration is 1/n
     while(!Fpxelem(v).irreducible()){
         increment(v);
-        if(v[0] == 0) // It's divisible by the polinomial p(x) = x
+        if(v[0] == 0) // It's divisible by the polynomial p(x) = x
             increment(v);
     }
     _mod = Fpxelem(v);
