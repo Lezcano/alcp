@@ -202,7 +202,7 @@ T gcd(T a, T b){
     T x = getZero(a), y = getZero(b);
     return eea(a,b,x,y);
 }
-template ll gcd(ll a, ll b);
+template big_int gcd(big_int a, big_int b);
 template Fpxelem gcd(Fpxelem a, Fpxelem b);
 
 

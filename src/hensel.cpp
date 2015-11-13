@@ -1,4 +1,8 @@
 #include "fp.hpp"
+#include "fpelem.hpp"
+#include "fpxelem.hpp"
+#include "zelem.hpp"
+#include "zxelem.hpp"
 #include "types.hpp"
 
 

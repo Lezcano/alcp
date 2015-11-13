@@ -6,6 +6,9 @@
 #include "fp.hpp"
 #include "fpelem.hpp"
 #include "fpxelem.hpp"
+#include "fq.hpp"
+#include "fqelem.hpp"
+#include "fqxelem.hpp"
 #include "generalPurpose.hpp"
 #include "types.hpp"
 #include <iostream> //TODO Quitar
