@@ -20,7 +20,7 @@
  *  O((b*log(a))) supposing multiplication in O(1)
  */
 template<typename T, typename U>
-T fastPowMod(T a, U b, T p){
+T fastPowMod(const T&a, U b, const T& p){
     T aux = a;
     T result = getOne(a);
     while (b != 0){
@@ -169,7 +169,7 @@ T gcd(T a, T b){
 
 
 template<typename T, typename U>
-T fastPow (T a, U b){
+T fastPow (const T& a, U b){
     T aux = a;
     T result = getOne(a);
     while (b != 0){
@@ -186,11 +186,14 @@ T fastPow (T a, U b){
     return result;
 }
 
-template big_int fastPowMod<big_int, big_int>(big_int a, big_int b, big_int p);
-template Fpxelem fastPowMod<Fpxelem, big_int>(Fpxelem a, big_int b, Fpxelem p);
+template big_int fastPowMod<big_int, big_int>(const big_int &a, big_int b, const big_int & p);
+template Fpxelem fastPowMod<Fpelem, big_int>(const Fpelem &a, big_int b, const Fpelem& p);
+template Fqxelem fastPowMod<Fqelem, big_int>(const Fqelem &a, big_int b, const Fqelem& p);
 
-template big_int fastPow<big_int, int>(big_int a, int b);
-template big_int fastPow<big_int, big_int>(big_int a, big_int b);
+template big_int fastPow<big_int, int>(const big_int& a, int b);
+template big_int fastPow<big_int, big_int>(const big_int& a, big_int b);
+template big_int fastPow<Fpelem, big_int>(const Fpelem& a, big_int b);
+template big_int fastPow<Fqelem, big_int>(const Fqelem& a, big_int b);
 
 template big_int gcd<big_int>(big_int a, big_int b);
 template Fpxelem gcd<Fpxelem>(Fpxelem a, Fpxelem b);

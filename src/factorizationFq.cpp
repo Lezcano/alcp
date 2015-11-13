@@ -52,6 +52,7 @@
 template<typename T>
 using matrix = std::vector< std::vector<T> >;
 
+template<typename Fxelem>
 matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol);
 
 //Part I
@@ -61,8 +62,8 @@ matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol);
  * */
 template <typename Fxelem>
 std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (const Fxelem & a) {
-	int i = 1;
-	Fxelem result;
+	unsigned int i = 1;
+	std::vector< std::pair< Fxelem, unsigned int> >  result;
 	Fxelem b = a.derivative();
 	if (b != 0){
 		Fxelem c = gcd (a, b);
@@ -70,7 +71,7 @@ std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (const Fxelem & a) 
 		while (w != 1){
 			Fxelem y = gcd (w, c);
 			Fxelem z = w/y;
-			result.push_back(std::make_pair< Fxelem, unsigned int >(z, i));
+			result.push_back(std::make_pair(z, i));
 			i++;
 			w = y;
 			c = c/y;
@@ -227,7 +228,7 @@ std::vector< Fxelem > splitFactorsDD (const Fxelem &pol, int n){
 	for (int i = polDeg; i<= 2*polDeg-2; ++i){
 		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
 		auto aux = r[polDeg-1];
-		for (ll j = polDeg-1; j >= 1; --j){
+		for (big_int j = polDeg-1; j >= 1; --j){
 			r[j] = r[j-1]-aux*pol[j];
 		}
 		r[0] = -aux*pol[0];
@@ -288,7 +289,7 @@ matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol) {
 	for (big_int i = 1; i<= (n-1)*q; ++i){ //TODO ¿está bien definida la multiplicación (n-1)*q ? (n es un int)
 		// r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
 		auto aux = r[n-1];
-		for (ll j = n-1; j >= 1; --j){
+		for (big_int j = n-1; j >= 1; --j){
 			r[j] = r[j-1]-aux*pol[j];
 		}
 		r[0] = -aux*pol[0];
@@ -411,18 +412,19 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol){
 	}
 	return factors;
 }
-
+/*
+template <typename Fxelem>
 std::vector< std::pair< Fxelem, unsigned int> > factorBerlekamp (const Fxelem & a){
 	return NULL;
 }
 
 
-
+template <typename Fxelem>
 std::vector< std::pair< Fxelem, unsigned int> > factorCantorZassenhaus (const Fxelem & a){
 	return NULL;
 }
 
-
+*/
 
 template std::vector< std::pair< Fpxelem, unsigned int> > squareFreeFF (const Fpxelem & a);
 template std::vector< std::pair< Fpxelem, unsigned int> > partialFactorDD ( Fpxelem &pol);
@@ -430,8 +432,8 @@ template std::vector< Fpxelem > splitFactorsDD (const Fpxelem &pol, int n);
 template Fpxelem randomPol (const typename Fpxelem::F &field, int degree);
 template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);
 
-template std::vector< std::pair< Fpxelem, unsigned int> > factorBerlekamp (const Fpxelem & a);
-template std::vector< std::pair< Fpxelem, unsigned int> > factorCantorZassenhaus (const Fpxelem & a);
+//template std::vector< std::pair< Fpxelem, unsigned int> > factorBerlekamp (const Fpxelem & a);
+//template std::vector< std::pair< Fpxelem, unsigned int> > factorCantorZassenhaus (const Fpxelem & a);
 
 template std::vector< std::pair< Fqxelem, unsigned int> > squareFreeFF (const Fqxelem & a);
 template std::vector< std::pair< Fqxelem, unsigned int> > partialFactorDD ( Fqxelem &pol);
@@ -439,5 +441,5 @@ template std::vector< Fqxelem > splitFactorsDD (const Fqxelem &pol, int n);
 template Fqxelem randomPol (const typename Fqxelem::F &field, int degree);
 template std::vector< Fqxelem > berlekamp_simple (const Fqxelem &pol);
 
-template std::vector< std::pair< Fqxelem, unsigned int> > factorBerlekamp (const Fqxelem & a);
-template std::vector< std::pair< Fqxelem, unsigned int> > factorCantorZassenhaus (const Fqxelem & a);
+//template std::vector< std::pair< Fqxelem, unsigned int> > factorBerlekamp (const Fqxelem & a);
+//template std::vector< std::pair< Fqxelem, unsigned int> > factorCantorZassenhaus (const Fqxelem & a);

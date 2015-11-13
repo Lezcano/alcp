@@ -177,7 +177,7 @@ class PolynomialRing{
         const Felem & operator[](int i) const {return _v[i];}
         Felem & operator[](int i) {return _v[i];}
 
-        const Fxelem derivative(){
+        const Fxelem derivative()const{
             if(this->deg()==0)
                 return Fxelem(0);
             std::vector<Felem> v(_v);
