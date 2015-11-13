@@ -13,7 +13,7 @@ std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (Fxelem a);
 
 //Part II
 template<typename Fxelem>
-std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD (Fxelem &pol);
+std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD (Fxelem pol);
 
 //Part III
 template<typename Fxelem>

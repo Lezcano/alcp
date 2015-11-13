@@ -121,7 +121,7 @@ std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (Fxelem a) {
  *
  * */
 template<typename Fxelem>
-std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem &pol){//TODO: Copiar el polinomio en vez de pasarlo por referencia??
+std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem pol){
 	int n = pol.deg();
 	auto mat = formMatrix(pol);
 
@@ -427,7 +427,7 @@ std::vector< std::pair< Fxelem, unsigned int> > factorCantorZassenhaus (const Fx
 */
 
 template std::vector< std::pair< Fpxelem, unsigned int> > squareFreeFF (Fpxelem a);
-template std::vector< std::pair< Fpxelem, unsigned int> > partialFactorDD ( Fpxelem &pol);
+template std::vector< std::pair< Fpxelem, unsigned int> > partialFactorDD (Fpxelem pol);
 template std::vector< Fpxelem > splitFactorsDD (const Fpxelem &pol, int n);
 template Fpxelem randomPol (const typename Fpxelem::F &field, int degree);
 template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);
@@ -436,7 +436,7 @@ template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);
 //template std::vector< std::pair< Fpxelem, unsigned int> > factorCantorZassenhaus (const Fpxelem & a);
 
 template std::vector< std::pair< Fqxelem, unsigned int> > squareFreeFF (Fqxelem a);
-template std::vector< std::pair< Fqxelem, unsigned int> > partialFactorDD ( Fqxelem &pol);
+template std::vector< std::pair< Fqxelem, unsigned int> > partialFactorDD (Fqxelem pol);
 template std::vector< Fqxelem > splitFactorsDD (const Fqxelem &pol, int n);
 template Fqxelem randomPol (const typename Fqxelem::F &field, int degree);
 template std::vector< Fqxelem > berlekamp_simple (const Fqxelem &pol);
