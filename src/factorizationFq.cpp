@@ -61,7 +61,7 @@ matrix<typename Fxelem::Felem> formMatrix (const Fxelem &pol);
  *
  * */
 template <typename Fxelem>
-std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (const Fxelem & a) {
+std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (Fxelem a) {
 	unsigned int i = 1;
 	std::vector< std::pair< Fxelem, unsigned int> >  result;
 	Fxelem b = a.derivative();
@@ -77,7 +77,7 @@ std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (const Fxelem & a) 
 			c = c/y;
 		}
 		if  (c != 1){
-			// c is now of the form: c_0 + c_p x^p + ... c_{kp} x^{kp} 
+			// c is now of the form: c_0 + c_p x^p + ... c_{kp} x^{kp}
 			big_int exponent = fastPow (c.getField().getP(), c.getField().getM()-1);
 			//This for computes c = c^{1/p}
 			for (int j = 0; j < c.deg(); ++j )
@@ -426,7 +426,7 @@ std::vector< std::pair< Fxelem, unsigned int> > factorCantorZassenhaus (const Fx
 
 */
 
-template std::vector< std::pair< Fpxelem, unsigned int> > squareFreeFF (const Fpxelem & a);
+template std::vector< std::pair< Fpxelem, unsigned int> > squareFreeFF (Fpxelem a);
 template std::vector< std::pair< Fpxelem, unsigned int> > partialFactorDD ( Fpxelem &pol);
 template std::vector< Fpxelem > splitFactorsDD (const Fpxelem &pol, int n);
 template Fpxelem randomPol (const typename Fpxelem::F &field, int degree);
@@ -435,7 +435,7 @@ template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);
 //template std::vector< std::pair< Fpxelem, unsigned int> > factorBerlekamp (const Fpxelem & a);
 //template std::vector< std::pair< Fpxelem, unsigned int> > factorCantorZassenhaus (const Fpxelem & a);
 
-template std::vector< std::pair< Fqxelem, unsigned int> > squareFreeFF (const Fqxelem & a);
+template std::vector< std::pair< Fqxelem, unsigned int> > squareFreeFF (Fqxelem a);
 template std::vector< std::pair< Fqxelem, unsigned int> > partialFactorDD ( Fqxelem &pol);
 template std::vector< Fqxelem > splitFactorsDD (const Fqxelem &pol, int n);
 template Fqxelem randomPol (const typename Fqxelem::F &field, int degree);

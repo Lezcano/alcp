@@ -9,7 +9,7 @@ std::vector< Fxelem > berlekamp_simple (const Fxelem &pol);
 
 //Part I
 template<typename Fxelem>
-std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (const Fxelem & a);
+std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (Fxelem a);
 
 //Part II
 template<typename Fxelem>
