@@ -75,6 +75,9 @@ const Fpelem operator+(big_int lhs, const Fpelem & rhs);
 Fpelem & operator-=(Fpelem &lhs, big_int rhs);
 const Fpelem operator-(const Fpelem &lhs, big_int rhs);
 const Fpelem operator-(big_int lhs, const Fpelem & rhs);
+Fpelem & operator*=(Fpelem &lhs, big_int rhs);
+const Fpelem operator*(const Fpelem &lhs, big_int rhs);
+const Fpelem operator*(big_int lhs, const Fpelem & rhs);
 
 bool compatible(const Fpelem &lhs, const Fpelem &rhs);
 const Fpelem getZero(const Fpelem &e);
