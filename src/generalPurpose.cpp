@@ -34,7 +34,6 @@ T fastPowMod(const T&a, U b, const T& p){
         }
         else{
             result = (result*aux)%p;
-            aux = (aux*aux)%p;
             b -= 1;
         }
     }
@@ -139,7 +138,8 @@ T eea (T a, T b, T &x, T &y){
     }
     a = normalForm(a);
     b = normalForm(b);
-
+    std::cout << a << std::endl;
+    std::cout << b << std::endl;
     T ua = unit(a), ub = unit(b);
 
       x = getOne(a); y = getZero(b);
@@ -148,7 +148,8 @@ T eea (T a, T b, T &x, T &y){
         // The following invariant holds:
         //  a = x*|a|+y*|b|
         //  b = xx*|a|+yy*|b|
-
+    	std::cout << a << std::endl;
+    	std::cout << b << std::endl;
         // Compute quotient and reminder
         T q = a/b, r = a-q*b;
 
@@ -183,7 +184,6 @@ T fastPow (const T& a, U b){
         }
         else{
             result *= aux;
-            aux *= aux;
             b -= 1;
         }
     }

@@ -1,10 +1,16 @@
-#include "fp.hpp"
-#include "fpelem.hpp"
-#include "fpxelem.hpp"
-#include "zelem.hpp"
-#include "zxelem.hpp"
-#include "types.hpp"
+//#include "fp.hpp"
+//#include "fpelem.hpp"
+//#include "fpxelem.hpp"
+//#include "zelem.hpp"
+//#include "zxelem.hpp"
+//#include "types.hpp"
+//#include "factorizationFq.hpp"
+//#include <vector>
 
+
+std::vector< pair < Zx, unsigned int > > squareFreeFactChar0(const & Zx){
+	
+}
 
 /**
  * Input:
@@ -61,4 +67,16 @@ bool HenselLifting (const Zx &polynomial, int p, const Fpxelem &u1, const Fpxele
 		return true;
 	}
 	return false;
+}
+unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const std::vector<unsigned int> & posibilitiesSizes, unsigned int intersectionSize){
+	
+}
+
+std::vector< pair < Zx, unsigned int > factorizationHensel(const Zx & pol, unsigned int frequencyHeuristicCall){
+	auto aux squareFreeFactChar0 (pol);
+	std::vector< pair < Zx, unsigned int > result;
+	for (auto pair: aux){
+					
+	}
+	return result;
 }
