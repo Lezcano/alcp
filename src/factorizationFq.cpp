@@ -54,9 +54,10 @@ using matrix = std::vector< std::vector<T> >;
 
 
 template <typename Fxelem>
-Fxelem squareFreeFF (const Fxelem & a) {
+//Outputs a vector of pairs with the factors and multiplicities of the square free factorization (not necesarily sorted by multiplicity)
+std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (const Fxelem & a) {
 	int i = 1;
-	Fxelem result = 1;
+	Fxelem result;
 	Fxelem b = a.derivative();
 	if (b != 0){
 		Fxelem c = gcd (a, b);
@@ -64,23 +65,45 @@ Fxelem squareFreeFF (const Fxelem & a) {
 		while (w != 1){
 			Fxelem y = gcd (w, c);
 			Fxelem z = w/y;
-			result *= fastPow(z, i);
+			result.push_back(make_pair< Fxelem, unsigned int >(z, i));
 			i++;
 			w = y;
 			c = c/y;
 		}
 		if  (c != 1){
-			
-			result *= fastPow(squareFreeFF(c), p);
+			big_int exponent = fastPow (a.getP(), a.getM()-1);
+			//This for computes c = c^{1/p}
+			for (int j = 0; j < c.deg(); ++j )
+				if (c[j] != 0)
+					c[j] = fastPow(c[j], exponent);
+			auto aux = squareFreeFF(c);
+			big_int p = c.getP();
+			for (auto pair: aux){
+				pair.second *= p;
+			}
+			result.insert(
+				result.end(),
+				std::make_move_iterator(aux.begin()),
+				std::make_move_iterator(aux.end())
+			);
 		}
 	}
 	else{ // a is of the form: a_0 + a_p x^p + ... a_{kp} x^{kp} (because its derivative is zero)
-		//This is a = a^{1/p}
 		big_int exponent = fastPow (a.getP(), a.getM()-1);
-		for (big_int j = 0; j < a.deg(); ++j )
+		//This for computes a = a^{1/p}
+		for (int j = 0; j < a.deg(); ++j )
 			if (a[j] != 0)
 				a[j] = fastPow(a[j], exponent);
-		result *= fastPow(squareFreeFF(a), p);
+		auto aux = squareFreeFF(a);
+		big_int p = a.getP();
+		for (auto pair: aux){
+			pair.second *= p;
+		}
+		result.insert(
+			result.end(),
+			std::make_move_iterator(aux.begin()),
+			std::make_move_iterator(aux.end())
+		);
 	}
 	return result;
 }
@@ -392,11 +415,13 @@ template std::vector< Fxelem > splitFactorsDD (const Fxelem &pol);
 template std::vector< Fxelem > partialFactorDD (const Fxelem &pol);
 
 */
+template std::vector< std::pair< Fpxelem, unsigned int> > squareFreeFF (const Fpxelem & a);
 template std::vector< std::pair< Fpxelem, unsigned int> > partialFactorDD ( Fpxelem &pol);
 template std::vector< Fpxelem > splitFactorsDD (const Fpxelem &pol, int n);
 template Fpxelem randomPol (const typename Fpxelem::F &field, int degree);
 template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);
 
+template std::vector< std::pair< Fqxelem, unsigned int> > squareFreeFF (const Fqxelem & a);
 template std::vector< std::pair< Fqxelem, unsigned int> > partialFactorDD ( Fqxelem &pol);
 template std::vector< Fqxelem > splitFactorsDD (const Fqxelem &pol, int n);
 template Fqxelem randomPol (const typename Fqxelem::F &field, int degree);
