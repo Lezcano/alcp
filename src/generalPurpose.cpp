@@ -4,6 +4,10 @@
 #include "zelem.hpp" // getZero y tal
 #include "fpxelem.hpp"
 #include "fqxelem.hpp"
+#include "fpelem.hpp"
+#include "fqelem.hpp"
+#include "fp.hpp"
+#include "fq.hpp"
 
 /**
  * Exponentiation by Squaring
