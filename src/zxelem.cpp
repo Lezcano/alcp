@@ -20,15 +20,15 @@ bool compatible(const Zxelem &lhs, const Zxelem &rhs){ return true; }
 
 big_int normInf(const Zxelem &e){
     big_int ret = e[0];
-    for(int i=1;i<=e.deg();++i)
+    for(unsigned int i=1;i<=e.deg();++i)
         if(e[i] > ret)
             ret = e[i];
     return ret;
 }
 
-big_int content(Zxelem e){
+big_int content(const Zxelem & e){
     big_int gcdE = e[0];
-    for(int i=1;i<=e.deg();++i)
+    for(unsigned int i=1;i<=e.deg();++i)
         gcdE = gcd(gcdE, e[i]);
     return gcdE;
 }
