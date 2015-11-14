@@ -1,11 +1,24 @@
 #include "fpxelem.hpp"
 #include "generalPurpose.hpp" // fastPowMod
+#include "zxelem.hpp"
 
 #include <vector>
 // Fpelem included in fpxelem.hpp
 
+// Auxiliary function for the Zxelem ctor
+Fpxelem toFpxelem(const Zxelem &e, big_int p){
+    std::vector<Fpelem> v;
+    auto f = Fp(p);
+    for(int i=0;i<e._v.size();++i)
+        v.push_back(f.get(e._v[i]));
+    return v;
+}
+
+
 Fpxelem::Fpxelem(const Fpelem & e) : PolynomialRing<Fpxelem, Fpelem>(e){}
 Fpxelem::Fpxelem(const std::vector<Fpelem> & v) : PolynomialRing<Fpxelem, Fpelem>(v){}
+Fpxelem::Fpxelem(const Zxelem & e, big_int p) : PolynomialRing<Fpxelem, Fpelem>(toFpxelem(e, p)){
+}
 
 const Fpxelem::F Fpxelem::getField()const{
     return this->lc().getField();

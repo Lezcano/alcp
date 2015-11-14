@@ -4,8 +4,10 @@
 
 #include "fp.hpp"
 #include "fpelem.hpp"
-#include "polRing.hpp"
 #include "zxelem.hpp"
+#include "polRing.hpp"
+
+class Zxelem;
 
 class Fpxelem : public PolynomialRing<Fpxelem, Fpelem>{
     public:
@@ -15,12 +17,13 @@ class Fpxelem : public PolynomialRing<Fpxelem, Fpelem>{
 
         Fpxelem(const Fpelem & e);
         Fpxelem(const std::vector<Fpelem> & v);
+        Fpxelem(const Zxelem & e, big_int p);
 
         bool irreducible()const;
         const F getField()const;
         big_int getSize()const;
 
-        friend Zxelem::Zxelem(const Fpxelem & e);
+        friend class Zxelem;
 
 };
 
