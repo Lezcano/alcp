@@ -174,21 +174,86 @@ class PolynomialRing{
             return Fxelem(static_cast<const Fxelem&>(*this)) %= rhs;
         }
 
+        // Sweet, sweet sugar
+        // Adds commutativity to the operations with the base ring
+        // Just with ADL one cannot add Felem + Fxelem (but you can
+        //  add Fxelem + Felem...)
+
+        friend Fxelem & operator+=(Fxelem &lhs, const Felem &rhs){
+            return lhs += Fxelem(rhs);
+        }
+
+        friend const Fxelem operator+(const Fxelem &lhs, const Felem &rhs){
+            return Fxelem(lhs) += rhs;
+        }
+
+        friend const Fxelem operator+(const Felem &lhs, const Fxelem &rhs){
+            return Fxelem(lhs) += rhs;
+        }
+
+        friend Fxelem & operator-=(Fxelem &lhs, const Felem &rhs){
+            return lhs -= Fxelem(rhs);
+        }
+
+        friend const Fxelem operator-(const Fxelem &lhs, const Felem &rhs){
+            return Fxelem(lhs) -= rhs;
+        }
+
+        friend const Fxelem operator-(const Felem &lhs, const Fxelem &rhs){
+            return Fxelem(lhs) -= rhs;
+        }
+
+        friend Fxelem & operator*=(Fxelem &lhs, const Felem &rhs){
+            return lhs *= Fxelem(rhs);
+        }
+
+        friend const Fxelem operator*(const Fxelem &lhs, const Felem &rhs){
+            return Fxelem(lhs) *= rhs;
+        }
+
+        friend const Fxelem operator*(const Felem &lhs, const Fxelem &rhs){
+            return Fxelem(lhs) *= rhs;
+        }
+
+        friend Fxelem & operator/=(Fxelem &lhs, const Felem &rhs){
+            return lhs /= Fxelem(rhs);
+        }
+
+        friend const Fxelem operator/(const Fxelem &lhs, const Felem &rhs){
+            return Fxelem(lhs) /= rhs;
+        }
+
+        friend bool operator==(const Fxelem &lhs, Felem rhs){
+            return lhs.deg()==0 && lhs.lc()==rhs;
+        }
+
+        friend bool operator==(Felem lhs, const Fxelem &rhs){
+            return rhs == lhs;
+        }
+
+        friend bool operator!=(const Fxelem &lhs, Felem rhs){
+            return !(lhs == rhs);
+        }
+
+        friend bool operator!=(Felem lhs, const Fxelem &rhs ){
+            return !(rhs == lhs);
+        }
+
         const Felem & operator[](int i) const {return _v[i];}
         Felem & operator[](int i) {return _v[i];}
 
         const Fxelem derivative()const{
-			   if(this->deg()==0)
-				   return Fxelem(getZero(this->lc()));
-			   std::vector<Felem> v(_v);
-			   for(int i=1;i<v.size();++i)
-				   v[i-1]=v[i]*i;
-			   v.pop_back();
-			   Fxelem ret(v);
-			   ret.removeTrailingZeros();
+           if(this->deg()==0)
+               return Fxelem(getZero(this->lc()));
+           std::vector<Felem> v(_v);
+           for(int i=1;i<v.size();++i)
+               v[i-1]=v[i]*i;
+           v.pop_back();
+           Fxelem ret(v);
+           ret.removeTrailingZeros();
 
-			   return ret;
-		   }
+           return ret;
+        }
 
         // Leading coefficient
         Felem lc()const{return _v.back();}
@@ -238,6 +303,9 @@ class PolynomialRing{
             return os << to_string(f);
         }
 
+    protected:
+        std::vector<Felem> _v;
+
     private:
         void removeTrailingZeros(){
             auto zero = getZero(this->lc());
@@ -252,9 +320,8 @@ class PolynomialRing{
                 _v.push_back(zero);
         }
 
-
-        std::vector<Felem> _v;
 };
+
 
 
 #endif //  __POL_RING_HPP

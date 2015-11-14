@@ -5,7 +5,7 @@
 #include "fp.hpp"
 #include "fpelem.hpp"
 #include "polRing.hpp"
-
+#include "zxelem.hpp"
 
 class Fpxelem : public PolynomialRing<Fpxelem, Fpelem>{
     public:
@@ -19,6 +19,9 @@ class Fpxelem : public PolynomialRing<Fpxelem, Fpelem>{
         bool irreducible()const;
         const F getField()const;
         big_int getSize()const;
+
+        friend Zxelem::Zxelem(const Fpxelem & e);
+
 };
 
 Fpxelem getZero(const Fpxelem &e);

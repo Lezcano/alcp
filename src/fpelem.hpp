@@ -15,6 +15,7 @@ class Fpelem{
         using F = Fp;
 
         Fpelem ( const Fpelem & );
+        explicit operator big_int() const;
         Fpelem & operator=(const Fpelem &rhs);
 
         Fpelem & operator=(big_int rhs);
