@@ -1,16 +1,17 @@
-//#include "fp.hpp"
-//#include "fpelem.hpp"
-//#include "fpxelem.hpp"
-//#include "zelem.hpp"
-//#include "zxelem.hpp"
-//#include "types.hpp"
-//#include "factorizationFq.hpp"
-//#include <vector>
+#include "fp.hpp"
+#include "fpelem.hpp"
+#include "fpxelem.hpp"
+#include "zelem.hpp"
+#include "zxelem.hpp"
+#include "types.hpp"
+#include "factorizationFq.hpp"
+#include "generalPurpose.hpp"
+#include <vector>
 
 
-std::vector< pair < Zxelem, unsigned int > > squareFreeFactChar0(const & Zxelem){
-	
-}
+//std::vector< pair < Zxelem, unsigned int > > squareFreeFactChar0(const & Zxelem){
+//	
+//}
 
 /**
  * Input:
@@ -35,7 +36,8 @@ std::vector< pair < Zxelem, unsigned int > > squareFreeFactChar0(const & Zxelem)
  *		Sumar polinomios en Z_p[x] con polinomios en Z[x]
  *
  * */
-bool HenselLifting (const Zxelem &polynomial, int p, const Fpxelem &u1, const Fpxelem &w1, big_int bound, Zxelem & u, Zxelem & w){
+bool HenselLifting (const Zxelem &polynomial, int p, const Fpxelem &u1, const Fpxelem &w1, Zxelem & u, Zxelem & w){
+	big_int bound = normInf(polynomial)*fastPow(2, polynomial.deg());
 	big_int leadCoef = polynomial.lc();
 	Zxelem pol = polynomial * leadCoef;
 	Fpxelem::Felem lc(leadCoef);
@@ -68,6 +70,7 @@ bool HenselLifting (const Zxelem &polynomial, int p, const Fpxelem &u1, const Fp
 	}
 	return false;
 }
+/*
 unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const std::vector<unsigned int> & posibilitiesSizes, unsigned int intersectionSize){
 	
 }
@@ -75,8 +78,9 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 std::vector< pair < Zxelem, unsigned int > factorizationHensel(const Zxelem & pol, unsigned int frequencyHeuristicCall){
 	auto aux squareFreeFactChar0 (pol);
 	std::vector< pair < Zxelem, unsigned int > result;
-	for (auto pair: aux){
+	for (auto & pair: aux){
 					
 	}
 	return result;
 }
+*/
