@@ -18,20 +18,19 @@ using namespace std;
 using namespace boost::multiprecision;
 
 int main (){
-	big_int c[4]= {0, -2, 0, 1};
 	vector<big_int> v;
 	vector<Fpelem> u1, w1;
 	for(int i=0;i<=11;++i)
 			v.push_back(c[i]);
 	Fp field(5);
-	Zxelem a(v), b, c;
+	Zxelem a(v), b(field.get(0)), c(field.get(0));
 	u1.push_back(field.get(0));
 	u1.push_back(field.get(1));
 	w1.push_back(field.get(-2));
 	u1.push_back(field.get(0));
 	u1.push_back(field.get(1));
 	Fpxelem u(u1), w(w1);
-	if (HenselLifting(a, 5, u, w, b, c)){
+	if (HenselLifting(a, 5, u, w, b, c){
 		cout << "u: " << b << endl;
 		cout << "w: " << c << endl;
 	}

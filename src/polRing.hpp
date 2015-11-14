@@ -110,20 +110,20 @@ class PolynomialRing{
 
         // Implements long polynomial division
         // Return quotient and reminder in first and second respectively
-        std::pair<Fxelem,Fxelem> div2(const Fxelem &divisor){
-            if(!compatible(static_cast<Fxelem&>(*this),divisor))
+        std::pair<Fxelem,Fxelem> div2(const Fxelem &divisor)const{
+            if(!compatible(static_cast<const Fxelem&>(*this),divisor))
                 throw EOperationUnsupported(
-                        "Polynomials not in the same ring. Error when dividing the polynomials " + to_string(static_cast<Fxelem&>(*this)) +
+                        "Polynomials not in the same ring. Error when dividing the polynomials " + to_string(static_cast<const Fxelem&>(*this)) +
                         " and " + to_string(divisor) +  ".");
 
             if(divisor.deg()==0 && divisor._v[0] == 0)
                 throw EOperationUnsupported("Error. Cannot divide by the polynomial 0");
             if(this->deg() < divisor.deg())
-                return std::make_pair(Fxelem(getZero(this->lc())), static_cast<Fxelem&>(*this));
+                return std::make_pair(Fxelem(getZero(this->lc())), static_cast<const Fxelem&>(*this));
 
             if(divisor.deg() == 0){
-                Fxelem quot = static_cast<Fxelem&>(*this);
-				Fxelem rem(static_cast<Fxelem&>(*this));
+                Fxelem quot (static_cast<const Fxelem&>(*this));
+				Fxelem rem  (static_cast<const Fxelem&>(*this));
                 for(auto &e : quot._v){
                     e/=divisor.lc();
                 }
@@ -131,7 +131,7 @@ class PolynomialRing{
             }
 
             Fxelem quot(getZero(this->lc()));
-            Fxelem rem(static_cast<Fxelem&>(*this));
+            Fxelem rem(static_cast<const Fxelem&>(*this));
 
             while(rem.deg() >= divisor.deg()){
                 std::vector<Felem> paddingZeros(rem.deg() - divisor.deg(), getZero(this->lc()));

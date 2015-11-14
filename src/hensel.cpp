@@ -11,7 +11,7 @@
 
 
 //std::vector< pair < Zxelem, unsigned int > > squareFreeFactChar0(const & Zxelem){
-//	
+//
 //}
 
 /**
@@ -39,7 +39,6 @@
  * */
 bool HenselLifting (const Zxelem &polynomial, unsigned int p, Fpxelem u1, Fpxelem w1, Zxelem & u, Zxelem & w){
 	//if (u1.getField.getP() != w1.getField.getP())
-	//	throw //TODO: que excepción lanzo?
 	big_int bound = normInf(polynomial)*fastPow(2, polynomial.deg());
 	big_int leadCoef = polynomial.lc();
 	Zxelem pol = polynomial * leadCoef;
@@ -60,7 +59,7 @@ bool HenselLifting (const Zxelem &polynomial, unsigned int p, Fpxelem u1, Fpxele
 		Fpxelem c(err/modulus, u1.getField().getP());
 		auto qr = (s*c).div2(w1);
  		u += Zxelem(t*c + qr.first * u1) * modulus;
-		w += Zxelem(qr.second) * modulus; 
+		w += Zxelem(qr.second) * modulus;
 		err = pol - u*w;
 		modulus *= p;
 	}
@@ -75,14 +74,14 @@ bool HenselLifting (const Zxelem &polynomial, unsigned int p, Fpxelem u1, Fpxele
 }
 /*
 unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const std::vector<unsigned int> & posibilitiesSizes, unsigned int intersectionSize){
-	
+
 }
 
 std::vector< pair < Zxelem, unsigned int > factorizationHensel(const Zxelem & pol, unsigned int frequencyHeuristicCall){
 	auto aux squareFreeFactChar0 (pol);
 	std::vector< pair < Zxelem, unsigned int > result;
 	for (auto & pair: aux){
-					
+
 	}
 	return result;
 }
