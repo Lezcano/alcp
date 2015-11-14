@@ -10,13 +10,14 @@
 
 Fpelem::Fpelem ( const Fpelem & other){
     _num = other._num;
+    _p = other._p;
     _f = std::unique_ptr<Fp>(new Fp(*other._f));
 }
 
 Fpelem & Fpelem::operator=(const Fpelem &rhs){
     if(&rhs != this){
         if(*_f != *rhs._f)
-            throw ENotCompatible("Fpelem assignation failed. The elements " + to_string(*this) + " and " + to_string(rhs) + " are in the fields F" + to_string(this->getSize()) + " and F" + to_string(rhs.getSize()) + " respectively.");
+            throw ENotCompatible("Fpelem assignation failed. The elements " + to_string(*this) + " and " + to_string(rhs) + " are in the fields F" + to_string(this->_p) + " and F" + to_string(rhs._p) + " respectively.");
         _num = rhs._num;
     }
     return *this;
@@ -37,7 +38,7 @@ bool Fpelem::operator!=(const Fpelem &rhs)const{
 
 Fpelem & Fpelem::operator+=(const Fpelem &rhs){
     checkInSameField(rhs);
-    this->_num += rhs._num;
+    this->_num = (this->_num + rhs._num) % _p;
     return *this;
 }
 
@@ -63,7 +64,7 @@ const Fpelem Fpelem::operator-(const Fpelem &rhs) const{
 
 Fpelem & Fpelem::operator*=(const Fpelem &rhs){
     checkInSameField(rhs);
-    this->_num *= rhs._num;
+    this->_num = (this->_num * rhs._num) % _p;
     return *this;
 }
 
@@ -78,7 +79,7 @@ const Fpelem Fpelem::inv() const{
     if(_num == 0)
         throw EOperationUnsupported("Error. Zero has no inverse.");
     big_int res, aux;
-    eea(_num, getSize(), res, aux);
+    eea(_num, _p, res, aux);
     return _f->get(res);
 }
 
@@ -95,7 +96,7 @@ const Fpelem Fpelem::operator/(const Fpelem &rhs) const{
     return Fpelem(*this) /= rhs;
 }
 
-big_int Fpelem::getSize()const{return _f->getSize();}
+big_int Fpelem::getSize()const{return _f->_p;}
 
 const Fp Fpelem::getField()const{return *_f;}
 
@@ -109,19 +110,19 @@ bool compatible(const Fpelem &lhs, const Fpelem &rhs){
 
 Fpelem::Fpelem(big_int num, std::unique_ptr<Fp> f): _num(num){
     _f = std::move(f);
-    big_int p = _f->getSize();
-    _num %= p;
+    _p = _f->getSize();
+    _num %= _p;
     if(_num < 0)
-        _num += p;
+        _num += _p;
 }
 
 void Fpelem::checkInSameField(const Fpelem &rhs) const{
     if(this->getField() != rhs.getField())
         throw EOperationUnsupported(
             "Error. Is not possible to add the number " + to_string(_num) +
-            " in F" + to_string(getSize()) +
+            " in F" + to_string(_p) +
             " with the number " + to_string(rhs._num) +
-            " in F" + to_string(rhs.getSize()));
+            " in F" + to_string(rhs._p));
 }
 
 Fpelem & operator+=(Fpelem &lhs, big_int rhs){

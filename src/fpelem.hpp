@@ -62,6 +62,7 @@ class Fpelem{
         void checkInSameField(const Fpelem &rhs) const;
 
         big_int _num;
+        big_int _p;
         std::unique_ptr<F> _f;
 };
 
