@@ -96,7 +96,7 @@ const Fpelem Fpelem::operator/(const Fpelem &rhs) const{
     return Fpelem(*this) /= rhs;
 }
 
-big_int Fpelem::getSize()const{return _f->_p;}
+big_int Fpelem::getSize()const{return this->_p;}
 
 const Fp Fpelem::getField()const{return *_f;}
 
