@@ -138,8 +138,6 @@ T eea (T a, T b, T &x, T &y){
     }
     a = normalForm(a);
     b = normalForm(b);
-    std::cout << a << std::endl;
-    std::cout << b << std::endl;
     T ua = unit(a), ub = unit(b);
 
       x = getOne(a); y = getZero(b);
@@ -148,8 +146,6 @@ T eea (T a, T b, T &x, T &y){
         // The following invariant holds:
         //  a = x*|a|+y*|b|
         //  b = xx*|a|+yy*|b|
-    	std::cout << a << std::endl;
-    	std::cout << b << std::endl;
         // Compute quotient and reminder
         T q = a/b, r = a-q*b;
 

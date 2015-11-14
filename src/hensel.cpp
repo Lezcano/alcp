@@ -8,7 +8,7 @@
 //#include <vector>
 
 
-std::vector< pair < Zx, unsigned int > > squareFreeFactChar0(const & Zx){
+std::vector< pair < Zxelem, unsigned int > > squareFreeFactChar0(const & Zxelem){
 	
 }
 
@@ -24,7 +24,7 @@ std::vector< pair < Zx, unsigned int > > squareFreeFactChar0(const & Zx){
  * Output: Two polynomials u, w (if there are such polynomials) such that
  * 			pol = u*w and such that u' = u1' (mod p) and w' = w1' (mod p)
  * 			where v' stands for the monic normalization of v (mod p)
- * 			If there are not such polynomials ...
+ * 			If there are not such polynomials the function returns false
  */
 
 /* Cosas que necesito
@@ -35,9 +35,9 @@ std::vector< pair < Zx, unsigned int > > squareFreeFactChar0(const & Zx){
  *		Sumar polinomios en Z_p[x] con polinomios en Z[x]
  *
  * */
-bool HenselLifting (const Zx &polynomial, int p, const Fpxelem &u1, const Fpxelem &w1, big_int bound, Zx & u, Zx & w){
+bool HenselLifting (const Zxelem &polynomial, int p, const Fpxelem &u1, const Fpxelem &w1, big_int bound, Zxelem & u, Zxelem & w){
 	big_int leadCoef = polynomial.lc();
-	Zx pol = polynomial * leadCoef;
+	Zxelem pol = polynomial * leadCoef;
 	Fpxelem::Felem lc(leadCoef);
 	u1 *=  (lc * u1.lc().inv()); //This is more efficient than normalize and then multiply by lc
 	w1 *=  (lc * w1.lc().inv());
@@ -45,17 +45,17 @@ bool HenselLifting (const Zx &polynomial, int p, const Fpxelem &u1, const Fpxele
 	Fpxelem s, t;
 	eea (u1, w1, &s, &t);//This must always be 1. Test it!!
 
-	u = Zx(u1); u[u.getSize()] = leadCoef;
-	w = Zx(w1); w[w.getSize()] = leadCoef;
-	Zx err = pol - u*w;
+	u = Zxelem(u1); u[u.getSize()] = leadCoef;
+	w = Zxelem(w1); w[w.getSize()] = leadCoef;
+	Zxelem err = pol - u*w;
 	big_int modulus = p;
 	bound = 2*bound*leadCoef;
 
 	while (err != 0 && modulus < bound ){
 		Fpxelem c(err/modulus);
 		pair< Fpxelem, Fpxelem > qr = div2 (s*c, w1);
- 		u += Zx(t*c + qr.first * u1) * modulus;
-		w += Zx(qr.second) * modulus; 
+ 		u += Zxelem(t*c + qr.first * u1) * modulus;
+		w += Zxelem(qr.second) * modulus; 
 		err = pol - u*w;
 		modulus *= p;
 	}
@@ -72,9 +72,9 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 	
 }
 
-std::vector< pair < Zx, unsigned int > factorizationHensel(const Zx & pol, unsigned int frequencyHeuristicCall){
+std::vector< pair < Zxelem, unsigned int > factorizationHensel(const Zxelem & pol, unsigned int frequencyHeuristicCall){
 	auto aux squareFreeFactChar0 (pol);
-	std::vector< pair < Zx, unsigned int > result;
+	std::vector< pair < Zxelem, unsigned int > result;
 	for (auto pair: aux){
 					
 	}

@@ -30,7 +30,8 @@ bool Fpxelem::irreducible()const{
 Fpxelem getZero(const Fpxelem &e){return Fpxelem(e.getField().get(0));}
 Fpxelem getOne(const Fpxelem &e){return Fpxelem(e.getField().get(1));}
 
-const Fpelem unit(const Fpxelem &e){ return e.lc(); }
+const Fpelem unit(const Fpxelem &e){
+	return e.lc(); }
 
 bool compatible(const Fpxelem &lhs, const Fpxelem &rhs){
     return lhs.getField()==rhs.getField();

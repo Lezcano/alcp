@@ -10,7 +10,7 @@ std::vector< std::pair< Fxelem, unsigned int> > factorizationBerlekamp (const Fx
 
 //It returns the factors and their multiplicity
 template<typename Fxelem>
-std::vector< std::pair< Fpxelem, unsigned int> > factorizationCantorZassenhaus (const Fpxelem & a);
+std::vector< std::pair< Fxelem, unsigned int> > factorizationCantorZassenhaus (const Fxelem & a);
 
 template<typename Fxelem>
 std::vector< Fxelem > berlekamp_simple (const Fxelem &pol);
