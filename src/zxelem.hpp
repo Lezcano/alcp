@@ -24,6 +24,6 @@ Zxelem getOne(const Zxelem &e);
 const big_int unit(const Zxelem &e);
 bool compatible(const Zxelem &lhs, const Zxelem &rhs);
 big_int normInf(const Zxelem &e);
-Zxelem content(const Zxelem &e);
+big_int content(const Zxelem &e);
 
 #endif

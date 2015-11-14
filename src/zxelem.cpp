@@ -26,11 +26,9 @@ big_int normInf(const Zxelem &e){
     return ret;
 }
 
-Zxelem content(Zxelem e){
+big_int content(Zxelem e){
     big_int gcdE = e[0];
     for(int i=1;i<=e.deg();++i)
         gcdE = gcd(gcdE, e[i]);
-    for(int i=0;i<=e.deg();++i)
-        e[i]/=gcdE;
-    return e;
+    return gcdE;
 }
