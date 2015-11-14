@@ -14,6 +14,9 @@ Fpelem::Fpelem ( const Fpelem & other){
     _f = std::unique_ptr<Fp>(new Fp(*other._f));
 }
 
+
+Fpelem::operator big_int() const { return _num; }
+
 Fpelem & Fpelem::operator=(const Fpelem &rhs){
     if(&rhs != this){
         if(*_f != *rhs._f)
