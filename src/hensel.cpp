@@ -57,7 +57,7 @@ bool HenselLifting (const Zxelem &polynomial, unsigned int p, Fpxelem u1, Fpxele
 	bound = 2*bound*leadCoef;
 
 	while (err != 0 && modulus < bound ){
-		Fpxelem c(err/modulus);
+		Fpxelem c(err/modulus, u1.getField().getP());
 		auto qr = (s*c).div2(w1);
  		u += Zxelem(t*c + qr.first * u1) * modulus;
 		w += Zxelem(qr.second) * modulus; 

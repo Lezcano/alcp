@@ -9,7 +9,7 @@
 Fpxelem toFpxelem(const Zxelem &e, big_int p){
     std::vector<Fpelem> v;
     auto f = Fp(p);
-    for(int i=0;i<e._v.size();++i)
+    for(unsigned int i=0;i<e._v.size();++i)
         v.push_back(f.get(e._v[i]));
     return v;
 }
