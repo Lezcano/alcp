@@ -13,11 +13,32 @@
 #include "exceptions.hpp"
 #include "factorizationFq.hpp"
 #include "integerCRA.hpp"
+#include "hensel.hpp"
 using namespace std;
 using namespace boost::multiprecision;
 
 int main (){
+	big_int c[4]= {0, -2, 0, 1};
+	vector<big_int> v;
+	vector<Fpelem> u1, w1;
+	for(int i=0;i<=11;++i)
+			v.push_back(c[i]);
+	Fp field(5);
+	Zxelem a(v), b, c;
+	u1.push_back(field.get(0));
+	u1.push_back(field.get(1));
+	w1.push_back(field.get(-2));
+	u1.push_back(field.get(0));
+	u1.push_back(field.get(1));
+	Fpxelem u(u1), w(w1);
+	if (HenselLifting(a, 5, u, w, b, c)){
+		cout << "u: " << b << endl;
+		cout << "w: " << c << endl;
+	}
+	else
+		cout << "No such factorization" << endl;
 
+/*
 	int c[12]= {1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1};
 	Fp field(3);
 	vector<Fpelem> v;
@@ -32,5 +53,6 @@ int main (){
 	for (auto &pair : factors){
 			cout << "(" << pair.first << ")^" << pair.second<< endl;
 	}
-
+*/
 }
+
