@@ -7,6 +7,7 @@
 #include "factorizationFq.hpp"
 #include "generalPurpose.hpp"
 #include <vector>
+#include <utility>
 
 
 //std::vector< pair < Zxelem, unsigned int > > squareFreeFactChar0(const & Zxelem){
@@ -36,26 +37,28 @@
  *		Sumar polinomios en Z_p[x] con polinomios en Z[x]
  *
  * */
-bool HenselLifting (const Zxelem &polynomial, int p, const Fpxelem &u1, const Fpxelem &w1, Zxelem & u, Zxelem & w){
+bool HenselLifting (const Zxelem &polynomial, unsigned int p, Fpxelem u1, Fpxelem w1, Zxelem & u, Zxelem & w){
+	//if (u1.getField.getP() != w1.getField.getP())
+	//	throw //TODO: que excepción lanzo?
 	big_int bound = normInf(polynomial)*fastPow(2, polynomial.deg());
 	big_int leadCoef = polynomial.lc();
 	Zxelem pol = polynomial * leadCoef;
-	Fpxelem::Felem lc(leadCoef);
+	Fpxelem::Felem lc = u1.getField().get(leadCoef);
 	u1 *=  (lc * u1.lc().inv()); //This is more efficient than normalize and then multiply by lc
 	w1 *=  (lc * w1.lc().inv());
 
-	Fpxelem s, t;
-	eea (u1, w1, &s, &t);//This must always be 1. Test it!!
+	Fpxelem s(u1.getField().get(0)), t(u1.getField().get(0)); //This is a random value because s & t must be initialized
+	eea (u1, w1, s, t);//This must always be 1. Test it!!
 
-	u = Zxelem(u1); u[u.getSize()] = leadCoef;
-	w = Zxelem(w1); w[w.getSize()] = leadCoef;
+	u = Zxelem(u1); u[u.deg()] = leadCoef;
+	w = Zxelem(w1); w[w.deg()] = leadCoef;
 	Zxelem err = pol - u*w;
 	big_int modulus = p;
 	bound = 2*bound*leadCoef;
 
 	while (err != 0 && modulus < bound ){
 		Fpxelem c(err/modulus);
-		pair< Fpxelem, Fpxelem > qr = div2 (s*c, w1);
+		auto qr = (s*c).div2(w1);
  		u += Zxelem(t*c + qr.first * u1) * modulus;
 		w += Zxelem(qr.second) * modulus; 
 		err = pol - u*w;
@@ -63,7 +66,7 @@ bool HenselLifting (const Zxelem &polynomial, int p, const Fpxelem &u1, const Fp
 	}
 
 	if (err == 0){
-		big_int delta = cont(u);
+		big_int delta = content(u);
 		u /= delta;
 		w /= (leadCoef / delta); //delta must be a divisor of leadCoef (Test it!!)
 		return true;
