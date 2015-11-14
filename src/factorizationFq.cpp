@@ -68,6 +68,7 @@ std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (Fxelem a) {
 	std:: cout << b << std::endl;
 	if (b != 0){
 		Fxelem c = gcd (a, b);
+		std:: cout << c << std::endl;
 		Fxelem w = a/c;
 		while (w != 1){
 			Fxelem y = gcd (w, c);
@@ -421,14 +422,14 @@ std::vector< std::pair< Fxelem, unsigned int> > factorizationBerlekamp (const Fx
 	for (auto pair: aux){
 		auto aux2 = berlekamp_simple(pair.first);
 		for (auto factor: aux2){
-			result.push_back(make_pair(factor, pair.second));
+			result.push_back(std::make_pair(factor, pair.second));
 		}
 	}
 	return result;
 }
 
 template <typename Fxelem>
-std::vector< std::pair< Fxelem, unsigned int> > factorizationCantorZassenhaus (const Fxelem & a){
+std::vector< std::pair< Fxelem, unsigned int> > factorizationCantorZassenhaus (const Fxelem & pol){
 	auto aux = squareFreeFF(pol);
 	std::vector< std::pair< Fxelem, unsigned int> > result;
 	for (auto pair: aux){
@@ -436,7 +437,7 @@ std::vector< std::pair< Fxelem, unsigned int> > factorizationCantorZassenhaus (c
 		for (auto elem: polAndDegree){
 			auto aux2 = splitFactorsDD(elem.first, elem.second);
 			for (auto factor: aux2){
-				result.push_back(make_pair(factor, pair.second));
+				result.push_back(std::make_pair(factor, pair.second));
 			}
 		}
 	}
