@@ -1,5 +1,6 @@
 #include "zxelem.hpp"
 #include "fpxelem.hpp"
+#include "generalPurpose.hpp" // gcd
 
 #include <vector>
 #include <climits>
@@ -19,8 +20,17 @@ bool compatible(const Zxelem &lhs, const Zxelem &rhs){ return true; }
 
 big_int normInf(const Zxelem &e){
     big_int ret = e[0];
-    for(int i=1;i<e.deg()+1;++i)
+    for(int i=1;i<=e.deg();++i)
         if(e[i] > ret)
             ret = e[i];
     return ret;
+}
+
+Zxelem content(Zxelem e){
+    big_int gcdE = e[0];
+    for(int i=1;i<=e.deg();++i)
+        gcdE = gcd(gcdE, e[i]);
+    for(int i=0;i<=e.deg();++i)
+        e[i]/=gcdE;
+    return e;
 }
