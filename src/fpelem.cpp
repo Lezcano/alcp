@@ -157,11 +157,6 @@ Fpelem & operator*=(Fpelem &lhs, big_int rhs){
 }
 
 const Fpelem operator*(const Fpelem &lhs, big_int rhs){
-	std::cout << lhs << std::endl;
-	std::cout << rhs << std::endl;
-	std::cout << lhs.getField().get(rhs) << std::endl;
-	std::cout << lhs*lhs.getField().get(rhs)<< std::endl;
-	lhs*lhs.getField().get(rhs);
 	return lhs.getField().get(rhs)*lhs ;
 }
 

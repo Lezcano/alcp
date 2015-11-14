@@ -19,14 +19,17 @@ using namespace boost::multiprecision;
 int main (){
 
 	int c[12]= {1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1};
-	Fp field(11);
+	Fp field(3);
 	vector<Fpelem> v;
 	for(int i=0;i<=11;++i)
 		v.push_back(field.get(c[i]));
-	Fpxelem a(v);
-	cout << a << endl;
-	auto factors = squareFreeFF (a);
-	for (auto pair : factors){
+	vector<Fpelem> w;
+	w.push_back(field.get(1));
+	w.push_back(field.get(1));
+	Fpxelem a(v), b(w);
+	a *= b*b*b;
+	auto factors = factorizationBerlekamp (a);
+	for (auto &pair : factors){
 			cout << "(" << pair.first << ")^" << pair.second<< endl;
 	}
 

@@ -65,29 +65,33 @@ std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (Fxelem a) {
 	unsigned int i = 1;
 	std::vector< std::pair< Fxelem, unsigned int> >  result;
 	Fxelem b = a.derivative();
-	std:: cout << b << std::endl;
 	if (b != 0){
 		Fxelem c = gcd (a, b);
-		std:: cout << c << std::endl;
 		Fxelem w = a/c;
 		while (w != 1){
 			Fxelem y = gcd (w, c);
 			Fxelem z = w/y;
-			result.push_back(std::make_pair(z, i));
+			if (z!= 1)
+				result.push_back(std::make_pair(z, i));
 			i++;
 			w = y;
 			c = c/y;
 		}
 		if  (c != 1){
-			// c is now of the form: c_0 + c_p x^p + ... c_{kp} x^{kp}
-			big_int exponent = fastPow (c.getField().getP(), c.getField().getM()-1);
-			//This for computes c = c^{1/p}
-			for (int j = 0; j < c.deg(); ++j )
-				if (c[j] != 0)
-					c[j] = fastPow(c[j], exponent);
-			auto aux = squareFreeFF(c);
 			big_int p = c.getField().getP();
-			for (auto pair: aux){
+			// c is now of the form: c_0 + c_p x^p + ... c_{kp} x^{kp}
+			big_int exponent = fastPow (p, c.getField().getM()-1);
+			//This for computes c = c^{1/p}
+			std::vector<typename Fxelem::Felem> rootPOfC;
+			for (int j = 0; j <= c.deg(); j+=p )
+				if (c[j] != 0)
+					rootPOfC.push_back (fastPow(c[j], exponent));
+				else{
+					rootPOfC.push_back(c.getField().get(0));
+				}
+			auto aux = squareFreeFF(Fxelem(rootPOfC));
+
+			for (auto &pair: aux){
 				pair.second *= p;
 			}
 			result.insert(
@@ -98,14 +102,19 @@ std::vector< std::pair< Fxelem, unsigned int> > squareFreeFF (Fxelem a) {
 		}
 	}
 	else{ // a is of the form: a_0 + a_p x^p + ... a_{kp} x^{kp} (because its derivative is zero)
-		big_int exponent = fastPow (a.getField().getP(), a.getField().getM()-1);
-		//This for computes a = a^{1/p}
-		for (int j = 0; j < a.deg(); ++j )
-			if (a[j] != 0)
-				a[j] = fastPow(a[j], exponent);
-		auto aux = squareFreeFF(a);
 		big_int p = a.getField().getP();
-		for (auto pair: aux){
+		big_int exponent = fastPow (p, a.getField().getM()-1);
+		//This for computes a = a^{1/p}
+		std::vector<typename Fxelem::Felem> rootPOfA;
+		for (int j = 0; j <= a.deg(); j+=p )
+			if (a[j] != 0)
+				rootPOfA.push_back (fastPow(a[j], exponent));
+			else{
+				rootPOfA.push_back(a.getField().get(0));
+			}
+		auto aux = squareFreeFF(Fxelem(rootPOfA));
+
+		for (auto &pair: aux){
 			pair.second *= p;
 		}
 		result.insert(
@@ -419,9 +428,9 @@ template <typename Fxelem>
 std::vector< std::pair< Fxelem, unsigned int> > factorizationBerlekamp (const Fxelem & pol){
 	auto aux = squareFreeFF(pol);
 	std::vector< std::pair< Fxelem, unsigned int> > result;
-	for (auto pair: aux){
+	for (auto &pair: aux){
 		auto aux2 = berlekamp_simple(pair.first);
-		for (auto factor: aux2){
+		for (auto &factor: aux2){
 			result.push_back(std::make_pair(factor, pair.second));
 		}
 	}
@@ -432,12 +441,14 @@ template <typename Fxelem>
 std::vector< std::pair< Fxelem, unsigned int> > factorizationCantorZassenhaus (const Fxelem & pol){
 	auto aux = squareFreeFF(pol);
 	std::vector< std::pair< Fxelem, unsigned int> > result;
-	for (auto pair: aux){
+	for (auto &pair: aux){
 		auto polAndDegree = partialFactorDD(pair.first);
-		for (auto elem: polAndDegree){
+		for (auto &elem: polAndDegree){
 			auto aux2 = splitFactorsDD(elem.first, elem.second);
-			for (auto factor: aux2){
-				result.push_back(std::make_pair(factor, pair.second));
+			for (auto &factor: aux2){
+				if (factor != 1){
+					result.push_back(std::make_pair(factor, pair.second));
+				}
 			}
 		}
 	}
