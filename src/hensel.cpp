@@ -39,7 +39,7 @@
  * */
 bool HenselLifting (const Zxelem &polynomial, unsigned int p, Fpxelem u1, Fpxelem w1, Zxelem & u, Zxelem & w){
 	//if (u1.getField.getP() != w1.getField.getP())
-	big_int bound = normInf(polynomial)*fastPow(2, polynomial.deg());
+	big_int bound = normInf(polynomial)*fastPow((big_int)2, polynomial.deg());
 	big_int leadCoef = polynomial.lc();
 	Zxelem pol = polynomial * leadCoef;
 	Fpxelem::Felem lc = u1.getField().get(leadCoef);
@@ -48,10 +48,12 @@ bool HenselLifting (const Zxelem &polynomial, unsigned int p, Fpxelem u1, Fpxele
 
 	Fpxelem s(u1.getField().get(0)), t(u1.getField().get(0)); //This is a random value because s & t must be initialized
 	eea (u1, w1, s, t);//This must always be 1. Test it!!
-
+	std::cout << "s: "<<s << std::endl << "t: "<< t << std::endl;
 	u = Zxelem(u1); u[u.deg()] = leadCoef;
 	w = Zxelem(w1); w[w.deg()] = leadCoef;
+	std::cout << "u: "<<u << std::endl << "w: "<<w << std::endl;
 	Zxelem err = pol - u*w;
+	std::cout << "err: "<< err << std::endl;
 	big_int modulus = p;
 	bound = 2*bound*leadCoef;
 
@@ -62,6 +64,8 @@ bool HenselLifting (const Zxelem &polynomial, unsigned int p, Fpxelem u1, Fpxele
 		w += Zxelem(qr.second) * modulus;
 		err = pol - u*w;
 		modulus *= p;
+		std::cout << "sigma: "<<qr.second << std::endl << "tau: "<< Zxelem(t*c + qr.first * u1) * modulus<< std::endl;
+		std::cout << "u: "<<u << std::endl << "w: "<<w << std::endl;
 	}
 
 	if (err == 0){
