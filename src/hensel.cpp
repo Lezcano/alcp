@@ -37,8 +37,9 @@
  *		Sumar polinomios en Z_p[x] con polinomios en Z[x]
  *
  * */
-bool HenselLifting (const Zxelem &polynomial, unsigned int p, Fpxelem u1, Fpxelem w1, Zxelem & u, Zxelem & w){
+bool HenselLifting (const Zxelem &polynomial, Fpxelem u1, Fpxelem w1, Zxelem & u, Zxelem & w){
 	//if (u1.getField.getP() != w1.getField.getP())
+	big_int p = u1.getField().getP();
 	big_int bound = normInf(polynomial)*fastPow((big_int)2, polynomial.deg());
 	big_int leadCoef = polynomial.lc();
 	Zxelem pol = polynomial * leadCoef;
@@ -48,12 +49,9 @@ bool HenselLifting (const Zxelem &polynomial, unsigned int p, Fpxelem u1, Fpxele
 
 	Fpxelem s(u1.getField().get(0)), t(u1.getField().get(0)); //This is a random value because s & t must be initialized
 	eea (u1, w1, s, t);//This must always be 1. Test it!!
-	std::cout << "s: "<<s << std::endl << "t: "<< t << std::endl;
 	u = Zxelem(u1); u[u.deg()] = leadCoef;
 	w = Zxelem(w1); w[w.deg()] = leadCoef;
-	std::cout << "u: "<<u << std::endl << "w: "<<w << std::endl;
 	Zxelem err = pol - u*w;
-	std::cout << "err: "<< err << std::endl;
 	big_int modulus = p;
 	bound = 2*bound*leadCoef;
 
@@ -64,8 +62,6 @@ bool HenselLifting (const Zxelem &polynomial, unsigned int p, Fpxelem u1, Fpxele
 		w += Zxelem(qr.second) * modulus;
 		err = pol - u*w;
 		modulus *= p;
-		std::cout << "sigma: "<<qr.second << std::endl << "tau: "<< Zxelem(t*c + qr.first * u1) * modulus<< std::endl;
-		std::cout << "u: "<<u << std::endl << "w: "<<w << std::endl;
 	}
 
 	if (err == 0){
@@ -80,9 +76,47 @@ bool HenselLifting (const Zxelem &polynomial, unsigned int p, Fpxelem u1, Fpxele
 unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const std::vector<unsigned int> & posibilitiesSizes, unsigned int intersectionSize){
 
 }
+*/
+std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli, HenselSubsets & hs){
+	std::vector< Zxelem > result;
+	//Preguntar si hs no existe y en tal caso crear una nueva
+	HenselSubsets hs();	
+	while (hs.oneMorePrime()){
+		auto factorsModP = factorizationCantorZassenhaus(Fpxelem (pol, random.getP()));//¿Como coger el primo?
+		hs.insert(factorsModP);
+	}
+	pair < Zxelem, pair < Fpxelem, Fpxelem > > option;
+	while (hs.bestOption(option)){	
+		Zxelem u(0), w(0);
+		if (HenselLifting(option.first, option.second.first, option.second.second, u, w)){
+			if (hs.firstIsIrreducible()){
+				result.push_back(u);
+				hs.removeFirstLastOption();
+				if (hs.secondIsIrreducible()){
+					result.push_back(w);
+					hs.removeSecondLastOption();
+				}
+				//else we continue in the loop lifting the second
+			}	
+			else{
+				if (hs.secondIsIrreducible()){//we continue in the loop lifting the first
+					result.push_back(w);
+					hs.removeSecondLastOption();
+				}
+				else{
+					//TODO: copiar hs modificado y llamar a la funcion de nuevo
+					result.insert(
+						result.end(),
+						std::make_move_iterator(aux.begin()),
+						std::make_move_iterator(aux.end())
+					);
+				}
+			}	
+		}
+	}
 
-std::vector< pair < Zxelem, unsigned int > factorizationHenselSquareFree(const Zxelem & pol){
-	
+
+
 }
 
 std::vector< pair < Zxelem, unsigned int > factorizationHensel(const Zxelem & pol){
@@ -93,6 +127,6 @@ std::vector< pair < Zxelem, unsigned int > factorizationHensel(const Zxelem & po
 		for (auto & elem : factors){
 			result.push_back(elem, pair2.second);
 		}
+	}
 	return result;
 }
-*/

@@ -32,7 +32,6 @@ int main (){
 	w1.push_back(field.get(0));
 	w1.push_back(field.get(1));
 	Fpxelem u(u1), w(w1);
-	cout << a << endl << u << endl << w << endl;
 	if (HenselLifting(a, 5, u, w, b, c)){
 		cout << "u: " << b << endl;
 		cout << "w: " << c << endl;
