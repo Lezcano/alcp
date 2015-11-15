@@ -5,7 +5,7 @@
 #include <vector>
 // Fpelem included in fpxelem.hpp
 
-// Auxiliary function for the Zxelem ctor
+// Auxiliary function for the Fpxelem ctor
 Fpxelem toFpxelem(const Zxelem &e, big_int p){
     std::vector<Fpelem> v;
     auto f = Fp(p);

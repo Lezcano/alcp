@@ -2,6 +2,7 @@
 #ifndef __FPXELEM2_HPP
 #define __FPXELEM2_HPP
 
+#include "types.hpp"
 #include "fp.hpp"
 #include "fpelem.hpp"
 #include "zxelem.hpp"
@@ -24,6 +25,7 @@ class Fpxelem : public PolynomialRing<Fpxelem, Fpelem>{
         big_int getSize()const;
 
         friend class Zxelem;
+        friend Zxelem toZxelemSym(const Fpxelem &e);
 
 };
 
