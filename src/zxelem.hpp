@@ -12,6 +12,7 @@ class Zxelem : public PolynomialRing<Zxelem, big_int>{
     public:
         Zxelem(const big_int & e);
         Zxelem(const std::vector<big_int> & v);
+
 		/* It returns a polynomial in Zx using the symmetric
 		 * representation of Fp, this is 
 		 * -(p-1)/2, -(p-1)/2+1, ..-1, 0, 1, .. (p-1)/2
