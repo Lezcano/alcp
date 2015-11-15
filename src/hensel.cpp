@@ -81,12 +81,18 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 
 }
 
-std::vector< pair < Zxelem, unsigned int > factorizationHensel(const Zxelem & pol, unsigned int frequencyHeuristicCall){
-	auto aux squareFreeFactChar0 (pol);
+std::vector< pair < Zxelem, unsigned int > factorizationHenselSquareFree(const Zxelem & pol){
+	
+}
+
+std::vector< pair < Zxelem, unsigned int > factorizationHensel(const Zxelem & pol){
+	auto aux = squareFreeFactChar0 (pol);
 	std::vector< pair < Zxelem, unsigned int > result;
 	for (auto & pair: aux){
-
-	}
+		auto factors = factorizationHenselSquareFree (pair.first);
+		for (auto & elem : factors){
+			result.push_back(elem, pair2.second);
+		}
 	return result;
 }
 */

@@ -12,7 +12,12 @@ class Zxelem : public PolynomialRing<Zxelem, big_int>{
     public:
         Zxelem(const big_int & e);
         Zxelem(const std::vector<big_int> & v);
-        Zxelem(const Fpxelem & e);
+		/* It returns a polynomial in Zx using the symmetric
+		 * representation of Fp, this is 
+		 * -(p-1)/2, -(p-1)/2+1, ..-1, 0, 1, .. (p-1)/2
+		 * if p is not 2.
+		 * */
+        Zxelem(const Fpxelem & e); 
 
         friend class Fpxelem;
         friend Fpxelem toFpxelem(const Zxelem &e, big_int p);
