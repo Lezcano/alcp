@@ -186,6 +186,44 @@ T fastPow (const T& a, U b){
     return result;
 }
 
+
+/**
+ * Pollard's rho factorization algorithm
+ *
+ * Explanation:
+ *  Given a non-prime number, it returns one of its factors.
+ *
+ * Theoretical background:
+ *  It uses Floyd's cycle detection algorithm to detect
+ *   a cycle of the form x_i = y_i (mod p) where p is
+ *   the smallest prime number of n.
+ *  Floyd's cycle detection algorithm relies on the fact that
+ *   if x_{i+1} = f(x_{i}) and x_i does have a cycle, then it
+ *   we can find an index j such as x_j = x_{2j}
+ *  In the algorithm, x = x_i, y = x_{2i}
+ *  The function x \mapsto x^2+1 (mod n) behaves like a random
+ *   function for all practical purposes.
+ *  The algorithm is based on the fact that both sequences
+ *   x_{i+1} = x^2_i + 1(mod n) and x'_{i+1} = x'^2_i + 1 (mod p)
+ *   obey the same recurrence and thus, by the birthday paradox,
+ *   x_i will find a cycle in O(sqrt(p)) instead of O(sqrt(n)).
+ *  Remark: A rigorous anaylsis of Pollard's rho algorithms is
+ *   open problem
+ *
+ * Complexity:
+ *  O(sqrt(p)) on average. O(1) bits of space.
+ */
+big_int pollardRhoBrent (big_int n){
+    big_int x=2, y=2, p=1;
+    while(p==1){
+        x = (x*x+1)%n;
+        y = (y*y+1)%n;
+        y = (y*y+1)%n;
+        p = gcd(abs(y-x), n);
+    }
+    return p;
+}
+
 template big_int fastPowMod<big_int, big_int>(const big_int &a, big_int b, const big_int & p);
 template Fpxelem fastPowMod<Fpxelem, big_int>(const Fpxelem &a, big_int b, const Fpxelem & p);
 
