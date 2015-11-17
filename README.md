@@ -4,15 +4,13 @@
 
 [✓] Implementation of the finite field GF(p) 
 
-[✗] Implementation of the UFD Z[i]
-
 [✓] Euclides algorithm for an ED
 
 [✗] Euclides algorithm for an UFD
 
 [✓] Chinese remainder algorithm
 
-[✗] Modular Euclides algorithm
+[✗] Modular Euclidean algorithm
 
 [✓] Implement polinomial field with coeficientes in GF(p)
 
