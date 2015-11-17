@@ -164,8 +164,13 @@ T eea (T a, T b, T &x, T &y){
 
 template<typename T>
 T gcd(T a, T b){
-    T x = getZero(a), y = getZero(b);
-    return eea(a,b,x,y);
+    T aux = getZero(a);
+    while(b != 0){
+        aux = b;
+        b %= a;
+        a = b;
+    }
+    return normalForm(a);
 }
 
 
@@ -213,13 +218,14 @@ T fastPow (const T& a, U b){
  * Complexity:
  *  O(sqrt(p)) on average. O(1) bits of space.
  */
-big_int pollardRhoBrent (big_int n){
-    big_int x=2, y=2, p=1;
+int pollardRhoBrent (int n){
+    int x=2, y=2, p=1;
     while(p==1){
         x = (x*x+1)%n;
         y = (y*y+1)%n;
         y = (y*y+1)%n;
-        p = gcd(abs(y-x), n);
+        // gcd returns the positive gcd
+        p = gcd(y-x, n);
     }
     return p;
 }

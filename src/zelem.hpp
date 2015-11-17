@@ -7,10 +7,19 @@
 long long add(long long a, long long b, long long p);
 long long russianPeasantMultiplication(long long a, long long b, long long p);
 std::string to_string(big_int e);
-bool compatible(big_int lhs, big_int rhs);
-const big_int unit(big_int e);
-const big_int normalForm(big_int e);
-big_int getZero(big_int e);
-big_int getOne(big_int e);
 
+template<typename T>
+bool compatible(T lhs, T rhs);
+
+template<typename T>
+const int unit(T e);
+
+template<typename T>
+const T normalForm(T e);
+
+template<typename T>
+T getZero(T e);
+
+template<typename T>
+T getOne(T e);
 #endif // __ZELEM_HPP
