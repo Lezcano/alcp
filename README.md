@@ -22,7 +22,7 @@
 
 [✗✓✗] Hensel
 
-[✗] Pollard's ρ algorithm for integer factorization
+[✓] Pollard's ρ algorithm for integer factorization
 
 [✗] Discrete logarithm in Gf(q) - Pollard's ρ algorithm for logarithms
 
