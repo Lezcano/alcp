@@ -218,8 +218,8 @@ T fastPow (const T& a, U b){
  * Complexity:
  *  O(sqrt(p)) on average. O(1) bits of space.
  */
-int pollardRhoBrent (int n){
-    int x=2, y=2, p=1;
+long long pollardRhoBrent (long long n){
+    long long x=2, y=2, p=1;
     while(p==1){
         x = (x*x+1)%n;
         y = (y*y+1)%n;
@@ -229,6 +229,34 @@ int pollardRhoBrent (int n){
     }
     return p;
 }
+
+// Suppose n prime, else the r^-1 should be computed more carefully
+bool pollardRhoLogarithm(long long g, long long h, long long n, long long & log){
+    long long x1 = 1, a1 = 0, b1 = 0;
+    long long x2 = 1, a2 = 0, b2 = 0;
+    auto f = [h, g, n](long long &x, long long &a, long long &b){
+        switch(x%3){
+            case 0: x*=h;            b = (b+1)%n;  break;
+            case 1: x*=x; a=(a*2)%n; b = (b*2)%n;  break;
+            case 2: x*=g; a=(a+1)%n;               break;
+        }};
+    // Floyd's cycle algorithm to find a collision
+    // Invariant g^a1*h^b1 = g^a2*h^b2
+    do{
+        f(x1,a1,b1);
+        f(x2,a2,b2);
+        f(x2,a2,b2);
+    }while(x2!=x1);
+    long long r = (b1 - b2) % n;
+    if(r==0) return false;
+    long long ir, aux;
+    // compute r1 = r^-1
+    eea(r,n,ir,aux);
+    log = (ir*(a2-a1))%n;
+    return true;
+}
+
+
 
 template big_int fastPowMod<big_int, big_int>(const big_int &a, big_int b, const big_int & p);
 template Fpxelem fastPowMod<Fpxelem, big_int>(const Fpxelem &a, big_int b, const Fpxelem & p);
