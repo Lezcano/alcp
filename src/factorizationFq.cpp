@@ -3,6 +3,7 @@
 #include <utility>
 #include <random>
 #include <chrono>
+#include "factorizationFq.hpp"
 #include "fp.hpp"
 #include "fpxelem.hpp"
 #include "fqxelem.hpp"

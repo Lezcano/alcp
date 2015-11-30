@@ -239,8 +239,8 @@ class PolynomialRing{
             return !(rhs == lhs);
         }
 
-        const Felem & operator[](int i) const {return _v[i];}
-        Felem & operator[](int i) {return _v[i];}
+        const Felem & operator[](size_t i) const {return _v[i];}
+        Felem & operator[](size_t i) {return _v[i];}
 
         const Fxelem derivative()const{
            if(this->deg()==0)
@@ -280,7 +280,7 @@ class PolynomialRing{
                 s += to_string(f._v.back());
             s +=  "x^" + std::to_string(f._v.size()-1);
 
-            for(int i=f._v.size()-2;i>=2;--i){
+            for(std::size_t i=f._v.size()-2;i>=2;--i){
                 if(f._v[i] != 0){
                     s+="+";
                     if(f._v[i] != 1)

@@ -1,4 +1,5 @@
 #include <cstdlib> // abs function for long long ints
+#include "generalPurpose.hpp"
 #include "exceptions.hpp"
 #include "types.hpp"
 #include "zelem.hpp" // getZero y tal

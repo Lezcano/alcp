@@ -12,10 +12,10 @@ template<typename T>
 bool compatible(T lhs, T rhs);
 
 template<typename T>
-const int unit(T e);
+int unit(T e);
 
 template<typename T>
-const T normalForm(T e);
+T normalForm(T e);
 
 template<typename T>
 T getZero(T e);

@@ -32,12 +32,15 @@ int main (){
 	w1.push_back(field.get(0));
 	w1.push_back(field.get(1));
 	Fpxelem u(u1), w(w1);
+    /*
+    // No compila
 	if (HenselLifting(a, 5, u, w, b, c)){
 		cout << "u: " << b << endl;
 		cout << "w: " << c << endl;
 	}
 	else
 		cout << "No such factorization" << endl;
+        */
 }
 /*
 	int c[12]= {1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1};
