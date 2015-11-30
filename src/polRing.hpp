@@ -246,7 +246,7 @@ class PolynomialRing{
            if(this->deg()==0)
                return Fxelem(getZero(this->lc()));
            std::vector<Felem> v(_v);
-           for(int i=1;i<v.size();++i)
+           for(size_t i=1;i<v.size();++i)
                v[i-1]=v[i]*i;
            v.pop_back();
            Fxelem ret(v);
@@ -259,7 +259,7 @@ class PolynomialRing{
         Felem lc()const{return _v.back();}
 
         // Degree of the polynomial
-        unsigned int deg()const{return _v.size()-1;}
+        size_t deg()const{return _v.size()-1;}
 
         // Normal form of the polynomial. It ensures the unicity of gdc for example
         friend const Fxelem normalForm(const Fxelem &e){ return e/unit(e); }
@@ -280,7 +280,7 @@ class PolynomialRing{
                 s += to_string(f._v.back());
             s +=  "x^" + std::to_string(f._v.size()-1);
 
-            for(std::size_t i=f._v.size()-2;i>=2;--i){
+            for(size_t i=f._v.size()-2;i>=2;--i){
                 if(f._v[i] != 0){
                     s+="+";
                     if(f._v[i] != 1)
