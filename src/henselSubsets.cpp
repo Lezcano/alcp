@@ -1,10 +1,10 @@
-//#include "henselSubsets.hpp"
-//#include "types.hpp"
-//#include <vector>
-//#include <set>
-//#include <algorithm>
-//#include <utility>
-//#include <stack>
+#include "henselSubsets.hpp"
+#include "types.hpp"
+#include <vector>
+#include <set>
+#include <algorithm>
+#include <utility>
+#include <stack>
 /*
 unsigned int howManyPrimes = 2;
 bool firstIrr, secondIrr;
@@ -21,38 +21,42 @@ HenselSubsets::HenselSubsets(const Zxelem & poli){//TODO: De momento solo uso el
 	secondIrr = 0;
 	howManyPrimes = 2;
 	index = -1;
+	index_intersection = -1;
+	numOfFactors = 0;
 }
 
-bool oneMorePrime(){
+bool HenselSubsets::oneMorePrime(){
 	return howManyPrimes-- != 0;
 }
-
-void insert(const std::vector<std::pair<Fpxelem, unsigned int> > & factors, const Fpxelem & poli){
+void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > & factors, const Fpxelem & poli){
 	size_t ind = global.size();
-	global.push_back({poli, factors, std::vector<DegTag>(), std::vector<unsigned int>(), 0}); //Quiero guardarme una referencia a factors
-	unsigned int tag = 0, sumOfDeg = 0 ;
-	for (unsigned int j = 0; j < factors.size(); j++){
-		unsigned int deg = factors[j].first.deg();
-		for (unsigned int i = 0; i < factors[j].second; i++){
-			global[ind].degTag.push_back({deg, tag});
-			numOfFactors++;
-		}
-		tag++;//TODO IMPORTANTE!! Al poner así el tag los factores los pares deg tag no son necesariamente unicos
-	}
-	std::vector<unsigned int> aux[2] = {std::vector<unsigned int>(tag, 0), std::vector<unsigned int>(tag, 0)};
+	global.push_back({
+		poli,
+		factors,
+		std::vector<DegTag>(),
+		std::vector<unsigned int>(),
+		std::vector<std::multiset<DegTag, ord> >(),
+		0}
+	); //Quiero guardarme una referencia a factors
+	unsigned int sumOfDeg = 0 ;
+	std::vector<unsigned int> aux[2] = {std::vector<unsigned int>(sumOfDeg, 0), std::vector<unsigned int>(sumOfDeg, 0)};
 	int which = 0;
-	for (unsigned int i = 0; i< tag; i++){ //Iterate over the factors
-		int deg = global[ind].degTag[i].deg;
-		int tag = global[ind].degTag[i].tag;
-		for (unsigned int j = 1 ; j < sumOfDeg; j++){//No cuento el caso en el que la suma sea todos, en ese caso no hay que elevar
-			if (aux[which][j] != 0){
-				aux[1-which][j+deg] += aux[which][j];
-				global[ind].predecessor[j+deg].insert({deg, tag});
+	//Voy creando un vector que en la posición i contiene el número de maneras que hay de sumar i con los grados de factors
+	for (unsigned int i = 0; i < factors.size(); i++){
+		unsigned int deg = factors[i].first.deg();
+		for (unsigned int j = 0; j < factors[i].second; j++){
+			global[ind].degTag.push_back({deg, i});
+			numOfFactors++;
+			for (unsigned int k = 1 ; k <= sumOfDeg; k++){//Creo que es necesario el caso de sumOfDeg por si el polinomio es irreducible
+				if (aux[which][k] != 0){
+					aux[1-which][k+deg] += aux[which][k];
+					global[ind].predecessor[k+deg].insert({deg, i});
+				}
 			}
+			aux[1-which][deg]++;
+			aux[which].assign(sumOfDeg, 0);
+			which = 1 - which;
 		}
-		aux[1-which][deg]++;
-		aux[which].assign(tag, 0);
-		which = 1 - which;
 	} //Ahora tengo en aux[which] un vector con las multiplicidades de las posibles sumas
 	
 	//Ahora vamos a hacer la intersección con intersection
@@ -77,9 +81,9 @@ void insert(const std::vector<std::pair<Fpxelem, unsigned int> > & factors, cons
 	global[ind].sums = aux[which];
 }
 
-bool bestOption(Fpxelem & u, Fpxelem & w ){
+bool HenselSubsets::bestOption(Fpxelem & u, Fpxelem & w ){
 	if (index == -1){
-		if (global.size == 0) return false;
+		if (global.size() == 0) return false;
 		unsigned int min = global[0].numOfCases;
 		index = 0; 
 		for (unsigned int i = 1; i < global.size(); i++) {
@@ -94,35 +98,43 @@ bool bestOption(Fpxelem & u, Fpxelem & w ){
 		if (index_intersection == sumOfDeg) return false;
 		stackIt.push(global[index].predecessor[index_intersection].begin());
 		stackInd.push(index_intersection);
-		stackPol.push(global[index].factors[stackIt.top()->tag]);
+		stackPol.push(global[index].factors[stackIt.top()->tag].first);
 		while (stackIt.top()->deg != stackInd.top()){//Esto es facil que falle si no se programa bien, si da un error al depurar busca aquí
-			stackIt.push(global[index].predecessor[stackInd.top - stackIt.top()->deg].begin());
-			stackPol.push(stackPol.top() * global[index].factors[stackIt.top()->tag]);
-			stackInd(stackInd.top - stackIt.top()->deg);
+			stackIt.push(global[index].predecessor[stackInd.top() - stackIt.top()->deg].begin());
+			stackPol.push(stackPol.top() * global[index].factors[stackIt.top()->tag].first);
+			stackInd.push(stackInd.top() - stackIt.top()->deg);
 		} 
 		u = stackPol.top();
 		w = global[index].pol / u;
 		return true;
 	}
 	else{
-		//Avanzar si se puede
+		while(stackIt.top()++ == global[index].predecessor[stackInd.top()].end()){
+			stackIt.pop(); stackPol.pop(); stackInd.pop();
+		}
+		if (stackIt.empty()) return bestOption(u, w);
+		auto it = stackIt.top(); 
+		stackIt.pop(); stackPol.pop(); stackInd.pop();
+		stackIt.push(it++);
+		stackPol.push(stackPol.top() * global[index].factors[stackIt.top()->tag].first);
+		stackInd.push(stackInd.top() - stackIt.top()->deg);
+		while (stackIt.top()->deg != stackInd.top()){//Esto es facil que falle si no se programa bien, si da un error al depurar busca aquí
+			stackIt.push(global[index].predecessor[stackInd.top() - stackIt.top()->deg].begin());
+			stackPol.push(stackPol.top() * global[index].factors[stackIt.top()->tag].first);
+			stackInd.push(stackInd.top() - stackIt.top()->deg);
+		} 
+		u = stackPol.top();
+		w = global[index].pol / u;
+		return true;
 	}
-	
-	return true;
 }
 
-bool firstIsIrreducible(){
+bool HenselSubsets::firstIsIrreducible(){
 	return stackIt.size() == 1;
 }
-bool secondIsIrreducible(){
+bool HenselSubsets::secondIsIrreducible(){
 	return numOfFactors - stackIt.size() == 1;
 }
 
-void removeFirstLastOption(){}
-void removeSecondLastOption(){}
-
-int index = -1;
-unsigned int index_intersection = -1;
-stack<Fpxelem> stackPol;
-stack<set<DegTag, ord>::iterator> stackIt;
-unsigned int numOfFactors = 0;
+void HenselSubsets::removeFirstLastOption(){}
+void HenselSubsets::removeSecondLastOption(){}

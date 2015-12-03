@@ -4,7 +4,14 @@
 #include "zxelem.hpp"
 #include "fpxelem.hpp"
 #include "types.hpp"
+#include <set>
+#include <vector>
+#include <utility>
+#include <stack>
 
+typedef struct{
+	unsigned int deg, tag;
+} DegTag;
 
 class ord{
 public:
@@ -13,16 +20,12 @@ public:
 	  return a.deg < b.deg;
 }};
 
-typedef struct{
-	unsigned int deg, tag;
-} DegTag;
-
 typedef struct {
-	Fpxelem> pol;
+	Fpxelem pol;
 	std::vector< std::pair< Fpxelem, unsigned int> > factors;
-	std::vector<DegTag> degTag; //Quitar esto, ya no es necesario
+	std::vector<DegTag> degTag; //TODO: Quitar esto, ya no es necesario
 	std::vector<unsigned int> sums;
-	std::vector<std::set<DegTag, ord> > predecessor;
+	std::vector<std::multiset<DegTag, ord> > predecessor;
 	unsigned int numOfCases;
 } Pri;
 
@@ -30,10 +33,10 @@ class HenselSubsets{
 	public:
 		HenselSubsets(const Zxelem & poli);
 
-		bool oneMorePrime()const;
+		bool oneMorePrime();
 		void insert(const std::vector<std::pair<Fpxelem, unsigned int> > & factors, const Fpxelem & poli);
 
-		bool bestOption();
+		bool bestOption(Fpxelem & u, Fpxelem & w );
 		
 		bool firstIsIrreducible();
 		bool secondIsIrreducible();
@@ -48,6 +51,12 @@ class HenselSubsets{
 		std::vector<unsigned int> intersection;
 		unsigned int intersectionSize;
 		unsigned int sumOfDeg;
+		int index;
+		unsigned int index_intersection;
+		std::stack<unsigned int> stackInd;
+		std::stack<Fpxelem> stackPol;
+		std::stack<std::set<DegTag, ord>::iterator> stackIt;
+		unsigned int numOfFactors;
 		
 };
 
