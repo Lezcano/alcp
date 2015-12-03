@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <utility>
 #include <stack>
+#include <iostream> //TODO quitar
 /*
 unsigned int howManyPrimes = 2;
 bool firstIrr, secondIrr;
@@ -79,6 +80,11 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > 
 		}
 	}
 	global[ind].sums = aux[which];
+
+	for (auto i: intersection){
+		if (i != 0) std::cout << i;
+	}
+	std::cout << std::endl;
 }
 
 bool HenselSubsets::bestOption(Fpxelem & u, Fpxelem & w ){

@@ -10,6 +10,8 @@
 #include "fp.hpp"
 #include "fq.hpp"
 
+#include <iostream> //TODO quitar
+
 /**
  * Exponentiation by Squaring
  *
@@ -166,11 +168,16 @@ T eea (T a, T b, T &x, T &y){
 template<typename T>
 T gcd(T a, T b){
     T aux = getZero(a);
+    std::cout << a << std::endl;
+    std::cout << b << std::endl;
     while(b != 0){
         aux = b;
-        b %= a;
-        a = b;
+        b = a%b;
+        a = aux;
+        std::cout << a << std::endl;
+        std::cout << b << std::endl;
     }
+    std::cout << a << std::endl;
     return normalForm(a);
 }
 
