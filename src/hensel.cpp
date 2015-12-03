@@ -77,6 +77,7 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 
 }
 */
+/*
 std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli, HenselSubsets & hs){
 	std::vector< Zxelem > result;
 	//Preguntar si hs no existe y en tal caso crear una nueva
@@ -129,4 +130,4 @@ std::vector< pair < Zxelem, unsigned int > factorizationHensel(const Zxelem & po
 		}
 	}
 	return result;
-}
+}*/
