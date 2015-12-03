@@ -85,7 +85,6 @@ std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli, HenselS
 	int asd =0, primes[2] = {13, 23};
 	while (hs.oneMorePrime()){
 		Fpxelem aux(poli, primes[asd++]);
-		std::cout << aux;
 		auto factorsModP = factorizationCantorZassenhaus(aux);//¿Como coger el primo?
 		hs.insert(factorsModP, aux);
 	}

@@ -139,6 +139,7 @@ std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem pol){
 
 	//first iteration is performed out of the loop because we have r in mat (there is no need to compute it again)
 	std::vector<typename Fxelem::Felem> r = mat[1];
+
 	//result[i].first will be a product of irreducible polynomials with degree result[i].second
 	std::vector< std::pair< Fxelem, unsigned int > > result;
 	unsigned int i = 1;
@@ -148,6 +149,8 @@ std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem pol){
 	r[1] += 1;
 	if (result.back().first != 1)
 		pol /= result.back().first;
+	else
+		result.pop_back();
 
 	++i;
 	while (i <= pol.deg()/2){
@@ -159,7 +162,7 @@ std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem pol){
 			}
 		}//This is just r = r*mat;
 		r[1] -= 1;
-		result.push_back(std::make_pair(gcd(Fxelem(r), pol), i+1));//gcd (a_1, w (mod a)) = gcd (a_1, w (mod a_1)) where a_1 divides a (because (w (mod a))(mod a_1) = w (mod a_1))
+		result.push_back(std::make_pair(gcd(Fxelem(r), pol), i));//gcd (a_1, w (mod a)) = gcd (a_1, w (mod a_1)) where a_1 divides a (because (w (mod a))(mod a_1) = w (mod a_1))
 		r[1] += 1;
 		if (result.back().first != 1)
 			pol /= result.back().first;

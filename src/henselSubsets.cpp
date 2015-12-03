@@ -18,8 +18,6 @@ HenselSubsets::HenselSubsets(const Zxelem & poli){//TODO: De momento solo uso el
 	intersectionSize = poli.deg();
 	sumOfDeg = poli.deg();
 	intersection.assign(intersectionSize, 1);//TODO: Mirar que esté bien
-	firstIrr = 0;
-	secondIrr = 0;
 	howManyPrimes = 2;
 	index = -1;
 	index_intersection = -1;
@@ -29,24 +27,22 @@ HenselSubsets::HenselSubsets(const Zxelem & poli){//TODO: De momento solo uso el
 bool HenselSubsets::oneMorePrime(){
 	return howManyPrimes-- != 0;
 }
+//TODO: considerar sólo hasta la mitad del grado del polinomio
 void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > & factors, const Fpxelem & poli){
 	size_t ind = global.size();
 	global.push_back({
 		poli,
 		factors,
-		std::vector<DegTag>(),
 		std::vector<unsigned int>(),
-		std::vector<std::multiset<DegTag, ord> >(),
+		std::vector<std::multiset<DegTag, ord> >(sumOfDeg+1, std::multiset<DegTag, ord>()),
 		0}
 	); //Quiero guardarme una referencia a factors
-	unsigned int sumOfDeg = 0 ;
-	std::vector<unsigned int> aux[2] = {std::vector<unsigned int>(sumOfDeg, 0), std::vector<unsigned int>(sumOfDeg, 0)};
+	std::vector<unsigned int> aux[2] = {std::vector<unsigned int>(sumOfDeg+1, 0), std::vector<unsigned int>(sumOfDeg+1, 0)};
 	int which = 0;
 	//Voy creando un vector que en la posición i contiene el número de maneras que hay de sumar i con los grados de factors
 	for (unsigned int i = 0; i < factors.size(); i++){
 		unsigned int deg = factors[i].first.deg();
 		for (unsigned int j = 0; j < factors[i].second; j++){
-			global[ind].degTag.push_back({deg, i});
 			numOfFactors++;
 			for (unsigned int k = 1 ; k <= sumOfDeg; k++){//Creo que es necesario el caso de sumOfDeg por si el polinomio es irreducible
 				if (aux[which][k] != 0){
@@ -55,7 +51,7 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > 
 				}
 			}
 			aux[1-which][deg]++;
-			aux[which].assign(sumOfDeg, 0);
+			aux[which] = aux[1-which];
 			which = 1 - which;
 		}
 	} //Ahora tengo en aux[which] un vector con las multiplicidades de las posibles sumas
@@ -81,8 +77,8 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > 
 	}
 	global[ind].sums = aux[which];
 
-	for (auto i: intersection){
-		if (i != 0) std::cout << i;
+	for (unsigned int i = 1; i<=sumOfDeg; i++){
+		if (intersection[i] != 0) std::cout << i << " ";
 	}
 	std::cout << std::endl;
 }

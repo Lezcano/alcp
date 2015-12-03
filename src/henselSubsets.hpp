@@ -23,7 +23,6 @@ public:
 typedef struct {
 	Fpxelem pol;
 	std::vector< std::pair< Fpxelem, unsigned int> > factors;
-	std::vector<DegTag> degTag; //TODO: Quitar esto, ya no es necesario
 	std::vector<unsigned int> sums;
 	std::vector<std::multiset<DegTag, ord> > predecessor;
 	unsigned int numOfCases;
@@ -46,7 +45,6 @@ class HenselSubsets{
 
 	private:
 		unsigned int howManyPrimes = 2;
-		bool firstIrr, secondIrr;
 		std::vector<Pri> global;
 		std::vector<unsigned int> intersection;
 		unsigned int intersectionSize;
