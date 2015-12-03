@@ -4,6 +4,7 @@
 #include "zelem.hpp"
 #include "zxelem.hpp"
 #include "types.hpp"
+#include "henselSubsets.hpp"
 #include "factorizationFq.hpp"
 #include "generalPurpose.hpp"
 #include <vector>
@@ -38,7 +39,7 @@
  *
  * */
 bool HenselLifting (const Zxelem &polynomial, Fpxelem u1, Fpxelem w1, Zxelem & u, Zxelem & w){
-	//if (u1.getField.getP() != w1.getField.getP())
+	//TODO: if (u1.getField.getP() != w1.getField.getP())
 	big_int p = u1.getField().getP();
 	big_int bound = normInf(polynomial)*fastPow((big_int)2, polynomial.deg());
 	big_int leadCoef = polynomial.lc();
@@ -77,25 +78,26 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 
 }
 */
-/*
+
 std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli, HenselSubsets & hs){
 	std::vector< Zxelem > result;
-	//Preguntar si hs no existe y en tal caso crear una nueva
-	HenselSubsets hs();	
+	int asd =0, primes[2] = {13, 23};
 	while (hs.oneMorePrime()){
-		auto factorsModP = factorizationCantorZassenhaus(Fpxelem (pol, random.getP()));//¿Como coger el primo?
+		auto factorsModP = factorizationCantorZassenhaus(Fpxelem (poli, primes[asd++]));//¿Como coger el primo?
 		hs.insert(factorsModP);
 	}
-	pair < Zxelem, pair < Fpxelem, Fpxelem > > option;
-	while (hs.bestOption(option)){	
+	return result;
+	/*
+	//Option option;
+	while (hs.bestOption()){
 		Zxelem u(0), w(0);
-		if (HenselLifting(option.first, option.second.first, option.second.second, u, w)){
+		if (true){//HenselLifting(poli, option.u, option.w, u, w)){
 			if (hs.firstIsIrreducible()){
 				result.push_back(u);
 				hs.removeFirstLastOption();
 				if (hs.secondIsIrreducible()){
 					result.push_back(w);
-					hs.removeSecondLastOption();
+					return result;
 				}
 				//else we continue in the loop lifting the second
 			}	
@@ -106,28 +108,34 @@ std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli, HenselS
 				}
 				else{
 					//TODO: copiar hs modificado y llamar a la funcion de nuevo
+
 					result.insert(
 						result.end(),
 						std::make_move_iterator(aux.begin()),
 						std::make_move_iterator(aux.end())
 					);
+
 				}
 			}	
 		}
 	}
-
-
-
+	*/
 }
 
-std::vector< pair < Zxelem, unsigned int > factorizationHensel(const Zxelem & pol){
-	auto aux = squareFreeFactChar0 (pol);
-	std::vector< pair < Zxelem, unsigned int > result;
+std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli){
+	HenselSubsets hs(poli);
+	return factorizationHenselSquareFree(poli, hs);
+}
+/*
+std::vector< std::pair < Zxelem, unsigned int > > factorizationHensel(const Zxelem & pol){
+	//auto aux = squareFreeFactChar0 (pol);
+	std::vector< std::pair < Zxelem, unsigned int > result;
 	for (auto & pair: aux){
 		auto factors = factorizationHenselSquareFree (pair.first);
 		for (auto & elem : factors){
-			result.push_back(elem, pair2.second);
+			result.push_back(elem, pair.second);
 		}
 	}
 	return result;
-}*/
+}
+*/

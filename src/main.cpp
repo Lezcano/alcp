@@ -14,10 +14,12 @@
 #include "factorizationFq.hpp"
 #include "integerCRA.hpp"
 #include "hensel.hpp"
+
 using namespace std;
 using namespace boost::multiprecision;
 
 int main (){
+	/*
 	Fp field(5);
 	int d[12]= {5040, -432, 10, 1};
 	vector<big_int> v;
@@ -32,6 +34,13 @@ int main (){
 	w1.push_back(field.get(0));
 	w1.push_back(field.get(1));
 	Fpxelem u(u1), w(w1);
+	*/
+	std::vector<big_int> v(17, 0);
+	v[16] = 1;
+	v[4] = 11;
+	v[0] = 121;
+	Zxelem pol(v);
+	auto a =  factorizationHenselSquareFree(pol);
     /*
     // No compila
 	if (HenselLifting(a, 5, u, w, b, c)){
