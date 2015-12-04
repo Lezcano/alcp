@@ -198,11 +198,6 @@ void fastPowModPol (Fxelem & a, big_int b, std::vector<Fxelem> pwrsX, int deg){
 					if (a[i+deg] != 0)
 						a += Fxelem(a[i+deg])*pwrsX[i];
 				}
-				aux *= aux;
-				for (int i = 0; i <= (int)(aux.deg())-deg; ++i){//aux.deg is always <= 2*deg-2
-					if (aux[i+deg] != 0)
-						aux += Fxelem(aux[i+deg])*pwrsX[i];
-				}
 				b -= 1;
 			}
 		}
