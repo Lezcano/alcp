@@ -15,10 +15,10 @@ Fpxelem toFpxelem(const Zxelem &e, big_int p){
 }
 
 
-Fpxelem::Fpxelem(const Fpelem & e) : PolynomialRing<Fpxelem, Fpelem>(e){}
+Fpxelem::Fpxelem() = default;
+Fpxelem::Fpxelem(const Fpelem & e)              : PolynomialRing<Fpxelem, Fpelem>(e){}
 Fpxelem::Fpxelem(const std::vector<Fpelem> & v) : PolynomialRing<Fpxelem, Fpelem>(v){}
-Fpxelem::Fpxelem(const Zxelem & e, big_int p) : PolynomialRing<Fpxelem, Fpelem>(toFpxelem(e, p)){
-}
+Fpxelem::Fpxelem(const Zxelem & e, big_int p)   : PolynomialRing<Fpxelem, Fpelem>(toFpxelem(e, p)){}
 
 const Fpxelem::F Fpxelem::getField()const{
     return this->lc().getField();

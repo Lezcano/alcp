@@ -14,6 +14,7 @@ class Fpelem{
         // Base field
         using F = Fp;
 
+        Fpelem ();
         Fpelem ( const Fpelem & );
         explicit operator big_int() const;
         Fpelem & operator=(const Fpelem &rhs);
@@ -59,8 +60,9 @@ class Fpelem{
     private:
         friend class Fp;
 
-        Fpelem(big_int num, std::unique_ptr<F> f);
-        void checkInSameField(const Fpelem &rhs) const;
+        Fpelem(big_int num, const Fp& f);
+        bool initialized() const;
+        void checkInSameField(const Fpelem &rhs, std::string&& error) const;
 
         big_int _num;
         big_int _p;

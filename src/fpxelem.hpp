@@ -16,6 +16,7 @@ class Fpxelem : public PolynomialRing<Fpxelem, Fpelem>{
         using F = Fp;
         using Felem = Fpelem;
 
+        Fpxelem();
         Fpxelem(const Fpelem & e);
         Fpxelem(const std::vector<Fpelem> & v);
         Fpxelem(const Zxelem & e, big_int p);
@@ -26,7 +27,6 @@ class Fpxelem : public PolynomialRing<Fpxelem, Fpelem>{
 
         friend class Zxelem;
         friend Zxelem toZxelemSym(const Fpxelem &e);
-
 };
 
 Fpxelem getZero(const Fpxelem &e);

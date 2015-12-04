@@ -4,29 +4,37 @@
 #include "generalPurpose.hpp" // ExtendedEuclideanAlgorithm (eea)
 #include "exceptions.hpp"
 
-#include <iosfwd>            // ostream
-#include <string>            // to_string
-#include <memory>           // unique_ptr
+#include <stdexcept>        // std::runtime_error
+#include <iosfwd>           // std::ostream
+#include <string>           // std::to_string
+#include <memory>           // std::unique_ptr
 
-Fpelem::Fpelem ( const Fpelem & other){
-    _num = other._num;
-    _p = other._p;
-    _f = std::unique_ptr<Fp>(new Fp(*other._f));
-}
 
+Fpelem::Fpelem(){ _f = nullptr; }
+
+Fpelem::Fpelem ( const Fpelem & other) :
+    _num(other._num),
+    _p(other._p),
+    _f(new Fp(*other._f))
+    {}
 
 Fpelem::operator big_int() const { return _num; }
 
 Fpelem & Fpelem::operator=(const Fpelem &rhs){
     if(&rhs != this){
-        if(*_f != *rhs._f)
-            throw ENotCompatible("Fpelem assignation failed. The elements " + to_string(*this) + " and " + to_string(rhs) + " are in the fields F" + to_string(this->_p) + " and F" + to_string(rhs._p) + " respectively.");
-        _num = rhs._num;
+        if(!this->initialized())
+            *this = Fpelem(rhs);
+        else{
+            checkInSameField(rhs, "Assignment error.");
+            _num = rhs._num;
+        }
     }
     return *this;
 }
 
 Fpelem & Fpelem::operator=(big_int rhs){
+    if(!this->initialized())
+        throw std::runtime_error("Assignment to a non initialized Fpelem");
     *this = _f->get(rhs);
     return *this;
 }
@@ -40,7 +48,7 @@ bool Fpelem::operator!=(const Fpelem &rhs)const{
 }
 
 Fpelem & Fpelem::operator+=(const Fpelem &rhs){
-    checkInSameField(rhs);
+    checkInSameField(rhs, "Addition or substraction error.");
     this->_num = (this->_num + rhs._num) % _p;
     return *this;
 }
@@ -66,7 +74,7 @@ const Fpelem Fpelem::operator-(const Fpelem &rhs) const{
 }
 
 Fpelem & Fpelem::operator*=(const Fpelem &rhs){
-    checkInSameField(rhs);
+    checkInSameField(rhs, "Multiplication or division error.");
     this->_num = (this->_num * rhs._num) % _p;
     return *this;
 }
@@ -111,20 +119,20 @@ bool compatible(const Fpelem &lhs, const Fpelem &rhs){
     return lhs.getField()==rhs.getField();
 }
 
-Fpelem::Fpelem(big_int num, std::unique_ptr<Fp> f): _num(num){
-    _f = std::move(f);
-    _p = _f->getSize();
+Fpelem::Fpelem(big_int num, const Fp& f): _num(num), _f(new Fp(f)), _p(_f->getSize()){
     _num %= _p;
     if(_num < 0)
         _num += _p;
 }
 
-void Fpelem::checkInSameField(const Fpelem &rhs) const{
+bool Fpelem::initialized()const{ return _f != nullptr; }
+
+void Fpelem::checkInSameField(const Fpelem &rhs, std::string&& error) const{
     if(this->getField() != rhs.getField())
         throw EOperationUnsupported(
-            "Error. Is not possible to add the number " + to_string(_num) +
+            error + "\nThe values that caused it were " + to_string(_num) +
             " in F" + to_string(_p) +
-            " with the number " + to_string(rhs._num) +
+            " and " + to_string(rhs._num) +
             " in F" + to_string(rhs._p));
 }
 

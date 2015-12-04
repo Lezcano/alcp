@@ -13,6 +13,7 @@ class Fqxelem : public PolynomialRing<Fqxelem, Fqelem>{
         using F = Fq;
         using Felem = Fqelem;
 
+        Fqxelem();
         Fqxelem(const Fqelem & e);
         Fqxelem(const std::vector<Fqelem> & v);
 

@@ -14,6 +14,7 @@ class Fqelem{
         // Base field
         using F = Fq;
 
+        Fqelem ();
         Fqelem ( const Fqelem & );
         Fqelem & operator=(const Fqelem &rhs);
 
@@ -58,11 +59,12 @@ class Fqelem{
     private:
         friend class Fq;
 
-        Fqelem(Fpxelem n, Fpxelem mod, std::unique_ptr<F> f);
-        void checkInSameField(const Fqelem &rhs) const;
+        Fqelem(Fpxelem n, Fpxelem mod, const Fq& f);
+        bool initialized() const;
+        void checkInSameField(const Fqelem &rhs, std::string&& error) const;
 
         Fpxelem _num;
-        std::unique_ptr<F> _f;
+        std::unique_ptr<Fq> _f;
         Fpxelem _mod;
 };
 

@@ -36,11 +36,11 @@ Fq::Fq(big_int p, int n): _p(p), _n(n), _base(p), _mod(_base.get(0)){ // _mod mu
 }
 
 Fqelem Fq::get(big_int n)const{
-    return Fqelem(Fpxelem(_base.get(n)), _mod, std::unique_ptr<Fq>(new Fq(*this)));
+    return Fqelem(Fpxelem(_base.get(n)), _mod, *this);
 }
 
 Fqelem Fq::get(Fpxelem f)const{
-    return Fqelem(f, _mod, std::unique_ptr<Fq>(new Fq(*this)));
+    return Fqelem(f, _mod, *this);
 }
 
 big_int Fq::getSize()const{return fastPow(_p,_n);}

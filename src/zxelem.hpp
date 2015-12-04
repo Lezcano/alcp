@@ -22,7 +22,6 @@ class Zxelem : public PolynomialRing<Zxelem, big_int>{
 
         friend class Fpxelem;
         friend Fpxelem toFpxelem(const Zxelem &e, big_int p);
-
 };
 
 Zxelem getZero(const Zxelem &e);
