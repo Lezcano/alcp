@@ -24,7 +24,8 @@ typedef struct {
 	Fpxelem pol;
 	std::vector< std::pair< Fpxelem, unsigned int> > factors;
 	std::vector<unsigned int> sums;
-	std::vector<std::multiset<DegTag, ord> > predecessor;
+	std::vector<std::set<DegTag, ord> > predecessor;
+	std::map<unsigned int, unsigned int>map,
 	unsigned int numOfCases;
 } Pri;
 
@@ -46,9 +47,10 @@ class HenselSubsets{
 	private:
 		unsigned int howManyPrimes = 2;
 		std::vector<Pri> global;
+		Pri globind;
 		std::vector<unsigned int> intersection;
 		unsigned int intersectionSize;
-		unsigned int sumOfDeg;
+		unsigned int semiSumOfDeg;
 		int index;
 		unsigned int index_intersection;
 		std::stack<unsigned int> stackInd;
@@ -56,6 +58,20 @@ class HenselSubsets{
 		std::stack<std::set<DegTag, ord>::iterator> stackIt;
 		unsigned int numOfFactors;
 		
+
+
+		Pri globind;
+		std::vector<unsigned int> intersection;
+		unsigned int intersectionSize;
+		unsigned int semiSumOfDeg;//hay que actualizarlo al hacer split
+		int index;
+		unsigned int index_intersection;
+		//Las pilas tienen que ser nuevas. De hecho, no hay que olvidarse de que al hacer split solo queremos usar los elementos de la interseccion que son menores que la mitad del grado actual
+		std::stack<unsigned int> stackInd;
+		std::stack<Fpxelem> stackPol;
+		std::stack<std::set<DegTag, ord>::iterator> stackIt;
+		unsigned int numOfFactors;
+
 };
 
 #endif // __HENSEL_SUBSETS_HPP_
