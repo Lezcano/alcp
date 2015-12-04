@@ -1,1 +1,0 @@
-/media/Gdrive/Documentos/5º Mat-Info/Álgebra Computacional/alcp/src/CMakeFiles/src.dir
