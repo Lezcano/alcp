@@ -15,7 +15,7 @@ Fp::Fp(big_int p): _p(p){
 }
 
 Fpelem Fp::get(big_int n)const{
-    return Fpelem(n, *this);
+    return Fpelem(n, Fp(*this));
 }
 
 big_int Fp::getSize()const{return _p;}
