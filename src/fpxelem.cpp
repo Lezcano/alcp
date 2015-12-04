@@ -14,7 +14,6 @@ Fpxelem toFpxelem(const Zxelem &e, big_int p){
     return v;
 }
 
-
 Fpxelem::Fpxelem() = default;
 Fpxelem::Fpxelem(const Fpelem & e)              : PolynomialRing<Fpxelem, Fpelem>(e){}
 Fpxelem::Fpxelem(const std::vector<Fpelem> & v) : PolynomialRing<Fpxelem, Fpelem>(v){}

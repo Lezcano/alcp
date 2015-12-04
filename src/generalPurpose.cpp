@@ -168,6 +168,7 @@ T eea (T a, T b, T &x, T &y){
 template<typename T>
 T gcd(T a, T b){
     T aux = getZero(a);
+    if (a == 0 || b == 0 ) return getOne(a);
     while(b != 0){
         aux = b;
         b = a%b;
