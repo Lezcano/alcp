@@ -24,7 +24,7 @@
 
 [✓] Pollard's ρ algorithm for integer factorization
 
-[✗] Discrete logarithm in Gf(q) - Pollard's ρ algorithm for logarithms
+[✓] Discrete logarithm in Gf(q) - Pollard's ρ algorithm for logarithms
 
 [✗] Minimal polynomial of α+β and α*β when Q[α] and Q[β] are algebraic extensions of Q
 
