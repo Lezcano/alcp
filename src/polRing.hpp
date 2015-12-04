@@ -13,6 +13,8 @@
 template<typename Fxelem, typename Felem>
 class PolynomialRing{
     public:
+        PolynomialRing() = default;
+
         // Inmersion from the base field
         PolynomialRing(const Felem &e): _v(std::vector<Felem>({e})){}
 
@@ -29,7 +31,7 @@ class PolynomialRing{
 
         Fxelem & operator=(const Fxelem &rhs){
             if(&rhs != this){
-                if(!compatible(this->lc(), rhs.lc()))
+                if(this->initialized() && !compatible(this->lc(), rhs.lc()))
                     throw ENotCompatible("Asignation failed. The vectors "+ to_string(static_cast<Fxelem&>(*this))+ " and " + to_string(rhs) + " are not in the same ring.");
                 _v = rhs._v;
             }
@@ -308,7 +310,7 @@ class PolynomialRing{
 
     private:
         void removeTrailingZeros(){
-            auto zero = getZero(this->lc());
+            const Felem zero = getZero(this->lc());
             _v.erase(
                     std::find_if(
                         _v.rbegin(),
@@ -319,6 +321,8 @@ class PolynomialRing{
             if(_v.size()==0)
                 _v.push_back(zero);
         }
+
+        bool initialized () const{ return _v.size() != 0; }
 
 };
 

@@ -9,19 +9,29 @@
 #include <iosfwd>            // ostream
 #include <memory>           // unique_ptr
 
-Fqelem::Fqelem ( const Fqelem & other) : _num(other._num), _mod(other._mod){
-    _f = std::unique_ptr<Fqelem::F>(new Fqelem::F(*other._f));
-}
+Fqelem::Fqelem(){ _f = nullptr; }
+
+Fqelem::Fqelem ( const Fqelem & other) :
+    _num(other._num),
+    _mod(other._mod),
+    _f (new Fq(*other._f))
+    {}
 
 Fqelem & Fqelem::operator=(const Fqelem &rhs){
     if(&rhs != this){
-        checkInSameField(rhs);
-        _num = rhs._num;
+        if(!this->initialized())
+            *this = Fqelem(rhs);
+        else{
+            checkInSameField(rhs, "Error in assignment.");
+            _num = rhs._num;
+        }
     }
     return *this;
 }
 
 Fqelem & Fqelem::operator=(big_int rhs){
+    if(!this->initialized())
+        throw std::runtime_error("Assignment to a non initialized Fqelem");
     *this = _f->get(rhs);
     return *this;
 }
@@ -35,7 +45,7 @@ bool Fqelem::operator!=(const Fqelem &rhs)const{
 }
 
 Fqelem & Fqelem::operator+=(const Fqelem &rhs){
-    checkInSameField(rhs);
+    checkInSameField(rhs, "Addition or substraction error.");
     _num = (_num + rhs._num) % _mod;
     return *this;
 }
@@ -61,7 +71,7 @@ const Fqelem Fqelem::operator-(const Fqelem &rhs) const{
 }
 
 Fqelem & Fqelem::operator*=(const Fqelem &rhs){
-    checkInSameField(rhs);
+    checkInSameField(rhs, "Multiplication or division error.");
     _num = (_num * rhs._num) % _mod;
     return *this;
 }
@@ -111,16 +121,18 @@ bool compatible(const Fqelem &lhs, const Fqelem &rhs){
     return lhs.getField()==rhs.getField();
 }
 
-Fqelem::Fqelem(Fpxelem num, Fpxelem mod,  std::unique_ptr<Fqelem::F> f): _num(num), _mod(mod){
-    _f = std::move(f);
+Fqelem::Fqelem(Fpxelem num, Fpxelem mod,  const Fq& f): _num(num), _mod(mod), _f(new Fq(f)){
+    num %= mod;
 }
 
-void Fqelem::checkInSameField(const Fqelem &rhs) const{
+bool Fqelem::initialized()const{ return _f != nullptr; }
+
+void Fqelem::checkInSameField(const Fqelem &rhs, std::string&& error) const{
     if(this->getField() != rhs.getField())
         throw EOperationUnsupported(
-            "Error. Is not possible to add the number " + to_string(_num) +
+            error + "\nThe values that caused it were " + to_string(_num) +
             " in " + to_string(this->getField()) +
-            " with the number " + to_string(rhs._num) +
+            " and " + to_string(rhs._num) +
             " in F" + to_string(rhs.getField()));
 }
 
