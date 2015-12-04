@@ -59,7 +59,7 @@ class Fqelem{
     private:
         friend class Fq;
 
-        Fqelem(Fpxelem n, Fpxelem mod, const Fq& f);
+        Fqelem(Fpxelem n, Fpxelem mod, Fq f);
         bool initialized() const;
         void checkInSameField(const Fqelem &rhs, std::string&& error) const;
 

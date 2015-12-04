@@ -121,7 +121,7 @@ bool compatible(const Fqelem &lhs, const Fqelem &rhs){
     return lhs.getField()==rhs.getField();
 }
 
-Fqelem::Fqelem(Fpxelem num, Fpxelem mod,  const Fq& f): _num(num), _mod(mod), _f(new Fq(f)){
+Fqelem::Fqelem(Fpxelem num, Fpxelem mod, Fq f): _num(num), _mod(mod), _f(new Fq(f)){
     num %= mod;
 }
 

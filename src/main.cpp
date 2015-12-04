@@ -18,6 +18,24 @@
 using namespace std;
 using namespace boost::multiprecision;
 
+void pruebas(){
+    try{
+        Fp field(6);
+    }
+    catch(ExcepALCP& e){}
+
+
+}
+
+void pruebasHenselSqFree(){
+	std::vector<big_int> v(17, 0);
+	v[16] = 1;
+	v[4] = 11;
+	v[0] = 121;
+	Zxelem pol(v);
+	auto a =  factorizationHenselSquareFree(pol);
+}
+
 int main (){
 	/*
 	Fp field(5);
@@ -35,12 +53,8 @@ int main (){
 	w1.push_back(field.get(1));
 	Fpxelem u(u1), w(w1);
 	*/
-	 std::vector<big_int> v(17, 0);
-	v[16] = 1;
-	v[4] = 11;
-	v[0] = 121;
-	Zxelem pol(v);
-	auto a =  factorizationHenselSquareFree(pol);
+
+    pruebasHenselSqFree();
 
     /*
     // No compila

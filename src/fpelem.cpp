@@ -119,7 +119,7 @@ bool compatible(const Fpelem &lhs, const Fpelem &rhs){
     return lhs.getField()==rhs.getField();
 }
 
-Fpelem::Fpelem(big_int num, const Fp& f): _num(num), _f(new Fp(f)), _p(_f->getSize()){
+Fpelem::Fpelem(big_int num, Fp f): _num(num), _f(new Fp(f)), _p(f.getSize()){
     _num %= _p;
     if(_num < 0)
         _num += _p;

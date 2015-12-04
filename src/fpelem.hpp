@@ -60,7 +60,7 @@ class Fpelem{
     private:
         friend class Fp;
 
-        Fpelem(big_int num, const Fp& f);
+        Fpelem(big_int num, Fp f);
         bool initialized() const;
         void checkInSameField(const Fpelem &rhs, std::string&& error) const;
 
