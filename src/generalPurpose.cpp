@@ -267,7 +267,8 @@ template Fpxelem fastPowMod<Fpxelem, big_int>(const Fpxelem &a, big_int b, const
 
 template big_int fastPow<big_int, int>(const big_int& a, int b);
 template big_int fastPow<big_int, unsigned int>(const big_int& a, unsigned int b);
-template big_int fastPow<big_int, std::size_t>(const big_int& a, std::size_t b);
+template big_int fastPow<big_int, unsigned long long>(const big_int& a, unsigned long long b);
+//template big_int fastPow<big_int, std::size_t>(const big_int& a, std::size_t b);
 template big_int fastPow<big_int, big_int>(const big_int& a, big_int b);
 template Fpelem fastPow<Fpelem, big_int>(const Fpelem& a, big_int b);
 template Fqelem fastPow<Fqelem, big_int>(const Fqelem& a, big_int b);
