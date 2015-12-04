@@ -51,6 +51,7 @@ fabric.properties
 
 ############################## Cmake ##############################
 CMakeCache.txt
+CMakeLists.txt
 CMakeFiles
 CMakeScripts
 Makefile
