@@ -8,10 +8,11 @@
 #include <vector>
 #include <utility>
 #include <stack>
+#include <map>
 
-typedef struct{
+struct DegTag{
 	unsigned int deg, tag;
-} DegTag;
+};
 
 class ord{
 public:
@@ -20,29 +21,30 @@ public:
 	  return a.deg < b.deg;
 }};
 
-typedef struct {
+struct Option {
+	bool b;
+	Fpxelem u, w;
+};
+
+struct Pri{
 	Fpxelem pol;
 	std::vector< std::pair< Fpxelem, unsigned int> > factors;
 	std::vector<unsigned int> sums;
 	std::vector<std::set<DegTag, ord> > predecessor;
-	std::map<unsigned int, unsigned int>map,
+	std::map<unsigned int, unsigned int>map;
 	unsigned int numOfCases;
-} Pri;
+};
 
 class HenselSubsets{
 	public:
-		HenselSubsets(const Zxelem & poli);
+		HenselSubsets(unsigned int poliDeg);
 
 		bool oneMorePrime();
 		void insert(const std::vector<std::pair<Fpxelem, unsigned int> > & factors, const Fpxelem & poli);
 
-		bool bestOption(Fpxelem & u, Fpxelem & w );
+		Option bestOption();
 		
-		bool firstIsIrreducible();
-		bool secondIsIrreducible();
-
 		void removeFirstLastOption();
-		void removeSecondLastOption();
 
 	private:
 		unsigned int howManyPrimes = 2;
@@ -58,20 +60,6 @@ class HenselSubsets{
 		std::stack<std::set<DegTag, ord>::iterator> stackIt;
 		unsigned int numOfFactors;
 		
-
-
-		Pri globind;
-		std::vector<unsigned int> intersection;
-		unsigned int intersectionSize;
-		unsigned int semiSumOfDeg;//hay que actualizarlo al hacer split
-		int index;
-		unsigned int index_intersection;
-		//Las pilas tienen que ser nuevas. De hecho, no hay que olvidarse de que al hacer split solo queremos usar los elementos de la interseccion que son menores que la mitad del grado actual
-		std::stack<unsigned int> stackInd;
-		std::stack<Fpxelem> stackPol;
-		std::stack<std::set<DegTag, ord>::iterator> stackIt;
-		unsigned int numOfFactors;
-
 };
 
 #endif // __HENSEL_SUBSETS_HPP_

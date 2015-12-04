@@ -1,16 +1,16 @@
-//#include "henselSubsets.hpp"
-//#include "types.hpp"
-//#include <vector>
-//#include <set>
-//#include <algorithm>
-//#include <utility>
-//#include <stack>
-//#include <map> 
-//#include <iostream> //TODO quitar
+#include "henselSubsets.hpp"
+#include "types.hpp"
+#include <vector>
+#include <set>
+#include <algorithm>
+#include <utility>
+#include <stack>
+#include <map>
+#include <iostream> //TODO quitar
 
-HenselSubsets::HenselSubsets(const Zxelem & poli){//TODO: De momento solo uso el grado de poli, mirar
-	intersectionSize = poli.deg()/2+1;
-	semiSumOfDeg = poli.deg()/2;
+HenselSubsets::HenselSubsets(unsigned int poliDeg){//TODO: De momento solo uso el grado de poli, mirar
+	intersectionSize = poliDeg/2+1;
+	semiSumOfDeg = poliDeg/2;
 	intersection.assign(intersectionSize, 1);
 	howManyPrimes = 2;
 	index = -1;
@@ -90,9 +90,9 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > 
 	std::cout << std::endl;
 }
 
-bool HenselSubsets::bestOption(Fpxelem & u, Fpxelem & w ){
+Option HenselSubsets::bestOption(){
 	if (index == -1){
-		if (global.size() == 0) return false;
+		if (global.size() == 0) return {false, Fpxelem(), Fpxelem()};//The polynomials are irrelevant
 		unsigned int min = global[0].numOfCases;
 		index = 0; 
 		for (unsigned int i = 1; i < global.size(); i++) {
@@ -101,12 +101,12 @@ bool HenselSubsets::bestOption(Fpxelem & u, Fpxelem & w ){
 				index = i;
 			}
 		}
-		globind = global[index];//move
+		globind = global[index];//TODO: move
 		global.clear();//TODO: Gestionar bien este destructor. Destruyo todo, es memoria que ya no necesito. En teoría así debería valer.
 	}
 	if (stackIt.empty()){
 		while (++index_intersection <= semiSumOfDeg && intersection[index_intersection] == 0 );
-		if (index_intersection == semiSumOfDeg+1) return false;
+		if (index_intersection == semiSumOfDeg+1) return {false, Fpxelem(), Fpxelem() };//The polynomials are irrelevant
 		stackIt.push(globind.predecessor[index_intersection].begin());
 		stackInd.push(index_intersection);
 		stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
@@ -115,18 +115,24 @@ bool HenselSubsets::bestOption(Fpxelem & u, Fpxelem & w ){
 			stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 			stackInd.push(stackInd.top() - stackIt.top()->deg);
 		} 
-		u = stackPol.top();
-		w = globind.pol / u;
-		return true;
+		return {true, stackPol.top(), globind.pol / stackPol.top() };
 	}
 	else{
-		while(stackIt.top()++ == globind.predecessor[stackInd.top()].end()){
+		auto it = stackIt.top();
+		it++;
+		stackIt.pop();
+		while(!stackIt.empty() && (it == globind.predecessor[stackInd.top()].end() || it->tag >= stackIt.top()->tag)){
+			it = stackIt.top(); 
+			it++;
 			stackIt.pop(); stackPol.pop(); stackInd.pop();
 		}
-		if (stackIt.empty()) return bestOption(u, w);
-		auto it = stackIt.top(); 
-		stackIt.pop(); stackPol.pop(); stackInd.pop();
-		stackIt.push(it++);
+		if (it == globind.predecessor[stackInd.top()].end()){
+			stackPol.pop(); stackInd.pop();
+			return bestOption();
+		}
+		else stackIt.push(it);
+		stackPol.pop();
+		stackInd.pop();
 
 		if (stackPol.empty())
 			stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
@@ -139,18 +145,20 @@ bool HenselSubsets::bestOption(Fpxelem & u, Fpxelem & w ){
 			stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 			stackInd.push(stackInd.top() - stackIt.top()->deg);
 		} 
-		u = stackPol.top();
-		w = globind.pol / u;
-		return true;
+		return {true, stackPol.top(), globind.pol / stackPol.top() };
 	}
 }
 
 
 void HenselSubsets::removeFirstLastOption(){
 	while(stackIt.size() > 1){
-	//Borrar los elementos usados	
-
+		DegTag dt = *stackIt.top();
+		for (unsigned int i = 1; i <= semiSumOfDeg; i++)
+			globind.predecessor[i].erase(dt);
+		stackIt.pop();
 	}
+	DegTag dt = *stackIt.top();//El último elemento lo borro al final para poder hacer bien lo de avanzar el puntero
+
 	if (stackIt.top()++ == globind.predecessor[stackInd.top()].end()){
 		stackIt.pop(); stackPol.pop(); stackInd.pop();
 	}
@@ -161,5 +169,6 @@ void HenselSubsets::removeFirstLastOption(){
 		stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
 		stackInd.push(stackInd.top() - stackIt.top()->deg);
 	}
+	for (unsigned int i = 1; i <= semiSumOfDeg; i++)
+		globind.predecessor[i].erase(dt);
 }
-//NO HAY QUE HACER SPLIT NI RECURSION!!!! EL PROCESAR EL INTERSECTION DE MENOR A MAYOR NOS ASEGURA QUE EL PRIMERO DE LOS DOS FACTORES VA A SER IRREDUCIBLE

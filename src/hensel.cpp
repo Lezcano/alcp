@@ -89,19 +89,21 @@ std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli, HenselS
 		hs.insert(factorsModP, aux);
 	}
 	return result;
-	//Option option;
-	while (hs.bestOption()){
+
+	Option option = hs.bestOption();
+	while (option.b){
 		Zxelem u(0), w(0);
-		if (true){//HenselLifting(poli, option.u, option.w, u, w)){
+		if (HenselLifting(poli, option.u, option.w, u, w)){
 			//The first factor is always irreducible because hs first iterates through the options in ascending order with respect to the degree of the first polynomial
 			result.push_back(u);
 			hs.removeFirstLastOption();
 		}
+		option = hs.bestOption();
 	}
 }
 
 std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli){
-	HenselSubsets hs(poli);
+	HenselSubsets hs(poli.deg());
 	return factorizationHenselSquareFree(poli, hs);
 }
 /*
