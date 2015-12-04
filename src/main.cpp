@@ -28,12 +28,32 @@ void pruebas(){
 }
 
 void pruebasHenselSqFree(){
-	std::vector<big_int> v(17, 0);
+	/*std::vector<big_int> v(17, 0);
 	v[16] = 1;
 	v[4] = 11;
 	v[0] = 121;
+	*/
+	std::vector<big_int> v = {34, 4, 22, -44, 3, 20, -2, -4, 1};
+	std::vector<big_int> r = { 2, 4, 6, 4, 1};
+	std::vector<big_int> t = { 17, -32, 24, -8, 1};
+	std::vector<big_int> o = { 2, 4, 1, 4, 1};
+	std::vector<big_int> p = { 2, 3, 4, 2, 1};
+	std::vector<Fpelem> fp, ffp;
+	for (int i =0; i<5; i++){
+		fp.push_back(Fp(5).get(o[i]));
+		ffp.push_back(Fp(5).get(p[i]));
+	}
+	Zxelem u(0), w(0);
 	Zxelem pol(v);
+	HenselLifting(pol, Fpxelem(fp), Fpxelem(ffp), u, w);
+	/*Zxelem pol(v);
+	cout << Zxelem(r)*Zxelem(t) << endl;
 	auto a =  factorizationHenselSquareFree(pol);
+
+	for (auto p: a){
+		cout << p << endl;
+	}
+	*/
 }
 
 int main (){

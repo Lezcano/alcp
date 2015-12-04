@@ -50,18 +50,24 @@ bool HenselLifting (const Zxelem &polynomial, Fpxelem u1, Fpxelem w1, Zxelem & u
 	w1 *=  (lc * w1.lc().inv());
 
 	Fpxelem s(u1.getField().get(0)), t(u1.getField().get(0)); //This is a random value because s & t must be initialized
-	eea (u1, w1, s, t);//This must always be 1. Test it!!
+	std::cout << eea (u1, w1, s, t) << std::endl;//This must always be 1. Test it!!
+	std::cout << s << std::endl;
+	std::cout << t << std::endl;
 	u = Zxelem(u1); u[u.deg()] = leadCoef;
 	w = Zxelem(w1); w[w.deg()] = leadCoef;
 	Zxelem err = pol - u*w;
 	big_int modulus = p;
 	bound = 2*bound*leadCoef;
 
+	std::cout << u*w << std::endl;
+
 	while (err != 0 && modulus < bound ){
 		Fpxelem c(err/modulus, u1.getField().getP());
 		auto qr = (s*c).div2(w1);
  		u += Zxelem(t*c + qr.first * u1) * modulus;
 		w += Zxelem(qr.second) * modulus;
+		std::cout << err << std::endl;
+		std::cout << u*w << std::endl;
 		err = pol - u*w;
 		modulus *= p;
 	}
@@ -82,17 +88,23 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 
 std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli, HenselSubsets & hs){
 	std::vector< Zxelem > result;
-	int asd =0, primes[2] = {13, 23};
+	int asd =0, primes[7] = {5, 7, 11, 13, 17, 19};
 	while (hs.oneMorePrime()){
-		Fpxelem aux(poli, primes[asd++]);
+		if (asd >= 6) break;
+		big_int prime = primes[asd++];
+		Fpxelem aux(poli, prime);
+		if (poli.lc()%prime == 0 || gcd(aux, Fpxelem(poli.derivative(), prime)) != 1)
+			continue;
 		auto factorsModP = factorizationCantorZassenhaus(aux);//¿Como coger el primo?
+		std::cout << factorsModP[1].first*factorsModP[0].first <<std::endl;
 		hs.insert(factorsModP, aux);
 	}
-	return result;
+
 
 	Option option = hs.bestOption();
 	while (option.b){
 		Zxelem u(0), w(0);
+		std::cout << option.u << std::endl << option.w << std::endl;;
 		if (HenselLifting(poli, option.u, option.w, u, w)){
 			//The first factor is always irreducible because hs first iterates through the options in ascending order with respect to the degree of the first polynomial
 			result.push_back(u);
@@ -100,6 +112,7 @@ std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli, HenselS
 		}
 		option = hs.bestOption();
 	}
+	return result;
 }
 
 std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli){

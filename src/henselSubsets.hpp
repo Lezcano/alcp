@@ -18,7 +18,7 @@ class ord{
 public:
   ord() {}
   bool operator() (const DegTag & a, const DegTag &b) const{
-	  return a.deg < b.deg;
+	  return a.tag < b.tag;
 }};
 
 struct Option {
@@ -47,7 +47,7 @@ class HenselSubsets{
 		void removeFirstLastOption();
 
 	private:
-		unsigned int howManyPrimes = 2;
+		unsigned int howManyPrimes;
 		std::vector<Pri> global;
 		Pri globind;
 		std::vector<unsigned int> intersection;

@@ -136,7 +136,6 @@ template<typename Fxelem>
 std::vector< std::pair< Fxelem, unsigned int> > partialFactorDD ( Fxelem pol){
 	int n = pol.deg();
 	auto mat = formMatrix(pol);
-
 	//first iteration is performed out of the loop because we have r in mat (there is no need to compute it again)
 	std::vector<typename Fxelem::Felem> r = mat[1];
 
@@ -442,6 +441,7 @@ std::vector< std::pair< Fxelem, unsigned int> > factorizationCantorZassenhaus (c
 	std::vector< std::pair< Fxelem, unsigned int> > result;
 	for (auto &pair: aux){
 		auto polAndDegree = partialFactorDD(pair.first);
+
 		for (auto &elem: polAndDegree){
 			auto aux2 = splitFactorsDD(elem.first, elem.second);
 			for (auto &factor: aux2){

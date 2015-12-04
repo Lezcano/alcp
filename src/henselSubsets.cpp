@@ -12,14 +12,14 @@ HenselSubsets::HenselSubsets(unsigned int poliDeg){//TODO: De momento solo uso e
 	intersectionSize = poliDeg/2+1;
 	semiSumOfDeg = poliDeg/2;
 	intersection.assign(intersectionSize, 1);
-	howManyPrimes = 2;
+	howManyPrimes = 6;
 	index = -1;
 	index_intersection = -1;
 	numOfFactors = 0;
 }
 
 bool HenselSubsets::oneMorePrime(){
-	return howManyPrimes-- != 0;
+	return global.size() != howManyPrimes;
 }
 
 
@@ -50,16 +50,20 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > 
 		unsigned int deg = factors[i].first.deg();
 		for (unsigned int j = 0; j < factors[i].second; j++){
 			numOfFactors++;
+			global[ind].map[tag]= i;
 			for (unsigned int k = 1 ; k <= semiSumOfDeg; k++){//Sólo nos hace falta calcular las cosas hasta la mitad del grado
 				if (aux[which][k] != 0 && k + deg <= semiSumOfDeg){
 					aux[1-which][k+deg] += aux[which][k];
 					global[ind].predecessor[k+deg].insert({deg, tag});
-					global[ind].map[tag++]= i;
 				}
 			}
-			aux[1-which][deg]++;
+			if (deg <= semiSumOfDeg){
+				aux[1-which][deg]++;
+				global[ind].predecessor[deg].insert({deg, tag});
+			}
 			aux[which] = aux[1-which];
 			which = 1 - which;
+			tag++;
 		}
 	} //Ahora tengo en aux[which] un vector con las multiplicidades de las posibles sumas
 	
@@ -84,8 +88,20 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > 
 	}
 	global[ind].sums = aux[which];
 
+	/*
+	 for (auto j : global[ind].predecessor){
+		std::cout << ":";
+		for (auto k: j){
+			std::cout << k.deg << " " << k.tag<< "; ";
+		}
+		std::cout << ":" << std::endl;
+	}
+	*/
+
 	for (unsigned int i = 1; i<=semiSumOfDeg; i++){
-		if (intersection[i] != 0) std::cout << i << " ";
+		if (intersection[i] != 0) {
+			std::cout << i << " ";
+		}
 	}
 	std::cout << std::endl;
 }
@@ -130,16 +146,19 @@ Option HenselSubsets::bestOption(){
 			stackPol.pop(); stackInd.pop();
 			return bestOption();
 		}
-		else stackIt.push(it);
+		stackIt.push(it);
 		stackPol.pop();
 		stackInd.pop();
 
-		if (stackPol.empty())
+		if (stackPol.empty()){
 			stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
-		else
+			stackInd.push(index_intersection);
+		}
+		else{
 			stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
+			stackInd.push(stackInd.top() - stackIt.top()->deg);
+		}
 
-		stackInd.push(stackInd.top() - stackIt.top()->deg);
 		while (stackIt.top()->deg != stackInd.top()){//Esto es facil que falle si no se programa bien, si da un error al depurar busca aquí
 			stackIt.push(globind.predecessor[stackInd.top() - stackIt.top()->deg].begin());
 			stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
