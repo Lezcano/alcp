@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 //#include"gtest/gtest.h"
 
 
@@ -25,6 +26,20 @@ void pruebas(){
     catch(ExcepALCP& e){}
 
 
+}
+
+void symForm(){
+    Fp f(17);
+    vector<Fpelem> v;
+    for(int i = 0; i < 9; ++i)
+        v.push_back(f.get(7*i+3));
+    Fpxelem aux (v);
+    Zxelem zx (aux);
+    Zxelem test({3,-7,0, 7, -3, 4, -6, 1, 8});
+    if (test != zx)
+        throw std::runtime_error("Falla el paso a forma simetrica!");
+    else
+        cout << "Ok. Symmetric form." << endl;
 }
 
 void pruebasHenselSqFree(){
@@ -74,7 +89,8 @@ int main (){
 	Fpxelem u(u1), w(w1);
 	*/
 
-    pruebasHenselSqFree();
+//    pruebasHenselSqFree();
+    symForm();
 
     /*
     // No compila

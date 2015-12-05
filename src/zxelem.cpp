@@ -14,7 +14,11 @@ Zxelem toZxelemSym(const Fpxelem &e){
     // When p is odd, p/2 = (p-1)/2 and so we get the symmetric representation
     big_int p2 = p/2;
     std::transform(e._v.begin(), e._v.end(), v.begin(),
-            [&p, &p2](const Fpelem &e) -> big_int { return static_cast<big_int>(e) <= p2 ? static_cast<big_int>(e) : static_cast<big_int>(e-p); });
+            [&p, &p2](const Fpelem &e) -> big_int {
+            return static_cast<big_int>(e) <= p2 ?
+                static_cast<big_int>(e) :
+                static_cast<big_int>(e)-static_cast<big_int>(p);
+                });
     return Zxelem(v);
 }
 
