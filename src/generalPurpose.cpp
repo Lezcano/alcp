@@ -129,7 +129,7 @@ template<typename T>
 T eea (T a, T b, T &x, T &y){
     if(a == 0){
         if(b == 0)
-            throw EOperationUnsupported("Cannot compute the greatest common divisor of two zero elements.");
+            throw EOperationUnsupported("GCD(0, 0) does not exist.");
         x = getZero(a);
         y = unit(b);
         return normalForm(b);
@@ -143,7 +143,7 @@ T eea (T a, T b, T &x, T &y){
     b = normalForm(b);
     T ua = unit(a), ub = unit(b);
 
-      x = getOne(a); y = getZero(b);
+      x  = getOne(a);  y  = getZero(b);
     T xx = getZero(a), yy = getOne(b);
     while(b!=0){
         // The following invariant holds:
@@ -167,7 +167,9 @@ T eea (T a, T b, T &x, T &y){
 
 template<typename T>
 T gcd(T a, T b){
-    T aux = getZero(a);
+    T aux;
+    if(a == 0 && b == 0)
+        throw std::runtime_error("GCD(0, 0) does not exist.");
     if (a == 0)
     	return b;
     if (b == 0 )
