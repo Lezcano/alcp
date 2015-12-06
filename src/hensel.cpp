@@ -96,7 +96,6 @@ std::vector< Zxelem > factorizationHenselSquareFree(Zxelem poli, HenselSubsets &
 		hs.insert(factorsModP, aux);
 	}
 
-
 	Option option = hs.bestOption();
 	while (option.b){
 		Zxelem u(0), w(0);
@@ -107,6 +106,8 @@ std::vector< Zxelem > factorizationHenselSquareFree(Zxelem poli, HenselSubsets &
 			result.push_back(u);
 			poli = poli/u;
 			std::cout << "¡Ha funcionado!" << std::endl;
+			std::cout << "u:" <<  u <<std::endl;
+			std::cout << "w:" <<  w <<std::endl;
 			hs.removeFirstLastOption(w);
 		}
 		std::cout << "=====" << std::endl;

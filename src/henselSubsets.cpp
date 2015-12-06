@@ -165,23 +165,23 @@ Option HenselSubsets::bestOption(){
 					stackPol.pop(); stackInd.pop();
 					return bestOption();
 				}
-				stackIt.push(it);
 				stackPol.pop();
 				stackInd.pop();
-
-				if (stackPol.empty()){
-					stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
+				if (stackInd.empty())
 					stackInd.push(index_intersection);
-				}
-				else{
-					stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
+				else
 					stackInd.push(stackInd.top() - stackIt.top()->deg);
-				}
+				stackIt.push(it);
+				if (stackPol.empty())
+					stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
+				else
+					stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 			}
 			else{
-				stackIt.push(globind.predecessor[stackInd.top() - stackIt.top()->deg].begin());
-				stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 				stackInd.push(stackInd.top() - stackIt.top()->deg);
+				stackIt.push(globind.predecessor[stackInd.top()].begin());
+				stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
+
 			}
 		} 
 		return {true, stackPol.top(), globind.pol / stackPol.top() };
@@ -203,18 +203,17 @@ Option HenselSubsets::bestOption(){
 			stackPol.pop(); stackInd.pop();
 			return bestOption();
 		}
-		stackIt.push(it);
 		stackPol.pop();
 		stackInd.pop();
-
-		if (stackPol.empty()){
-			stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
+		if (stackInd.empty())
 			stackInd.push(index_intersection);
-		}
-		else{
-			stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
+		else
 			stackInd.push(stackInd.top() - stackIt.top()->deg);
-		}
+		stackIt.push(it);
+		if (stackPol.empty())
+			stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
+		else
+			stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 
 		while (stackIt.top()->deg != stackInd.top()){//Esto es facil que falle si no se programa bien, si da un error al depurar busca aquí
 			//TODO Arreglar aquí y en el otro lado, faltan los casos en los que tienes que ir para atrás
@@ -233,23 +232,22 @@ Option HenselSubsets::bestOption(){
 					stackPol.pop(); stackInd.pop();
 					return bestOption();
 				}
-				stackIt.push(it);
 				stackPol.pop();
 				stackInd.pop();
-
-				if (stackPol.empty()){
-					stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
+				if (stackInd.empty())
 					stackInd.push(index_intersection);
-				}
-				else{
-					stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
+				else
 					stackInd.push(stackInd.top() - stackIt.top()->deg);
-				}
+				stackIt.push(it);
+				if (stackPol.empty())
+					stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
+				else
+					stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 			}
 			else{
-				stackIt.push(globind.predecessor[stackInd.top() - stackIt.top()->deg].begin());
-				stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 				stackInd.push(stackInd.top() - stackIt.top()->deg);
+				stackIt.push(globind.predecessor[stackInd.top()].begin());
+				stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 			}
 		} 
 		return {true, stackPol.top(), globind.pol / stackPol.top() };
