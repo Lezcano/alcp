@@ -48,27 +48,32 @@ void pruebasHenselSqFree(){
 	v[4] = 11;
 	v[0] = 121;
 	*/
-	std::vector<big_int> v = {34, 4, 22, -44, 3, 20, -2, -4, 1};
-	std::vector<big_int> r = { 2, 4, 6, 4, 1};
-	std::vector<big_int> t = { 17, -32, 24, -8, 1};
-	std::vector<big_int> o = { 2, 4, 1, 4, 1};
-	std::vector<big_int> p = { 2, 3, 4, 2, 1};
-	std::vector<Fpelem> fp, ffp;
-	for (int i =0; i<5; i++){
-		fp.push_back(Fp(5).get(o[i]));
-		ffp.push_back(Fp(5).get(p[i]));
-	}
+	//std::vector<big_int> v = {0, 4, 22, -44, 3, 20, -2, -4, 1};
+	//std::vector<big_int> v = {121, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+	//std::vector<big_int> v = {576, 0, -960, 0, 352, 0, -40, 0, 1};
+	//std::vector<big_int> v = {0, 4, 6, 4, 1};
+	//std::vector<big_int> v = {-24, -46, -78, -109, -115, -99, -75, -42, -11, -5, 3, 1};//(x-3) (x+4) (x^2+2) (x+1) (x^2+1) (x^4+x^3+x^2+x+1)
+	std::vector<big_int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 11, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+
 	Zxelem u(0), w(0);
 	Zxelem pol(v);
-	HenselLifting(pol, Fpxelem(fp), Fpxelem(ffp), u, w);
-	/*Zxelem pol(v);
-	cout << Zxelem(r)*Zxelem(t) << endl;
+	//HenselLifting(pol, Fpxelem(fp), Fpxelem(ffp), u, w);
+	//cout << Zxelem(r)*Zxelem(t) << endl;
+	cout << pol << endl << endl;
 	auto a =  factorizationHenselSquareFree(pol);
-
+	Zxelem aux(1);
 	for (auto p: a){
+		aux*=p;
 		cout << p << endl;
 	}
-	*/
+	if (aux == pol){
+		cout << "Bien factorizado!!" << endl;
+	}
+	else{
+		cout << ":( Lo siento, no se ha factorizado bien." << endl;
+
+	}
+
 }
 
 int main (){
@@ -89,8 +94,8 @@ int main (){
 	Fpxelem u(u1), w(w1);
 	*/
 
-//    pruebasHenselSqFree();
-    symForm();
+    pruebasHenselSqFree();
+//    symForm();
 
     /*
     // No compila

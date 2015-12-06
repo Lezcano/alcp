@@ -37,14 +37,16 @@ struct Pri{
 
 class HenselSubsets{
 	public:
-		HenselSubsets(unsigned int poliDeg);
+		HenselSubsets(Zxelem poli);
 
 		bool oneMorePrime();
 		void insert(const std::vector<std::pair<Fpxelem, unsigned int> > & factors, const Fpxelem & poli);
 
 		Option bestOption();
 		
-		void removeFirstLastOption();
+		void removeFirstLastOption(Zxelem w);
+
+		Zxelem getLast();
 
 	private:
 		unsigned int howManyPrimes;
@@ -53,12 +55,15 @@ class HenselSubsets{
 		std::vector<unsigned int> intersection;
 		unsigned int intersectionSize;
 		unsigned int semiSumOfDeg;
+		unsigned int sumOfDeg;
 		int index;
+		bool hadRemoved;
 		unsigned int index_intersection;
 		std::stack<unsigned int> stackInd;
 		std::stack<Fpxelem> stackPol;
 		std::stack<std::set<DegTag, ord>::iterator> stackIt;
 		unsigned int numOfFactors;
+		Zxelem last;
 		
 };
 
