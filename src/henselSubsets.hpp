@@ -43,13 +43,13 @@ class HenselSubsets{
 		void insert(const std::vector<std::pair<Fpxelem, unsigned int> > & factors, const Fpxelem & poli);
 
 		Option bestOption();
-		
+
 		void removeFirstLastOption(Zxelem w);
 
 		Zxelem getLast();
 
 	private:
-		unsigned int howManyPrimes;
+		const unsigned int howManyPrimes;
 		std::vector<Pri> global;
 		Pri globind;
 		std::vector<unsigned int> intersection;
@@ -64,7 +64,6 @@ class HenselSubsets{
 		std::stack<std::set<DegTag, ord>::iterator> stackIt;
 		unsigned int numOfFactors;
 		Zxelem last;
-		
 };
 
 #endif // __HENSEL_SUBSETS_HPP_
