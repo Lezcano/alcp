@@ -22,6 +22,7 @@ Zxelem toZxelemSym(const Fpxelem &e){
     return Zxelem(v);
 }
 
+Zxelem::Zxelem() = default;
 Zxelem::Zxelem(const big_int & e) : PolynomialRing<Zxelem, big_int>(e){}
 Zxelem::Zxelem(const std::vector<big_int> & v) : PolynomialRing<Zxelem, big_int>(v){}
 Zxelem::Zxelem(const Fpxelem & e) : PolynomialRing<Zxelem, big_int>(toZxelemSym(e)){}

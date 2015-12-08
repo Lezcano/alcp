@@ -15,18 +15,11 @@
 #include "factorizationFq.hpp"
 #include "integerCRA.hpp"
 #include "hensel.hpp"
+#include "modularGCD.hpp"
+#include "generalPurpose.hpp"
 
 using namespace std;
 using namespace boost::multiprecision;
-
-void pruebas(){
-    try{
-        Fp field(6);
-    }
-    catch(ExcepALCP& e){}
-
-
-}
 
 void symForm(){
     Fp f(17);
@@ -37,9 +30,71 @@ void symForm(){
     Zxelem zx (aux);
     Zxelem test({3,-7,0, 7, -3, 4, -6, 1, 8});
     if (test != zx)
-        throw std::runtime_error("Falla el paso a forma simetrica!");
+        throw runtime_error("Falla el paso a forma simetrica!");
     else
         cout << "Ok. Symmetric form." << endl;
+}
+
+void testModularGCD(){
+    Zxelem a({-360, -171, 145, 25, 1});
+    Zxelem b({-15,-14,-1,15,14,1});
+    try {
+        cout << modularGCD(a, b) << endl;
+    }
+    catch(ExcepALCP & e){
+        cout << e.msg() << endl;
+    }
+
+}
+
+void testCRA(){
+    if(integerCRA({99,97,95}, {49,-21,-30}) != -272300)
+        cout << "XX. IntegerCRA fails miserably." << endl;
+    else
+        cout << "Ok. IntegerCRA seems to work." << endl;
+}
+
+
+void goodOldGCD(){
+    int i;
+    bool exception=false;
+    try{
+        gcd(0,0);
+    }catch(runtime_error &e){
+        cout << "Ok. gcd(0,0) throws exception." << endl;
+        exception = true;
+    }
+    if(!exception)
+        cout << "XX. gcd(0,0) does not throw an exception." << endl;
+
+    for(i=1;i<6;++i){
+        if(gcd(0,i) != i || gcd(i,0) != i)
+            break;
+    }
+    if(i != 6)
+        cout << "XX. gcd(" << i << ",0) or gcd(" << i << ",0) fail" << endl;
+    else
+        cout << "Ok. gcd(i,0) and gcd(0,i), 6>i>0" << endl;
+
+
+    for(i=-1;i>-6;--i){
+        if(gcd(0,i) != -i || gcd(i,0) != -i)
+            break;
+    }
+    if(i != -6)
+        cout << "XX. gcd(" << i << ",0) or gcd(" << i << ",0) fail" << endl;
+    else
+        cout << "Ok. gcd(i,0) and gcd(0,i), -6<i<0" << endl;
+
+    // Random values
+    if(gcd(42,56) != 14)
+        cout << "XX. gcd(42,56) != 14" << endl;
+    else
+        cout << "Ok. gcd(42,56)" << endl;
+    if(gcd(987,1491) != 21)
+        cout << "XX. gcd(987,1491) != 21" << endl;
+    else
+        cout << "Ok. gcd(987,1491)" << endl;
 }
 
 void pruebasHenselSqFree(){
@@ -63,7 +118,7 @@ void pruebasHenselSqFree(){
 	cout << pol << endl << endl;
 	auto a =  factorizationHenselSquareFree(pol);
 	Zxelem aux(1);
-	for (auto p: a){
+	for (auto p : a){
 		aux*=p;
 		cout << p << endl;
 	}
@@ -95,7 +150,10 @@ int main (){
 	Fpxelem u(u1), w(w1);
 	*/
 
-    pruebasHenselSqFree();
+//    testCRA();
+    testModularGCD();
+//    pruebasHenselSqFree();
+//    goodOldGCD();
 //    symForm();
 
     /*

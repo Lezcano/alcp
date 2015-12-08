@@ -22,8 +22,11 @@ Fpelem::operator big_int() const { return _num; }
 
 Fpelem & Fpelem::operator=(const Fpelem &rhs){
     if(&rhs != this){
-        if(!this->initialized())
-            *this = Fpelem(rhs);
+        if(!this->initialized()){
+            _num = rhs._num;
+            _p = rhs._p;
+            _f = std::unique_ptr<Fp>(new Fp(*rhs._f));
+        }
         else{
             checkInSameField(rhs, "Assignment error.");
             _num = rhs._num;
