@@ -30,21 +30,27 @@ void symForm(){
     Zxelem zx (aux);
     Zxelem test({3,-7,0, 7, -3, 4, -6, 1, 8});
     if (test != zx)
-        throw runtime_error("Falla el paso a forma simetrica!");
+        throw runtime_error("XX. Falla el paso a forma simetrica!");
     else
-        cout << "Ok. Symmetric form." << endl;
+        cout << "Ok. Symmetric form seems to work." << endl;
 }
 
 void testModularGCD(){
-    Zxelem a({-360, -171, 145, 25, 1});
-    Zxelem b({-15,-14,-1,15,14,1});
-    try {
-        cout << modularGCD(a, b) << endl;
-    }
-    catch(ExcepALCP & e){
-        cout << e.msg() << endl;
-    }
-
+    const int n = 2;
+    int i;
+    Zxelem a[n] = {Zxelem({-360, -171, 145, 25, 1}),
+                  Zxelem({-5,2,8,-3,-3,0,1,0,1})};
+    Zxelem b[n] = {Zxelem({-15,-14,-1,15,14,1}),
+                  Zxelem({21,-9,-4,0,5,0,3})};
+    Zxelem res[2] = {Zxelem({15,14,1}),
+                     Zxelem({1})};
+    for(i=0;i<n;++i)
+        if(res[i] != modularGCD(a[i], b[i])){
+            cout << "XX. ModularGCD fails on test case " << i << "." << endl;
+            break;
+        }
+    if(i == n)
+        cout << "Ok. ModularGCD seems to work." << endl;
 }
 
 void testCRA(){
@@ -55,7 +61,7 @@ void testCRA(){
 }
 
 
-void goodOldGCD(){
+void testGoodOldGCD(){
     int i;
     bool exception=false;
     try{
@@ -150,11 +156,11 @@ int main (){
 	Fpxelem u(u1), w(w1);
 	*/
 
-//    testCRA();
+    testCRA();
     testModularGCD();
 //    pruebasHenselSqFree();
-//    goodOldGCD();
-//    symForm();
+    testGoodOldGCD();
+    symForm();
 
     /*
     // No compila
