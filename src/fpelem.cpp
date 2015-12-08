@@ -53,13 +53,13 @@ Fpelem & Fpelem::operator+=(const Fpelem &rhs){
     return *this;
 }
 
-const Fpelem Fpelem::operator+(const Fpelem &rhs) const{
+Fpelem Fpelem::operator+(const Fpelem &rhs) const{
     // We do not check if they are in the same field since
     // that will be done in the += operator
     return Fpelem(*this) += rhs;
 }
 
-const Fpelem Fpelem::operator-() const{
+Fpelem Fpelem::operator-() const{
     return _f->get(-_num);
 }
 
@@ -69,7 +69,7 @@ Fpelem & Fpelem::operator-=(const Fpelem &rhs){
     return (*this +=(-rhs));
 }
 
-const Fpelem Fpelem::operator-(const Fpelem &rhs) const{
+Fpelem Fpelem::operator-(const Fpelem &rhs) const{
     return Fpelem(*this) -= rhs;
 }
 
@@ -79,14 +79,14 @@ Fpelem & Fpelem::operator*=(const Fpelem &rhs){
     return *this;
 }
 
-const Fpelem Fpelem::operator*(const Fpelem &rhs) const{
+Fpelem Fpelem::operator*(const Fpelem &rhs) const{
     // We do not check if they are in the same field since
     // that will be done in the *= operator
     return Fpelem(*this) *= rhs;
 }
 
 /** Multiplicative inverse */
-const Fpelem Fpelem::inv() const{
+Fpelem Fpelem::inv() const{
     if(_num == 0)
         throw EOperationUnsupported("Error. Zero has no inverse.");
     big_int res, aux;
@@ -101,7 +101,7 @@ Fpelem & Fpelem::operator/=(const Fpelem &rhs){
     return *this *= rhs.inv();
 }
 
-const Fpelem Fpelem::operator/(const Fpelem &rhs) const{
+Fpelem Fpelem::operator/(const Fpelem &rhs) const{
     // We do not check if they are in the same field since
     // that will be done in the /= operator
     return Fpelem(*this) /= rhs;
@@ -112,8 +112,8 @@ big_int Fpelem::getSize()const{return this->_p;}
 const Fp Fpelem::getField()const{return *_f;}
 
 std::string to_string(const Fpelem &e){return to_string(e._num);}
-const Fpelem getZero(const Fpelem &e){return e.getField().get(0);}
-const Fpelem getOne(const Fpelem &e){return e.getField().get(1);}
+Fpelem getZero(const Fpelem &e){return e.getField().get(0);}
+Fpelem getOne(const Fpelem &e){return e.getField().get(1);}
 
 bool compatible(const Fpelem &lhs, const Fpelem &rhs){
     return lhs.getField()==rhs.getField();
@@ -141,11 +141,11 @@ Fpelem & operator+=(Fpelem &lhs, big_int rhs){
     return lhs;
 }
 
-const Fpelem operator+(const Fpelem &lhs, big_int rhs){
+Fpelem operator+(const Fpelem &lhs, big_int rhs){
     return lhs + lhs.getField().get(rhs);
 }
 
-const Fpelem operator+(big_int lhs, const Fpelem & rhs){
+Fpelem operator+(big_int lhs, const Fpelem & rhs){
     return rhs.getField().get(lhs) + rhs;
 }
 
@@ -154,11 +154,11 @@ Fpelem & operator-=(Fpelem &lhs, big_int rhs){
     return lhs;
 }
 
-const Fpelem operator-(const Fpelem &lhs, big_int rhs){
+Fpelem operator-(const Fpelem &lhs, big_int rhs){
     return lhs - lhs.getField().get(rhs);
 }
 
-const Fpelem operator-(big_int lhs, const Fpelem & rhs){
+Fpelem operator-(big_int lhs, const Fpelem & rhs){
     return rhs.getField().get(lhs) - rhs;
 }
 
@@ -167,11 +167,11 @@ Fpelem & operator*=(Fpelem &lhs, big_int rhs){
     return lhs;
 }
 
-const Fpelem operator*(const Fpelem &lhs, big_int rhs){
+Fpelem operator*(const Fpelem &lhs, big_int rhs){
 	return lhs.getField().get(rhs)*lhs ;
 }
 
-const Fpelem operator*(big_int lhs, const Fpelem & rhs){
+Fpelem operator*(big_int lhs, const Fpelem & rhs){
     return rhs.getField().get(lhs) * rhs;
 }
 

@@ -50,13 +50,13 @@ Fqelem & Fqelem::operator+=(const Fqelem &rhs){
     return *this;
 }
 
-const Fqelem Fqelem::operator+(const Fqelem &rhs) const{
+Fqelem Fqelem::operator+(const Fqelem &rhs) const{
     // We do not check if they are in the same field since
     // that will be done in the += operator
     return Fqelem(*this) += rhs;
 }
 
-const Fqelem Fqelem::operator-() const{
+Fqelem Fqelem::operator-() const{
     return _f->get(-_num);
 }
 
@@ -66,7 +66,7 @@ Fqelem & Fqelem::operator-=(const Fqelem &rhs){
     return (*this +=(-rhs));
 }
 
-const Fqelem Fqelem::operator-(const Fqelem &rhs) const{
+Fqelem Fqelem::operator-(const Fqelem &rhs) const{
     return Fqelem(*this) -= rhs;
 }
 
@@ -76,14 +76,14 @@ Fqelem & Fqelem::operator*=(const Fqelem &rhs){
     return *this;
 }
 
-const Fqelem Fqelem::operator*(const Fqelem &rhs) const{
+Fqelem Fqelem::operator*(const Fqelem &rhs) const{
     // We do not check if they are in the same field since
     // that will be done in the *= operator
     return Fqelem(*this) *= rhs;
 }
 
 /** Multiplicative inverse */
-const Fqelem Fqelem::inv() const{
+Fqelem Fqelem::inv() const{
     if(_num == 0)
         throw EOperationUnsupported("Error. Zero has no inverse.");
     Fpxelem res = _f->get(0)._num, aux = _f->get(0)._num;
@@ -98,7 +98,7 @@ Fqelem & Fqelem::operator/=(const Fqelem &rhs){
     return *this *= rhs.inv();
 }
 
-const Fqelem Fqelem::operator/(const Fqelem &rhs) const{
+Fqelem Fqelem::operator/(const Fqelem &rhs) const{
     // We do not check if they are in the same field since
     // that will be done in the /= operator
     return Fqelem(*this) /= rhs;
@@ -107,15 +107,15 @@ const Fqelem Fqelem::operator/(const Fqelem &rhs) const{
 int deg(const Fqelem &e){return e._num.deg();}
 
 // In a field the division has reminder zero
-const Fqelem Fqelem::operator%(const Fqelem &rhs) const{return _f->get(0);}
+Fqelem Fqelem::operator%(const Fqelem &rhs) const{return _f->get(0);}
 
 big_int Fqelem::getSize()const{return _f->getSize();}
 
 const Fqelem::F Fqelem::getField()const{return *_f;}
 
 std::string to_string(const Fqelem &e){return to_string(e._num);}
-const Fqelem getZero(const Fqelem &e){return e.getField().get(0);}
-const Fqelem getOne(const Fqelem &e){return e.getField().get(1);}
+Fqelem getZero(const Fqelem &e){return e.getField().get(0);}
+Fqelem getOne(const Fqelem &e){return e.getField().get(1);}
 
 bool compatible(const Fqelem &lhs, const Fqelem &rhs){
     return lhs.getField()==rhs.getField();
@@ -141,11 +141,11 @@ Fqelem & operator+=(Fqelem &lhs, big_int rhs){
     return lhs;
 }
 
-const Fqelem operator+(const Fqelem &lhs, big_int rhs){
+Fqelem operator+(const Fqelem &lhs, big_int rhs){
     return lhs + lhs.getField().get(rhs);
 }
 
-const Fqelem operator+(big_int lhs, const Fqelem & rhs){
+Fqelem operator+(big_int lhs, const Fqelem & rhs){
     return rhs.getField().get(lhs) + rhs;
 }
 
@@ -154,11 +154,11 @@ Fqelem & operator-=(Fqelem &lhs, big_int rhs){
     return lhs;
 }
 
-const Fqelem operator-(const Fqelem &lhs, big_int rhs){
+Fqelem operator-(const Fqelem &lhs, big_int rhs){
     return lhs - lhs.getField().get(rhs);
 }
 
-const Fqelem operator-(big_int lhs, const Fqelem & rhs){
+Fqelem operator-(big_int lhs, const Fqelem & rhs){
     return rhs.getField().get(lhs) - rhs;
 }
 
@@ -167,11 +167,11 @@ Fqelem & operator*=(Fqelem &lhs, big_int rhs){
     return lhs;
 }
 
-const Fqelem operator*(const Fqelem &lhs, big_int rhs){
+Fqelem operator*(const Fqelem &lhs, big_int rhs){
     return lhs * lhs.getField().get(rhs);
 }
 
-const Fqelem operator*(big_int lhs, const Fqelem & rhs){
+Fqelem operator*(big_int lhs, const Fqelem & rhs){
     return rhs.getField().get(lhs) * rhs;
 }
 

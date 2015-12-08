@@ -26,28 +26,28 @@ class Fqelem{
 
         Fqelem & operator+=(const Fqelem &rhs);
 
-        const Fqelem operator+(const Fqelem &rhs) const;
+        Fqelem operator+(const Fqelem &rhs) const;
 
-        const Fqelem operator-() const;
+        Fqelem operator-() const;
 
         Fqelem & operator-=(const Fqelem &rhs);
 
-        const Fqelem operator-(const Fqelem &rhs) const;
+        Fqelem operator-(const Fqelem &rhs) const;
 
         Fqelem & operator*=(const Fqelem &rhs);
 
-        const Fqelem operator*(const Fqelem &rhs) const;
+        Fqelem operator*(const Fqelem &rhs) const;
 
         /** Multiplicative inverse */
-        const Fqelem inv() const;
+        Fqelem inv() const;
 
         Fqelem & operator/=(const Fqelem &rhs);
 
-        const Fqelem operator/(const Fqelem &rhs) const;
+        Fqelem operator/(const Fqelem &rhs) const;
 
         friend int deg(const Fqelem &e);
 
-        const Fqelem operator%(const Fqelem &rhs) const;
+        Fqelem operator%(const Fqelem &rhs) const;
 
         big_int getSize()const;
 
@@ -73,18 +73,18 @@ bool operator==(const Fqelem &lhs, big_int rhs);
 bool operator!=(big_int lhs, const Fqelem &rhs);
 bool operator!=(const Fqelem &lhs, big_int rhs);
 Fqelem & operator+=(Fqelem &lhs, big_int rhs);
-const Fqelem operator+(const Fqelem &lhs, big_int rhs);
-const Fqelem operator+(big_int lhs, const Fqelem & rhs);
+Fqelem operator+(const Fqelem &lhs, big_int rhs);
+Fqelem operator+(big_int lhs, const Fqelem & rhs);
 Fqelem & operator-=(Fqelem &lhs, big_int rhs);
-const Fqelem operator-(const Fqelem &lhs, big_int rhs);
-const Fqelem operator-(big_int lhs, const Fqelem & rhs);
+Fqelem operator-(const Fqelem &lhs, big_int rhs);
+Fqelem operator-(big_int lhs, const Fqelem & rhs);
 Fqelem & operator*=(Fqelem &lhs, big_int rhs);
-const Fqelem operator*(const Fqelem &lhs, big_int rhs);
-const Fqelem operator*(big_int lhs, const Fqelem & rhs);
+Fqelem operator*(const Fqelem &lhs, big_int rhs);
+Fqelem operator*(big_int lhs, const Fqelem & rhs);
 
 bool compatible(const Fqelem &lhs, const Fqelem &rhs);
-const Fqelem getZero(const Fqelem &e);
-const Fqelem getOne(const Fqelem &e);
+Fqelem getZero(const Fqelem &e);
+Fqelem getOne(const Fqelem &e);
 std::string to_string(const Fqelem &e);
 
 #endif // __FQELEM_HPP
