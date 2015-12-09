@@ -16,9 +16,9 @@ class Fpelem{
 
         Fpelem ();
         Fpelem ( const Fpelem & );
-        explicit operator big_int() const;
-        Fpelem & operator=(const Fpelem &rhs);
+        explicit operator big_int() const;//TODO
 
+        Fpelem & operator=(const Fpelem &rhs);
         Fpelem & operator=(big_int rhs);
 
         bool operator==(const Fpelem &rhs)const;
@@ -45,10 +45,6 @@ class Fpelem{
         Fpelem & operator/=(const Fpelem &rhs);
 
         Fpelem operator/(const Fpelem &rhs) const;
-
-        friend int deg(const Fpelem &e);
-
-        Fpelem operator%(const Fpelem &rhs) const;
 
         big_int getSize()const;
 

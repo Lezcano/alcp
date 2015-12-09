@@ -1,9 +1,9 @@
 #ifndef __FQELEM_HPP
 #define __FQELEM_HPP
 
-#include "types.hpp"
-// I don't think this is necessary
 #include "fq.hpp"
+#include "types.hpp"
+
 #include <iosfwd>           // ostream
 #include <memory>           // unique_ptr
 
@@ -16,8 +16,8 @@ class Fqelem{
 
         Fqelem ();
         Fqelem ( const Fqelem & );
-        Fqelem & operator=(const Fqelem &rhs);
 
+        Fqelem & operator=(const Fqelem &rhs);
         Fqelem & operator=(big_int rhs);
 
         bool operator==(const Fqelem &rhs)const;
@@ -45,10 +45,6 @@ class Fqelem{
 
         Fqelem operator/(const Fqelem &rhs) const;
 
-        friend int deg(const Fqelem &e);
-
-        Fqelem operator%(const Fqelem &rhs) const;
-
         big_int getSize()const;
 
         const F getField()const;
@@ -59,13 +55,13 @@ class Fqelem{
     private:
         friend class Fq;
 
-        Fqelem(Fpxelem n, Fpxelem mod, Fq f);
+        Fqelem(Fpxelem n, Fq f);
         bool initialized() const;
         void checkInSameField(const Fqelem &rhs, std::string&& error) const;
 
         Fpxelem _num;
-        std::unique_ptr<Fq> _f;
         Fpxelem _mod;
+        std::unique_ptr<Fq> _f;
 };
 
 bool operator==(big_int lhs, const Fqelem &rhs);

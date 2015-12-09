@@ -52,7 +52,7 @@ bool Fpelem::operator!=(const Fpelem &rhs)const{
 
 Fpelem & Fpelem::operator+=(const Fpelem &rhs){
     checkInSameField(rhs, "Addition or substraction error.");
-    this->_num = (this->_num + rhs._num) % _p;
+    _num = (_num + rhs._num) % _p;
     return *this;
 }
 
@@ -78,7 +78,7 @@ Fpelem Fpelem::operator-(const Fpelem &rhs) const{
 
 Fpelem & Fpelem::operator*=(const Fpelem &rhs){
     checkInSameField(rhs, "Multiplication or division error.");
-    this->_num = (this->_num * rhs._num) % _p;
+    _num = (_num * rhs._num) % _p;
     return *this;
 }
 
@@ -110,7 +110,7 @@ Fpelem Fpelem::operator/(const Fpelem &rhs) const{
     return Fpelem(*this) /= rhs;
 }
 
-big_int Fpelem::getSize()const{return this->_p;}
+big_int Fpelem::getSize()const{return _p;}
 
 const Fp Fpelem::getField()const{return *_f;}
 
@@ -122,7 +122,7 @@ bool compatible(const Fpelem &lhs, const Fpelem &rhs){
     return lhs.getField()==rhs.getField();
 }
 
-Fpelem::Fpelem(big_int num, Fp f): _num(num), _f(new Fp(f)), _p(f.getSize()){
+Fpelem::Fpelem(big_int num, Fp f): _num(num), _p(f.getSize()), _f(new Fp(f)){
     _num %= _p;
     if(_num < 0)
         _num += _p;

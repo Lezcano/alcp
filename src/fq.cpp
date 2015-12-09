@@ -25,8 +25,8 @@ Fq::Fq(big_int p, int n): _p(p), _n(n), _base(p), _mod(_base.get(0)){ // _mod mu
     v[0] = _base.get(1);
     // Hopefully this ends in a reasonable amount of time
     //  Maybe set a timer?
-    //  The probability of getting an irreducible polynomial
-    //   in each iteration is 1/n
+    // The probability of getting an irreducible polynomial
+    //  in each iteration is 1/n
     while(!Fpxelem(v).irreducible()){
         increment(v);
         if(v[0] == 0) // It's divisible by the polynomial p(x) = x
@@ -36,15 +36,15 @@ Fq::Fq(big_int p, int n): _p(p), _n(n), _base(p), _mod(_base.get(0)){ // _mod mu
 }
 
 Fqelem Fq::get(big_int n)const{
-    return Fqelem(Fpxelem(_base.get(n)), _mod, Fq(*this));
+    return Fqelem(Fpxelem(_base.get(n)), Fq(*this));
 }
 
 Fqelem Fq::get(Fpxelem f)const{
-    return Fqelem(f, _mod, Fq(*this));
+    return Fqelem(f, Fq(*this));
 }
 
+Fpxelem Fq::mod() const{return _mod;}
 big_int Fq::getSize()const{return fastPow(_p,_n);}
-
 big_int Fq::getP()const{return _p;}
 big_int Fq::getM()const{return _n;}
 
