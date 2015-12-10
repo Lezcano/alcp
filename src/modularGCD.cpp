@@ -8,11 +8,6 @@
 #include <random>
 #include <limits>
 
-
-big_int intContent (const Zxelem_b &a){
-	//Calcula el gcd de los coeficientes con el signo del coeficiente director
-}
-
 big_int randomPrime (){
 	std::mt19937 generator(std::chrono::system_clock::now().time_since_epoch().count());
     std::uniform_int_distribution<int> distr(1, std::numeric_limits<int>::max()/2-2);
@@ -26,7 +21,7 @@ big_int randomPrime (){
 
 Fpxelem_b redModP(const Zxelem_b &a, const Fp_b &f){
     std::vector<Fpelem_b> ret(a.deg()+1);
-    for(int i = 0; i <= a.deg(); ++i)
+    for(std::size_t i = 0; i <= a.deg(); ++i)
         ret[i] = f.get(a[i]);
     return ret;
 }
@@ -74,7 +69,7 @@ Zxelem_b modularGCD(Zxelem_b a, Zxelem_b b){
             n = cp.deg();
         }
         else{ // cp.deg() >= n
-            for(int i = 0; i <= h.deg(); ++i){
+            for(std::size_t i = 0; i <= h.deg(); ++i){
                 h[i] = integerCRA({q,p}, {h[i],(big_int)cp[i]});
             }
             q*=p;

@@ -7,27 +7,43 @@
 #include "polRing.hpp"
 
 template<class Integer> class Fpxelem;
+template<class Integer> class Fpelem;
+template<class Integer> class Fp;
 
 template<class Integer>
 class Zxelem : public PolynomialRing<Zxelem<Integer>, Integer>{
+    private:
+        using RBase = PolynomialRing<Zxelem<Integer>, Integer>;
     public:
-        using PolynomialRing<Zxelem<Integer>, Integer>::PolynomialRing;
+        // Inherit ctors
+        using RBase::PolynomialRing;
         Zxelem() = default;
 
 		/* It returns a polynomial in Zx using the symmetric
 		 * representation of Fp, this is
 		 * -(p-1)/2, -(p-1)/2+1, ..-1, 0, 1, .. (p-1)/2
 		 * */
-        Zxelem(const Fpxelem<Integer> & e) : PolynomialRing<Zxelem<Integer>, Integer>(toZxelemSym(e)){}
+        Zxelem(const Fpxelem<Integer> & e) : RBase(toZxelemSym(e)){}
 
-        friend class Fpxelem<Integer>;
-        friend Fpxelem<Integer> toFpxelem(const Zxelem<Integer> &e, Integer p);
+
+        friend Fpxelem<Integer> toFpxelem(const Zxelem &e, Integer p){
+            std::vector<Fpelem<Integer>> v(e.deg()+1);
+            auto f = Fp<Integer>(p);
+            for(std::size_t i=0;i<=e.deg();++i)
+                v[i] = f.get(e[i]);
+            return v;
+        }
+
 
         friend Zxelem<Integer> getZero(const Zxelem<Integer> &e){ return Zxelem<Integer>(0); }
         friend Zxelem<Integer> getOne(const Zxelem<Integer> &e){ return Zxelem<Integer>(1); }
         friend Integer unit(const Zxelem<Integer> &e){ return unit(e.lc()); }
-        friend bool compatible(const Zxelem<Integer> &lhs, const Zxelem<Integer> &rhs){ return true; }
+        friend bool compatible(const Zxelem<Integer> &lhs, const Zxelem<Integer> &rhs){
+            (void) lhs; (void) rhs; // Silences -Wunused-param and does nothng
+            return true;
+        }
         friend Integer normInf(const Zxelem<Integer> &e){
+
             Integer ret = e[0];
             for(std::size_t i=1;i<=e.deg();++i)
                 if(e[i] > ret)
@@ -41,23 +57,6 @@ class Zxelem : public PolynomialRing<Zxelem<Integer>, Integer>{
             return gcdE;
         }
 
-    private:
-
-        // It returns the symmetric representation of f \in Fp[X] as an element of Z[X]
-        Zxelem toZxelemSym(const Fpxelem<Integer> &e){
-            std::vector<Integer> v(e._v.size());
-            Integer p = e.getSize();
-            // When p = 2, p2 = 1 and so every v[i] is <= p2
-            // When p is odd, p/2 = (p-1)/2 and so we get the symmetric representation
-            Integer p2 = p/2;
-            std::transform(e._v.begin(), e._v.end(), v.begin(),
-                    [&p, &p2](const Fpelem<Integer> &e) -> Integer {
-                    return static_cast<Integer>(e) <= p2 ?
-                        static_cast<Integer>(e) :
-                        static_cast<Integer>(e)-static_cast<Integer>(p);
-                        });
-            return Zxelem(v);
-        }
 };
 
 using Zxelem_b = Zxelem<big_int>;

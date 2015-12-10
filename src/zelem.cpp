@@ -38,6 +38,7 @@ std::string to_string(big_int e){return std::to_string(e);}
 
 template <typename T>
 bool compatible(T lhs,T rhs){
+    (void) lhs; (void) rhs; // Silences -Wunused-param and does nothng
     return true;
 }
 
@@ -50,9 +51,15 @@ template <typename T>
 T normalForm(T e){ return e/unit<T>(e);}
 
 template <typename T>
-T getZero(T e){ return 0;}
+T getZero(T e){
+    (void) e; // Silences -Wunused-param and does nothng
+    return 0;
+}
 template <typename T>
-T getOne(T e){ return 1;}
+T getOne(T e){
+    (void) e; // Silences -Wunused-param and does nothng
+    return 1;
+}
 
 
 template bool compatible<big_int>(big_int lhs, big_int rhs);

@@ -45,8 +45,25 @@ class Fpxelem : public PolynomialRing<Fpxelem<Integer>, Fpelem<Integer>>{
             return this->getField().getSize();
         }
 
-        friend class Zxelem<Integer>;
-        friend Zxelem<Integer> toZxelemSym(const Fpxelem<Integer> &e);
+        // It returns the symmetric representation of f \in Fp[X]
+        //  as an element of Z[X]
+        friend Zxelem<Integer> toZxelemSym(const Fpxelem &e){
+            std::vector<Integer> v(e.deg()+1);
+            Integer p = e.getSize();
+            // When p = 2, p2 = 1 and so every v[i] is <= p2
+            // When p is odd, p/2 = (p-1)/2 and so we get the
+            //  symmetric representation
+            Integer p2 = p/2;
+            std::transform(e._v.begin(), e._v.end(), v.begin(),
+                    [&p, &p2](const Fpelem<Integer> &e) -> Integer {
+                    return static_cast<Integer>(e) <= p2 ?
+                        static_cast<Integer>(e) :
+                        static_cast<Integer>(e)-static_cast<Integer>(p);
+                        });
+            return v;
+        }
+
+
 
         // non-member functions
         friend Fpxelem getZero(const Fpxelem<Integer> &e){ return Fpxelem<Integer>(e.getField().get(0)); }
@@ -68,15 +85,6 @@ class Fpxelem : public PolynomialRing<Fpxelem<Integer>, Fpelem<Integer>>{
             return !(rhs == lhs);
         }
 
-    private:
-
-        Fpxelem toFpxelem(const Zxelem<Integer> &e, Integer p){
-            std::vector<Felem> v(e.deg()+1);
-            auto f = Fp<Integer>(p);
-            for(std::size_t i=0;i<=e.deg();++i)
-                v[i] = f.get(e[i]);
-            return v;
-        }
 };
 
 using Fpxelem_b = Fpxelem<big_int>;
