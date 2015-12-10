@@ -456,20 +456,20 @@ std::vector< std::pair< Fxelem, unsigned int> > factorizationCantorZassenhaus (c
 
 
 
-template std::vector< std::pair< Fpxelem, unsigned int> > squareFreeFF (Fpxelem a);
-template std::vector< std::pair< Fpxelem, unsigned int> > partialFactorDD (Fpxelem pol);
-template std::vector< Fpxelem > splitFactorsDD (const Fpxelem &pol, int n);
-template Fpxelem randomPol (const typename Fpxelem::F &field, int degree);
-template std::vector< Fpxelem > berlekamp_simple (const Fpxelem &pol);
+template std::vector< std::pair< Fpxelem_b, unsigned int> > squareFreeFF (Fpxelem_b a);
+template std::vector< std::pair< Fpxelem_b, unsigned int> > partialFactorDD (Fpxelem_b pol);
+template std::vector< Fpxelem_b > splitFactorsDD (const Fpxelem_b &pol, int n);
+template Fpxelem_b randomPol (const typename Fpxelem_b::F &field, int degree);
+template std::vector< Fpxelem_b > berlekamp_simple (const Fpxelem_b &pol);
 
-template std::vector< std::pair< Fpxelem, unsigned int> > factorizationBerlekamp (const Fpxelem & a);
-template std::vector< std::pair< Fpxelem, unsigned int> > factorizationCantorZassenhaus (const Fpxelem & a);
+template std::vector< std::pair< Fpxelem_b, unsigned int> > factorizationBerlekamp (const Fpxelem_b & a);
+template std::vector< std::pair< Fpxelem_b, unsigned int> > factorizationCantorZassenhaus (const Fpxelem_b & a);
 
-template std::vector< std::pair< Fqxelem, unsigned int> > squareFreeFF (Fqxelem a);
-template std::vector< std::pair< Fqxelem, unsigned int> > partialFactorDD (Fqxelem pol);
-template std::vector< Fqxelem > splitFactorsDD (const Fqxelem &pol, int n);
-template Fqxelem randomPol (const typename Fqxelem::F &field, int degree);
-template std::vector< Fqxelem > berlekamp_simple (const Fqxelem &pol);
+template std::vector< std::pair< Fqxelem_b, unsigned int> > squareFreeFF (Fqxelem_b a);
+template std::vector< std::pair< Fqxelem_b, unsigned int> > partialFactorDD (Fqxelem_b pol);
+template std::vector< Fqxelem_b > splitFactorsDD (const Fqxelem_b &pol, int n);
+template Fqxelem_b randomPol (const typename Fqxelem_b::F &field, int degree);
+template std::vector< Fqxelem_b > berlekamp_simple (const Fqxelem_b &pol);
 
-template std::vector< std::pair< Fqxelem, unsigned int> > factorizationBerlekamp (const Fqxelem & a);
-template std::vector< std::pair< Fqxelem, unsigned int> > factorizationCantorZassenhaus (const Fqxelem & a);
+template std::vector< std::pair< Fqxelem_b, unsigned int> > factorizationBerlekamp (const Fqxelem_b & a);
+template std::vector< std::pair< Fqxelem_b, unsigned int> > factorizationCantorZassenhaus (const Fqxelem_b & a);

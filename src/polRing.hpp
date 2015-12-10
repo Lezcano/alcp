@@ -28,6 +28,8 @@ class PolynomialRing{
                     throw ENotCompatible("Not all the elements in the array are in the same ring.");
         }
 
+        PolynomialRing(const PolynomialRing &other) = default;
+
         Fxelem & operator=(const Fxelem &rhs){
             if(&rhs != this){
                 if(this->initialized() && !compatible(this->lc(), rhs.lc()))
@@ -186,6 +188,7 @@ class PolynomialRing{
         friend inline Fxelem normalForm(const Fxelem &e){ return e/unit(e); }
 
         friend std::string to_string(const Fxelem &f){
+            using std::to_string;
             std::string s = "";
             if(f._v.size() == 1)
                 return to_string(f._v[0]);

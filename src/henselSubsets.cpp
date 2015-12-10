@@ -9,8 +9,7 @@
 #include <iostream> //TODO quitar
 
 //TODO: De momento solo uso el grado de poli, mirar
-HenselSubsets::HenselSubsets(Zxelem poli):
-    last(poli),
+HenselSubsets::HenselSubsets(const Zxelem_b &poli):
 	intersectionSize (poli.deg()/2+1),
 	semiSumOfDeg (poli.deg()/2),
 	sumOfDeg (poli.deg()),
@@ -19,8 +18,9 @@ HenselSubsets::HenselSubsets(Zxelem poli):
 	index (-1),
 	index_intersection (-1),
 	numOfFactors (0),
-	hadRemoved (false)
-{}
+	hadRemoved (false),
+	last(poli) { };
+
 
 bool HenselSubsets::oneMorePrime(){
 	return global.size() != howManyPrimes;
@@ -35,7 +35,7 @@ bool HenselSubsets::oneMorePrime(){
 //TODO: Por otro lado los sets los tiro a la basura salvo el del bueno, por lo que quizá sea mejor calcularlo una vez que ya sepamos cuál es el bueno
 
 
-void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > & factors, const Fpxelem & poli){
+void HenselSubsets::insert(const std::vector<std::pair<Fpxelem_b, unsigned int> > & factors, const Fpxelem_b & poli){
 	if (index != -1) return; //Si ya he llamado una vez a bestOption no puedo instertar más
 	size_t ind = global.size();
 	global.push_back({
@@ -126,7 +126,7 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > 
 
 Option HenselSubsets::bestOption(){
 	if (index == -1){
-		if (global.size() == 0) return {false, Fpxelem(), Fpxelem()};//The polynomials are irrelevant
+		if (global.size() == 0) return {false, Fpxelem_b(), Fpxelem_b()};//The polynomials are irrelevant
 		unsigned int min = global[0].numOfCases;
 		index = 0;
 		for (unsigned int i = 1; i < global.size(); i++) {
@@ -147,7 +147,7 @@ Option HenselSubsets::bestOption(){
 		hadRemoved = false;
 		while (++index_intersection <= semiSumOfDeg &&
 				(intersection[index_intersection] == 0 || globind.predecessor[index_intersection].empty()) );
-		if (index_intersection >= semiSumOfDeg+1) return {false, Fpxelem(), Fpxelem() };//The polynomials are irrelevant
+		if (index_intersection >= semiSumOfDeg+1) return {false, Fpxelem_b(), Fpxelem_b() };//The polynomials are irrelevant
 		stackIt.push(globind.predecessor[index_intersection].begin());
 		stackInd.push(index_intersection);
 		stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
@@ -192,7 +192,7 @@ Option HenselSubsets::bestOption(){
 		return {true, stackPol.top(), globind.pol / stackPol.top() };
 	}
 	else{
-		if (index_intersection > semiSumOfDeg) return {false, Fpxelem(), Fpxelem() };//The polynomials are irrelevant
+		if (index_intersection > semiSumOfDeg) return {false, Fpxelem_b(), Fpxelem_b() };//The polynomials are irrelevant
 		auto it = stackIt.top();
 		stackIt.pop();
 		if (hadRemoved)
@@ -260,7 +260,7 @@ Option HenselSubsets::bestOption(){
 }
 
 
-void HenselSubsets::removeFirstLastOption(Zxelem w){
+void HenselSubsets::removeFirstLastOption(Zxelem_b w){
 	globind.pol /= stackPol.top();
 	last = w;
 	sumOfDeg -= stackPol.top().deg();
@@ -287,6 +287,6 @@ void HenselSubsets::removeFirstLastOption(Zxelem w){
 	hadRemoved = true; //TODO Mirar esto, es un truco sucio para que luego el best option lo aumente
 }
 
-Zxelem HenselSubsets::getLast(){
+Zxelem_b HenselSubsets::getLast(){
 	return last;
 }

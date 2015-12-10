@@ -22,13 +22,13 @@ using namespace std;
 using namespace boost::multiprecision;
 
 void symForm(){
-    Fp f(17);
-    vector<Fpelem> v;
+    Fp_b f(17);
+    vector<Fpelem_b> v;
     for(int i = 0; i < 9; ++i)
         v.push_back(f.get(7*i+3));
-    Fpxelem aux (v);
-    Zxelem zx (aux);
-    Zxelem test({3,-7,0, 7, -3, 4, -6, 1, 8});
+    Fpxelem_b aux (v);
+    Zxelem_b zx (aux);
+    Zxelem_b test({3,-7,0, 7, -3, 4, -6, 1, 8});
     if (test != zx)
         throw runtime_error("XX. Falla el paso a forma simetrica!");
     else
@@ -38,12 +38,12 @@ void symForm(){
 void testModularGCD(){
     const int n = 2;
     int i;
-    Zxelem a[n] = {Zxelem({-360, -171, 145, 25, 1}),
-                  Zxelem({-5,2,8,-3,-3,0,1,0,1})};
-    Zxelem b[n] = {Zxelem({-15,-14,-1,15,14,1}),
-                  Zxelem({21,-9,-4,0,5,0,3})};
-    Zxelem res[2] = {Zxelem({15,14,1}),
-                     Zxelem({1})};
+    Zxelem_b a[n] = {Zxelem_b({-360, -171, 145, 25, 1}),
+                  Zxelem_b({-5,2,8,-3,-3,0,1,0,1})};
+    Zxelem_b b[n] = {Zxelem_b({-15,-14,-1,15,14,1}),
+                  Zxelem_b({21,-9,-4,0,5,0,3})};
+    Zxelem_b res[2] = {Zxelem_b({15,14,1}),
+                     Zxelem_b({1})};
     for(i=0;i<n;++i)
         if(res[i] != modularGCD(a[i], b[i])){
             cout << "XX. ModularGCD fails on test case " << i << "." << endl;
@@ -117,13 +117,13 @@ void pruebasHenselSqFree(){
 	std::vector<big_int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 11, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};//Ciclotomicos de 13 y 11
 	//std::vector<big_int> v = {0, 1, 6 , 20 , 49 , 99 , 175 , 280 , 414 , 574 , 755 , 951 , 1155 , 1359 , 1554 , 1730 , 1876 , 1981 , 2036 , 2036 , 1981 , 1876 , 1730 , 1554 , 1359 , 1155 , 951 , 755 , 574 , 414 , 280 , 175 , 99 , 49 , 20 , 6 , 1};//(x^12+x^11+x^10+x^9+x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+1)*(x^10+x^9+x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+1)*(x^6+x^5+x^4+x^3+x^2+x+1)*(x^4+x^3+x^2+x+1)*(x^2+x+1)*(x+1)*x
 
-	Zxelem u(0), w(0);
-	Zxelem pol(v);
-	//HenselLifting(pol, Fpxelem(fp), Fpxelem(ffp), u, w);
-	//cout << Zxelem(r)*Zxelem(t) << endl;
+	Zxelem_b u(0), w(0);
+	Zxelem_b pol(v);
+	//HenselLifting(pol, Fpxelem_b(fp), Fpxelem_b(ffp), u, w);
+	//cout << Zxelem_b(r)*Zxelem_b(t) << endl;
 	cout << pol << endl << endl;
 	auto a =  factorizationHenselSquareFree(pol);
-	Zxelem aux(1);
+	Zxelem_b aux(1);
 	for (auto p : a){
 		aux*=p;
 		cout << p << endl;
@@ -140,27 +140,27 @@ void pruebasHenselSqFree(){
 
 int main (){
 	/*
-	Fp field(5);
+	Fp_b field(5);
 	int d[12]= {5040, -432, 10, 1};
 	vector<big_int> v;
-	vector<Fpelem> u1, w1;
+	vector<Fpelem_b> u1, w1;
 	for(int i=0;i<=3;++i)
 			v.push_back(d[i]);
 
-	Zxelem a(v), b(field.get(0)), c(field.get(0));
+	Zxelem_b a(v), b(field.get(0)), c(field.get(0));
 	u1.push_back(field.get(0));
 	u1.push_back(field.get(1));
 	w1.push_back(field.get(-2));
 	w1.push_back(field.get(0));
 	w1.push_back(field.get(1));
-	Fpxelem u(u1), w(w1);
+	Fpxelem_b u(u1), w(w1);
 	*/
 
-    testCRA();
-    testModularGCD();
-//    pruebasHenselSqFree();
-    testGoodOldGCD();
-    symForm();
+//    testCRA();
+//    testModularGCD();
+    pruebasHenselSqFree();
+//    testGoodOldGCD();
+//    symForm();
 
     /*
     // No compila
@@ -174,14 +174,14 @@ int main (){
 }
 /*
 	int c[12]= {1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1};
-	Fp field(3);
-	vector<Fpelem> v;
+	Fp_b field(3);
+	vector<Fpelem_b> v;
 	for(int i=0;i<=11;++i)
 		v.push_back(field.get(c[i]));
-	vector<Fpelem> w;
+	vector<Fpelem_b> w;
 	w.push_back(field.get(1));
 	w.push_back(field.get(1));
-	Fpxelem a(v), b(w);
+	Fpxelem_b a(v), b(w);
 	a *= b*b*b;
 	auto factors = factorizationBerlekamp (a);
 	for (auto &pair : factors){

@@ -12,7 +12,7 @@
 #include <iostream> // TODO Quitar
 
 
-//std::vector< pair < Zxelem, unsigned int > > squareFreeFactChar0(const & Zxelem){
+//std::vector< pair < Zxelem_b, unsigned int > > squareFreeFactChar0(const & Zxelem_b){
 //
 //}
 
@@ -39,29 +39,29 @@
  *		Sumar polinomios en Z_p[x] con polinomios en Z[x]
  *
  * */
-bool HenselLifting (const Zxelem &polynomial, Fpxelem u1, Fpxelem w1, Zxelem & u, Zxelem & w){
+bool HenselLifting (const Zxelem_b &polynomial, Fpxelem_b u1, Fpxelem_b w1, Zxelem_b & u, Zxelem_b & w){
 	//TODO: if (u1.getField.getP() != w1.getField.getP())
 	big_int p = u1.getField().getP();
 	big_int bound = normInf(polynomial)*fastPow((big_int)2, polynomial.deg());
 	big_int leadCoef = polynomial.lc();
-	Zxelem pol = polynomial * leadCoef;
-	Fpxelem::Felem lc = u1.getField().get(leadCoef);
+	Zxelem_b pol = polynomial * leadCoef;
+	Fpxelem_b::Felem lc = u1.getField().get(leadCoef);
 	u1 *=  (lc * u1.lc().inv()); //This is more efficient than normalize and then multiply by lc
 	w1 *=  (lc * w1.lc().inv());
 
-	Fpxelem s(u1.getField().get(0)), t(u1.getField().get(0)); //This is a random value because s & t must be initialized
+	Fpxelem_b s(u1.getField().get(0)), t(u1.getField().get(0)); //This is a random value because s & t must be initialized
 	eea (u1, w1, s, t);//This must always be 1. Test it!!
-	u = Zxelem(u1); u[u.deg()] = leadCoef;
-	w = Zxelem(w1); w[w.deg()] = leadCoef;
-	Zxelem err = pol - u*w;
+	u = Zxelem_b(u1); u[u.deg()] = leadCoef;
+	w = Zxelem_b(w1); w[w.deg()] = leadCoef;
+	Zxelem_b err = pol - u*w;
 	big_int modulus = p;
 	bound = 2*bound*leadCoef;
 
 	while (err != 0 && modulus < bound ){
-		Fpxelem c(err/modulus, u1.getField().getP());
+		Fpxelem_b c(err/modulus, u1.getField().getP());
 		auto qr = (s*c).div2(w1);
- 		u += Zxelem(t*c + qr.first * u1) * modulus;
-		w += Zxelem(qr.second) * modulus;
+ 		u += Zxelem_b(t*c + qr.first * u1) * modulus;
+		w += Zxelem_b(qr.second) * modulus;
 		err = pol - u*w;
 		modulus *= p;
 	}
@@ -80,8 +80,8 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 }
 */
 
-std::vector< Zxelem > factorizationHenselSquareFree(Zxelem poli, HenselSubsets & hs){
-	std::vector< Zxelem > result;
+std::vector< Zxelem_b > factorizationHenselSquareFree(Zxelem_b poli, HenselSubsets & hs){
+	std::vector< Zxelem_b > result;
 	int asd =0, primes[13] = {3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43};
 	while (hs.oneMorePrime()){
 		if (asd >= 13) {
@@ -89,8 +89,8 @@ std::vector< Zxelem > factorizationHenselSquareFree(Zxelem poli, HenselSubsets &
 			return result;
 		}
 		big_int prime = primes[asd++];
-		Fpxelem aux(poli, prime);
-		if (poli.lc()%prime == 0 || gcd(aux, Fpxelem(poli.derivative(), prime)) != 1)
+		Fpxelem_b aux(poli, prime);
+		if (poli.lc()%prime == 0 || gcd(aux, Fpxelem_b(poli.derivative(), prime)) != 1)
 			continue;
 		auto factorsModP = factorizationCantorZassenhaus(aux);//¿Como coger el primo?
 		hs.insert(factorsModP, aux);
@@ -98,7 +98,7 @@ std::vector< Zxelem > factorizationHenselSquareFree(Zxelem poli, HenselSubsets &
 
 	Option option = hs.bestOption();
 	while (option.b){
-		Zxelem u(0), w(0);
+		Zxelem_b u(0), w(0);
 		std::cout << "Intento elevar esto:" << std::endl;
 		std::cout << option.u << std::endl << option.w << std::endl;
 		if (HenselLifting(poli, option.u, option.w, u, w)){
@@ -113,20 +113,20 @@ std::vector< Zxelem > factorizationHenselSquareFree(Zxelem poli, HenselSubsets &
 		std::cout << "=====" << std::endl;
 		option = hs.bestOption();
 	}
-	Zxelem last = hs.getLast();
+	Zxelem_b last = hs.getLast();
 	if (last != 1)
 		result.push_back(last);
 	return result;
 }
 
-std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli){
+std::vector< Zxelem_b > factorizationHenselSquareFree(const Zxelem_b & poli){
 	HenselSubsets hs(poli);
 	return factorizationHenselSquareFree(poli, hs);
 }
 /*
-std::vector< std::pair < Zxelem, unsigned int > > factorizationHensel(const Zxelem & pol){
+std::vector< std::pair < Zxelem_b, unsigned int > > factorizationHensel(const Zxelem_b & pol){
 	//auto aux = squareFreeFactChar0 (pol);
-	std::vector< std::pair < Zxelem, unsigned int > result;
+	std::vector< std::pair < Zxelem_b, unsigned int > result;
 	for (auto & pair: aux){
 		auto factors = factorizationHenselSquareFree (pair.first);
 		for (auto & elem : factors){
