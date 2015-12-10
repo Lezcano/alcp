@@ -3,22 +3,24 @@
 #include <vector>
 #include <set>
 #include <algorithm>
-#include <utility>
+#include <utility> // std::move
 #include <stack>
 #include <map>
 #include <iostream> //TODO quitar
 
-HenselSubsets::HenselSubsets(Zxelem poli): last(poli){//TODO: De momento solo uso el grado de poli, mirar
-	intersectionSize = poli.deg()/2+1;
-	semiSumOfDeg = poli.deg()/2;
-	sumOfDeg = poli.deg();
-	intersection.assign(intersectionSize, 1);
-	howManyPrimes = 6;
-	index = -1;
-	index_intersection = -1;
-	numOfFactors = 0;
-	hadRemoved = false;
-}
+//TODO: De momento solo uso el grado de poli, mirar
+HenselSubsets::HenselSubsets(Zxelem poli):
+    last(poli),
+	intersectionSize (poli.deg()/2+1),
+	semiSumOfDeg (poli.deg()/2),
+	sumOfDeg (poli.deg()),
+	intersection(intersectionSize, 1),
+	howManyPrimes (6),
+	index (-1),
+	index_intersection (-1),
+	numOfFactors (0),
+	hadRemoved (false)
+{}
 
 bool HenselSubsets::oneMorePrime(){
 	return global.size() != howManyPrimes;
@@ -70,8 +72,7 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > 
 	} //Ahora tengo en aux[which] un vector con las multiplicidades de las posibles sumas
 	//TODO:Quitar
 	std::cout << "Posibles sumas para el primo " << factors[0].first.getSize() << std::endl;
-	for (unsigned int i = 1; i
-	<=semiSumOfDeg; i++){
+	for (unsigned int i = 1; i <= semiSumOfDeg; i++){
 			if (aux[which][i] != 0) {
 				std::cout << i << " ";
 			}
@@ -79,11 +80,13 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > 
 
 	std::cout << std::endl;
 
-	for (auto aaa: global[ind].factors)
-		std::cout << "("<< aaa.first << ")^" << aaa.second <<std::endl;
+	for (auto aaa: global[ind].factors){
+        if(aaa.second == 1) std::cout << aaa.first << std::endl;
+        else std::cout << "("<< aaa.first << ")^" << aaa.second <<std::endl;
+    }
 
 	//<end Quitar>
-	
+
 	//Ahora vamos a hacer la intersección con intersection
 	for (unsigned int i = 0; i <= semiSumOfDeg; i++){
 		if (aux[which][i] != 0){
@@ -122,14 +125,14 @@ Option HenselSubsets::bestOption(){
 	if (index == -1){
 		if (global.size() == 0) return {false, Fpxelem(), Fpxelem()};//The polynomials are irrelevant
 		unsigned int min = global[0].numOfCases;
-		index = 0; 
+		index = 0;
 		for (unsigned int i = 1; i < global.size(); i++) {
 			if (min > global[i].numOfCases){
 				min = global[i].numOfCases;
 				index = i;
 			}
 		}
-		globind = global[index];//TODO: move
+		globind = std::move(global[index]);
 		global.clear();//TODO: Gestionar bien este destructor. Destruyo todo, es memoria que ya no necesito. En teoría así debería valer.
 		std::cout << "El primo que he escogido es " << globind.pol.getSize() << " y hay " << min << " posibilidades" << std::endl;
 		std::cout << "Esta es la factorizacion modulo el primo:";
@@ -152,7 +155,9 @@ Option HenselSubsets::bestOption(){
 				auto it = stackIt.top();
 				stackIt.pop();
 				it++;
-				while(!stackIt.empty() && (it == globind.predecessor[stackInd.top()].end() || it->tag >= stackIt.top()->tag)){
+				while(!stackIt.empty() &&
+                        (it == globind.predecessor[stackInd.top()].end() ||
+                         it->tag >= stackIt.top()->tag)){
 					it = stackIt.top();
 					it++;
 					stackIt.pop(); stackPol.pop(); stackInd.pop();
@@ -179,7 +184,7 @@ Option HenselSubsets::bestOption(){
 				stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 
 			}
-		} 
+		}
 		return {true, stackPol.top(), globind.pol / stackPol.top() };
 	}
 	else{
@@ -191,7 +196,7 @@ Option HenselSubsets::bestOption(){
 		else
 			it++;
 		while(!stackIt.empty() && (it == globind.predecessor[stackInd.top()].end() || it->tag >= stackIt.top()->tag)){
-			it = stackIt.top(); 
+			it = stackIt.top();
 			it++;
 			stackIt.pop(); stackPol.pop(); stackInd.pop();
 		}
@@ -244,7 +249,7 @@ Option HenselSubsets::bestOption(){
 				stackIt.push(globind.predecessor[stackInd.top()].begin());
 				stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 			}
-		} 
+		}
 		return {true, stackPol.top(), globind.pol / stackPol.top() };
 	}
 }
@@ -271,6 +276,7 @@ void HenselSubsets::removeFirstLastOption(Zxelem w){
 		stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
 		stackInd.push(index_intersection);
 	}
+
 	for (unsigned int i = 1; i <= semiSumOfDeg; i++)
 		globind.predecessor[i].erase(dt);
 	hadRemoved = true; 

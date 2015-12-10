@@ -1,4 +1,3 @@
-// Implementation of a GF(p) field
 #ifndef __POL_RING_HPP
 #define __POL_RING_HPP
 
@@ -15,7 +14,7 @@ class PolynomialRing{
     public:
         PolynomialRing() = default;
 
-        // Inmersion from the base field
+        // Inmersion from the base ring
         PolynomialRing(const Felem &e): _v(std::vector<Felem>({e})){}
 
         PolynomialRing(const std::vector<Felem> &v): _v(v){
@@ -26,7 +25,7 @@ class PolynomialRing{
             Felem aux = this->lc();
             for(auto &e : v)
                 if(!compatible(aux, e))
-                    throw ENotCompatible("Not all the elements in the array are in the same field.");
+                    throw ENotCompatible("Not all the elements in the array are in the same ring.");
         }
 
         Fxelem & operator=(const Fxelem &rhs){
@@ -38,19 +37,19 @@ class PolynomialRing{
             return static_cast<Fxelem&>(*this);
         }
 
-        bool operator==(const Fxelem &rhs)const{
-            return _v == rhs._v;
+        friend inline bool operator==(const Fxelem &lhs, const Fxelem &rhs){
+            return lhs._v == rhs._v;
         }
 
-        bool operator!=(const Fxelem &rhs)const{
-            return _v != rhs._v;
+        friend inline bool operator!=(const Fxelem &lhs, const Fxelem &rhs){
+            return lhs._v != rhs._v;
         }
 
         Fxelem & operator+=(const Fxelem &rhs){
             if(!compatible(static_cast<Fxelem&>(*this),rhs))
                 throw EOperationUnsupported(
-                        "Polynomials not in the same ring. Error when adding the polynomials " + to_string(static_cast<Fxelem&>(*this)) +
-                        " and " + to_string(rhs) +  ".");
+                        "Polynomials not in the same ring. Error when adding the polynomials " +
+                        to_string(static_cast<Fxelem&>(*this)) + " and " + to_string(rhs) +  ".");
             auto v1 = _v.begin();
             auto v2 = rhs._v.begin();
             while(v1 != _v.end() && v2 != rhs._v.end()){
@@ -65,13 +64,11 @@ class PolynomialRing{
             return static_cast<Fxelem&>(*this);
         }
 
-        const Fxelem operator+(const Fxelem &rhs) const{
-            // We do not check if they are in the same field since
-            // that will be done in the += operator
-            return Fxelem(static_cast<const Fxelem&>(*this)) += rhs;
+        friend inline Fxelem operator+(const Fxelem &lhs, const Fxelem &rhs){
+            return Fxelem(lhs) += rhs;
         }
 
-        const Fxelem operator-() const{
+        Fxelem operator-() const{
             std::vector<Felem> ret(_v.size(),getZero(this->lc()));
 
             for(size_t i=0;i<_v.size();++i)
@@ -80,19 +77,18 @@ class PolynomialRing{
         }
 
         Fxelem & operator-=(const Fxelem &rhs){
-            // We do not check if they are in the same field since
-            // that will be done in the += operator
             return (static_cast<Fxelem&>(*this) +=(-rhs));
         }
 
-        const Fxelem operator-(const Fxelem &rhs) const{
-            return Fxelem(static_cast<const Fxelem&>(*this)) -= rhs;
+        Fxelem operator-(const Fxelem &rhs){
+            return Fxelem(static_cast<Fxelem&>(*this)) -= rhs;
         }
 
         Fxelem & operator*=(const Fxelem &rhs){
             if(!compatible(static_cast<Fxelem&>(*this),rhs))
                 throw EOperationUnsupported(
-                        "Polynomials not in the same ring. Error when multiplying the polynomials " + to_string(static_cast<Fxelem&>(*this)) +
+                        "Polynomials not in the same ring. Error when multiplying the polynomials " +
+                        to_string(static_cast<Fxelem&>(*this)) +
                         " and " + to_string(rhs) +  ".");
 
             std::vector<Felem> ret(rhs._v.size()+_v.size()-1,getZero(this->lc()));
@@ -104,10 +100,8 @@ class PolynomialRing{
             return static_cast<Fxelem&>(*this);
         }
 
-        const Fxelem operator*(const Fxelem &rhs) const{
-            // We do not check if they are in the same field since
-            // that will be done in the *= operator
-            return Fxelem(static_cast<const Fxelem&>(*this)) *= rhs;
+        friend inline Fxelem operator*(const Fxelem &lhs, const Fxelem &rhs){
+            return Fxelem(lhs) *= rhs;
         }
 
         // Implements long polynomial division
@@ -149,102 +143,27 @@ class PolynomialRing{
         }
 
         Fxelem & operator/=(const Fxelem &rhs){
-            // We do not check if they are in the same field since
-            // that will be done in the div2 method
             *this = this->div2(rhs).first;
             return static_cast<Fxelem&>(*this);
         }
 
-        const Fxelem operator/(const Fxelem &rhs) const{
-            // We do not check if they are in the same field since
-            // that will be done in the div2 method
-
+        Fxelem operator/(const Fxelem &rhs) const{
             return Fxelem(static_cast<const Fxelem&>(*this)) /= rhs;
         }
 
         Fxelem & operator%=(const Fxelem &rhs){
-            // We do not check if they are in the same field since
-            // that will be done in the div2 method
             *this = this->div2(rhs).second;
             return static_cast<Fxelem&>(*this);
         }
 
-        const Fxelem operator%(const Fxelem &rhs) const{
-            // We do not check if they are in the same field since
-            // that will be done in the /= operator
-
+        Fxelem operator%(const Fxelem &rhs) const{
             return Fxelem(static_cast<const Fxelem&>(*this)) %= rhs;
-        }
-
-        // Sweet, sweet sugar
-        // Adds commutativity to the operations with the base ring
-        // Just with ADL one cannot add Felem + Fxelem (but you can
-        //  add Fxelem + Felem...)
-
-        friend Fxelem & operator+=(Fxelem &lhs, const Felem &rhs){
-            return lhs += Fxelem(rhs);
-        }
-
-        friend const Fxelem operator+(const Fxelem &lhs, const Felem &rhs){
-            return Fxelem(lhs) += rhs;
-        }
-
-        friend const Fxelem operator+(const Felem &lhs, const Fxelem &rhs){
-            return Fxelem(lhs) += rhs;
-        }
-
-        friend Fxelem & operator-=(Fxelem &lhs, const Felem &rhs){
-            return lhs -= Fxelem(rhs);
-        }
-
-        friend const Fxelem operator-(const Fxelem &lhs, const Felem &rhs){
-            return Fxelem(lhs) -= rhs;
-        }
-
-        friend const Fxelem operator-(const Felem &lhs, const Fxelem &rhs){
-            return Fxelem(lhs) -= rhs;
-        }
-
-        friend Fxelem & operator*=(Fxelem &lhs, const Felem &rhs){
-            return lhs *= Fxelem(rhs);
-        }
-
-        friend const Fxelem operator*(const Fxelem &lhs, const Felem &rhs){
-            return Fxelem(lhs) *= rhs;
-        }
-
-        friend const Fxelem operator*(const Felem &lhs, const Fxelem &rhs){
-            return Fxelem(lhs) *= rhs;
-        }
-
-        friend Fxelem & operator/=(Fxelem &lhs, const Felem &rhs){
-            return lhs /= Fxelem(rhs);
-        }
-
-        friend const Fxelem operator/(const Fxelem &lhs, const Felem &rhs){
-            return Fxelem(lhs) /= rhs;
-        }
-
-        friend bool operator==(const Fxelem &lhs, Felem rhs){
-            return lhs.deg()==0 && lhs.lc()==rhs;
-        }
-
-        friend bool operator==(Felem lhs, const Fxelem &rhs){
-            return rhs == lhs;
-        }
-
-        friend bool operator!=(const Fxelem &lhs, Felem rhs){
-            return !(lhs == rhs);
-        }
-
-        friend bool operator!=(Felem lhs, const Fxelem &rhs ){
-            return !(rhs == lhs);
         }
 
         const Felem & operator[](size_t i) const {return _v[i];}
         Felem & operator[](size_t i) {return _v[i];}
 
-        const Fxelem derivative()const{
+        Fxelem derivative()const{
            if(this->deg()==0)
                return Fxelem(getZero(this->lc()));
            std::vector<Felem> v(_v);
@@ -264,7 +183,7 @@ class PolynomialRing{
         size_t deg()const{return _v.size()-1;}
 
         // Normal form of the polynomial. It ensures the unicity of gdc for example
-        friend const Fxelem normalForm(const Fxelem &e){ return e/unit(e); }
+        friend inline Fxelem normalForm(const Fxelem &e){ return e/unit(e); }
 
         friend std::string to_string(const Fxelem &f){
             std::string s = "";
@@ -301,7 +220,7 @@ class PolynomialRing{
             return s;
         }
 
-        friend std::ostream& operator<<(std::ostream& os, const Fxelem &f){
+        friend inline std::ostream& operator<<(std::ostream& os, const Fxelem &f){
             return os << to_string(f);
         }
 

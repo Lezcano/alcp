@@ -10,6 +10,7 @@ class Fpxelem;
 
 class Zxelem : public PolynomialRing<Zxelem, big_int>{
     public:
+        Zxelem();
         Zxelem(const big_int & e);
         Zxelem(const std::vector<big_int> & v);
 

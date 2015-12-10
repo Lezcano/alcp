@@ -35,26 +35,33 @@ big_int reciprocal (big_int a, big_int q){
  *
  */
 big_int integerCRA (const std::vector<big_int> & m, const std::vector<big_int> & u){
-	//TODO: ¿Comprobar que u y m tienen el mismo tamaño?
-	int n = m.size()-1;
+	const int n = m.size()-1;
 	big_int prod, aux;
-	std::vector<big_int> inv, v;
-	for (int k = 1; k <= n; ++k ){
+	std::vector<big_int> inv(n), v(n+1);
+	if(m.size() != u.size())
+        throw std::runtime_error("The vectors in integerCRA have to be of the same size.");
+	for (int k = 1; k <= n; ++k){
 		prod = m[0]%m[k];
 		for	(int i = 1 ; i <= k-1; ++i)
 			prod = (prod*m[i])%m[k];
-		inv.push_back(reciprocal(prod, m[k]));	//inv starts in 0, in the book it starts in 1
+        inv[k-1] = reciprocal(prod,m[k]);
 	}
-	v.push_back(u[0]);
+    v[0] = u[0];
 	for (int k = 1; k <= n; ++k){
 		aux = v[k-1];
-		for (int j = k-2; j >=0; --j)
-			aux = (aux*m[j]+v[j])%m[k];
-		v.push_back(((u[k]-aux)*inv[k-1])%m[k]);	//it is inv[k-1] because inv starts in 0
+		for (int j = k-2; j >= 0; --j)
+			aux = (aux * m[j] + v[j]) % m[k];
+        v[k] = ((u[k]-aux)*inv[k-1]) % m[k];
+        // Convert to symmetric representation
+        if(v[k] > m[k]/2)
+            v[k] -= m[k];
+        else if(v[k] < -m[k]/2)
+            v[k] += m[k];
 	}
+    // Compute the result using horner's algorithm
 	big_int result = v[n];
-	for (int k = n-1; k >= 0; --k ){
-		result = result*m[k] + v[k];
+	for (int k = n-1; k >= 0; --k){
+		result = result*m[k]+v[k];
 	}
 	return result;
 }

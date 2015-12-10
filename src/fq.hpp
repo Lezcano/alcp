@@ -17,6 +17,7 @@ class Fq{
 
         Fqelem get(Fpxelem f)const;
 
+        Fpxelem mod() const;
         big_int getSize()const;
         big_int getP()const;
         big_int getM()const;

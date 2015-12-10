@@ -10,8 +10,6 @@
 #include "fp.hpp"
 #include "fq.hpp"
 
-#include <iostream> //TODO quitar
-
 /**
  * Exponentiation by Squaring
  *
@@ -145,7 +143,7 @@ T eea (T a, T b, T &x, T &y){
 
       x  = getOne(a);  y  = getZero(b);
     T xx = getZero(a), yy = getOne(b);
-    while(b!=0){
+    while(b != 0){
         // The following invariant holds:
         //  a = x*|a|+y*|b|
         //  b = xx*|a|+yy*|b|
@@ -170,10 +168,6 @@ T gcd(T a, T b){
     T aux;
     if(a == 0 && b == 0)
         throw std::runtime_error("GCD(0, 0) does not exist.");
-    if (a == 0)
-    	return b;
-    if (b == 0 )
-    	return a;
     while(b != 0){
         aux = b;
         b = a%b;
@@ -279,6 +273,7 @@ template big_int fastPow<big_int, big_int>(const big_int& a, big_int b);
 template Fpelem fastPow<Fpelem, big_int>(const Fpelem& a, big_int b);
 template Fqelem fastPow<Fqelem, big_int>(const Fqelem& a, big_int b);
 
+template int gcd<int>(int a, int b);
 template big_int gcd<big_int>(big_int a, big_int b);
 template Fpxelem gcd<Fpxelem>(Fpxelem a, Fpxelem b);
 template Fqxelem gcd<Fqxelem>(Fqxelem a, Fqxelem b);

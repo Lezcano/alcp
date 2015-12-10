@@ -16,9 +16,9 @@ class Fpelem{
 
         Fpelem ();
         Fpelem ( const Fpelem & );
-        explicit operator big_int() const;
-        Fpelem & operator=(const Fpelem &rhs);
+        explicit operator big_int() const;//TODO
 
+        Fpelem & operator=(const Fpelem &rhs);
         Fpelem & operator=(big_int rhs);
 
         bool operator==(const Fpelem &rhs)const;
@@ -27,28 +27,24 @@ class Fpelem{
 
         Fpelem & operator+=(const Fpelem &rhs);
 
-        const Fpelem operator+(const Fpelem &rhs) const;
+        Fpelem operator+(const Fpelem &rhs) const;
 
-        const Fpelem operator-() const;
+        Fpelem operator-() const;
 
         Fpelem & operator-=(const Fpelem &rhs);
 
-        const Fpelem operator-(const Fpelem &rhs) const;
+        Fpelem operator-(const Fpelem &rhs) const;
 
         Fpelem & operator*=(const Fpelem &rhs);
 
-        const Fpelem operator*(const Fpelem &rhs) const;
+        Fpelem operator*(const Fpelem &rhs) const;
 
         /** Multiplicative inverse */
-        const Fpelem inv() const;
+        Fpelem inv() const;
 
         Fpelem & operator/=(const Fpelem &rhs);
 
-        const Fpelem operator/(const Fpelem &rhs) const;
-
-        friend int deg(const Fpelem &e);
-
-        const Fpelem operator%(const Fpelem &rhs) const;
+        Fpelem operator/(const Fpelem &rhs) const;
 
         big_int getSize()const;
 
@@ -74,18 +70,18 @@ bool operator==(const Fpelem &lhs, big_int rhs);
 bool operator!=(big_int lhs, const Fpelem &rhs);
 bool operator!=(const Fpelem &lhs, big_int rhs);
 Fpelem & operator+=(Fpelem &lhs, big_int rhs);
-const Fpelem operator+(const Fpelem &lhs, big_int rhs);
-const Fpelem operator+(big_int lhs, const Fpelem & rhs);
+Fpelem operator+(const Fpelem &lhs, big_int rhs);
+Fpelem operator+(big_int lhs, const Fpelem & rhs);
 Fpelem & operator-=(Fpelem &lhs, big_int rhs);
-const Fpelem operator-(const Fpelem &lhs, big_int rhs);
-const Fpelem operator-(big_int lhs, const Fpelem & rhs);
+Fpelem operator-(const Fpelem &lhs, big_int rhs);
+Fpelem operator-(big_int lhs, const Fpelem & rhs);
 Fpelem & operator*=(Fpelem &lhs, big_int rhs);
-const Fpelem operator*(const Fpelem &lhs, big_int rhs);
-const Fpelem operator*(big_int lhs, const Fpelem & rhs);
+Fpelem operator*(const Fpelem &lhs, big_int rhs);
+Fpelem operator*(big_int lhs, const Fpelem & rhs);
 
 bool compatible(const Fpelem &lhs, const Fpelem &rhs);
-const Fpelem getZero(const Fpelem &e);
-const Fpelem getOne(const Fpelem &e);
+Fpelem getZero(const Fpelem &e);
+Fpelem getOne(const Fpelem &e);
 std::string to_string(const Fpelem &e);
 
 #endif // __FPELEM_HPP
