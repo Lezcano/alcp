@@ -101,7 +101,6 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem_b, unsigned int> 
 				intersectionSize--;
 				for (unsigned int j = 0; j < ind; j++ ){
 					global[j].numOfCases -= global[j].sums[i];
-					//global[j].sums[i] = 0; //TODO Esto se puede poner a cero o no, depende de lo que haga después, ahora mismo da igual.
 				}
 			}
 		}
@@ -120,8 +119,6 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem_b, unsigned int> 
 		std::cout << ":" << std::endl;
 	}
 	*/
-
-
 }
 
 Option HenselSubsets::bestOption(){
@@ -152,7 +149,6 @@ Option HenselSubsets::bestOption(){
 		stackInd.push(index_intersection);
 		stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
 		while (stackIt.top()->deg != stackInd.top()){//Esto es facil que falle si no se programa bien, si da un error al depurar busca aquí
-			//TODO Arreglar aquí y en el otro lado, faltan los casos en los que tienes que ir para atrás
 			if (globind.predecessor[stackInd.top() - stackIt.top()->deg].empty() ||
 				globind.predecessor[stackInd.top() - stackIt.top()->deg].begin()->tag >= stackIt.top()->tag){
 
@@ -221,7 +217,6 @@ Option HenselSubsets::bestOption(){
 			stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 
 		while (stackIt.top()->deg != stackInd.top()){//Esto es facil que falle si no se programa bien, si da un error al depurar busca aquí
-			//TODO Arreglar aquí y en el otro lado, faltan los casos en los que tienes que ir para atrás
 			if (globind.predecessor[stackInd.top() - stackIt.top()->deg].empty() ||
 				globind.predecessor[stackInd.top() - stackIt.top()->deg].begin()->tag >= stackIt.top()->tag){
 
@@ -284,7 +279,7 @@ void HenselSubsets::removeFirstLastOption(Zxelem_b w){
 
 	for (unsigned int i = 1; i <= semiSumOfDeg; i++)
 		globind.predecessor[i].erase(dt);
-	hadRemoved = true; //TODO Mirar esto, es un truco sucio para que luego el best option lo aumente
+	hadRemoved = true; 
 }
 
 Zxelem_b HenselSubsets::getLast(){
