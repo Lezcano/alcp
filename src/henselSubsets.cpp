@@ -8,6 +8,8 @@
 #include <map>
 #include <iostream> //TODO quitar
 
+const bool verbose = false;
+
 //TODO: De momento solo uso el grado de poli, mirar
 HenselSubsets::HenselSubsets(const Zxelem_b &poli):
 	intersectionSize (poli.deg()/2+1),
@@ -70,19 +72,19 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem_b, unsigned int> 
 			tag++;
 		}
 	} //Ahora tengo en aux[which] un vector con las multiplicidades de las posibles sumas
-	//TODO:Quitar
-	std::cout << "Posibles sumas para el primo " << factors[0].first.getSize() << std::endl;
-	for (unsigned int i = 1; i <= semiSumOfDeg; i++){
-			if (aux[which][i] != 0) {
-				std::cout << i << " ";
-			}
-		}
+    if(verbose){
+        std::cout << "Posibles sumas para el primo " << factors[0].first.getSize() << std::endl;
+        for (unsigned int i = 1; i <= semiSumOfDeg; i++){
+                if (aux[which][i] != 0) {
+                    std::cout << i << " ";
+                }
+            }
+        std::cout << std::endl;
 
-	std::cout << std::endl;
-
-	for (auto aaa: global[ind].factors){
-        if(aaa.second == 1) std::cout << aaa.first << std::endl;
-        else std::cout << "("<< aaa.first << ")^" << aaa.second <<std::endl;
+        for (auto aaa: global[ind].factors){
+            if(aaa.second == 1) std::cout << aaa.first << std::endl;
+            else std::cout << "("<< aaa.first << ")^" << aaa.second <<std::endl;
+        }
     }
 
 	//<end Quitar>
@@ -107,8 +109,10 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem_b, unsigned int> 
 	}
 	global[ind].sums = aux[which];
 
-	std::cout << "Numero de casos con este primo teniendo los resultados anteriores: " << global[ind].numOfCases << std::endl;
-	std::cout << "=====" << std::endl;
+    if(verbose){
+        std::cout << "Numero de casos con este primo teniendo los resultados anteriores: " << global[ind].numOfCases << std::endl;
+        std::cout << "=====" << std::endl;
+    }
 
 	/*
 	 for (auto j : global[ind].predecessor){
@@ -134,11 +138,13 @@ Option HenselSubsets::bestOption(){
 		}
 		globind = std::move(global[index]);
 		global.clear();//TODO: Gestionar bien este destructor. Destruyo todo, es memoria que ya no necesito. En teoría así debería valer.
-		std::cout << "El primo que he escogido es " << globind.pol.getSize() << " y hay " << min << " posibilidades" << std::endl;
-		std::cout << "Esta es la factorizacion modulo el primo:";
-		for (auto aaa: globind.factors)
-			std::cout << "("<< aaa.first << ")^" << aaa.second <<std::endl;
-		std::cout << "=====" << std::endl;
+        if(verbose){
+            std::cout << "El primo que he escogido es " << globind.pol.getSize() << " y hay " << min << " posibilidades" << std::endl;
+            std::cout << "Esta es la factorizacion modulo el primo:";
+            for (auto aaa: globind.factors)
+                std::cout << "("<< aaa.first << ")^" << aaa.second <<std::endl;
+            std::cout << "=====" << std::endl;
+        }
 	}
 	if (stackIt.empty()){
 		hadRemoved = false;

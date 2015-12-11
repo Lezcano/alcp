@@ -70,7 +70,7 @@ Zxelem_b modularGCD(Zxelem_b a, Zxelem_b b){
         }
         else{ // cp.deg() >= n
             for(std::size_t i = 0; i <= h.deg(); ++i){
-                h[i] = integerCRA({q,p}, {h[i],(big_int)cp[i]});
+                h[i] = integerCRA({q,p}, {h[i],static_cast<big_int>(cp[i])});
             }
             q*=p;
         }

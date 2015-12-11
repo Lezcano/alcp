@@ -34,7 +34,6 @@ long long russianPeasantMultiplication(long long a, long long b, long long p){
 }
 
 //std::string to_string(big_int e){return e.convert_to<std::string>();}
-std::string to_string(big_int e){return std::to_string(e);}
 
 template <typename T>
 bool compatible(T lhs,T rhs){

@@ -55,10 +55,10 @@ class Fpxelem : public PolynomialRing<Fpxelem<Integer>, Fpelem<Integer>>{
             //  symmetric representation
             Integer p2 = p/2;
             std::transform(e._v.begin(), e._v.end(), v.begin(),
-                    [&p, &p2](const Fpelem<Integer> &e) -> Integer {
-                    return static_cast<Integer>(e) <= p2 ?
-                        static_cast<Integer>(e) :
-                        static_cast<Integer>(e)-static_cast<Integer>(p);
+                    [&p, &p2](const Fpelem<Integer> &a) -> Integer {
+                    return static_cast<Integer>(a) <= p2 ?
+                        static_cast<Integer>(a) :
+                        static_cast<Integer>(a)-static_cast<Integer>(p);
                         });
             return v;
         }

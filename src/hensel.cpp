@@ -11,6 +11,7 @@
 #include <utility>
 #include <iostream> // TODO Quitar
 
+const bool verbose = false;
 
 //std::vector< pair < Zxelem_b, unsigned int > > squareFreeFactChar0(const & Zxelem_b){
 //
@@ -84,7 +85,7 @@ std::vector< Zxelem_b > factorizationHenselSquareFree(Zxelem_b poli, HenselSubse
 	std::vector< Zxelem_b > result;
 	int asd =0, primes[13] = {3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43};
 	while (hs.oneMorePrime()){
-		if (asd >= 13) {
+		if (verbose && asd >= 13) {
 			std::cout << "Los primos no valen para este polinomio" << std::endl;
 			return result;
 		}
@@ -99,18 +100,24 @@ std::vector< Zxelem_b > factorizationHenselSquareFree(Zxelem_b poli, HenselSubse
 	Option option = hs.bestOption();
 	while (option.b){
 		Zxelem_b u(0), w(0);
-		std::cout << "Intento elevar esto:" << std::endl;
-		std::cout << option.u << std::endl << option.w << std::endl;
+        if(verbose){
+            std::cout << "Intento elevar esto:" << std::endl;
+            std::cout << option.u << std::endl << option.w << std::endl;
+        }
 		if (HenselLifting(poli, option.u, option.w, u, w)){
 			//The first factor is always irreducible because hs first iterates through the options in ascending order with respect to the degree of the first polynomial
 			result.push_back(u);
 			poli = poli/u;
-			std::cout << "¡Ha funcionado!" << std::endl;
-			std::cout << "u:" <<  u <<std::endl;
-			std::cout << "w:" <<  w <<std::endl;
+            if(verbose){
+                std::cout << "¡Ha funcionado!" << std::endl;
+                std::cout << "u:" <<  u <<std::endl;
+                std::cout << "w:" <<  w <<std::endl;
+            }
 			hs.removeFirstLastOption(w);
 		}
-		std::cout << "=====" << std::endl;
+        if(verbose){
+            std::cout << "=====" << std::endl;
+        }
 		option = hs.bestOption();
 	}
 	Zxelem_b last = hs.getLast();
