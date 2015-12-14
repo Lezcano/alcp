@@ -29,5 +29,3 @@
 [✗] Minimal polynomial of α+β and α*β when Q[α] and Q[β] are algebraic extensions of Q
 
 [✓] Miller-Rabin
-
-[?] AKS
