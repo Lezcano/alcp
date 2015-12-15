@@ -12,5 +12,5 @@ bool HenselLifting (const Zxelem_b &polynomial, Fpxelem_b u1, Fpxelem_b w1, Zxel
 
 std::vector< std::pair < Zxelem_b, unsigned int > > factorizationHensel(const Zxelem_b & pol);
 std::vector< Zxelem_b > factorizationHenselSquareFree(const Zxelem_b & poli);
-std::vector< Zxelem_b > factorizationHenselSquareFree(const Zxelem_b & poli, HenselSubsets & hs);
+std::vector< Zxelem_b > factorizationHenselSquareFree(Zxelem_b poli, HenselSubsets & hs);
 #endif // __HENSEL
