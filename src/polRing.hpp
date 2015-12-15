@@ -7,6 +7,7 @@
 #include <vector>
 #include <algorithm>        // find_if
 #include <utility>          // pair, make_pair
+#include <functional>       // not_equal_to
 #include <string>           // to_string
 
 template<typename Fxelem, typename Felem>

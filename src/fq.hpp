@@ -1,11 +1,12 @@
 #ifndef __FIELDQ_HPP
 #define __FIELDQ_HPP
 
+#include <vector>
+#include <string>
+
 #include "types.hpp"
 #include "fp.hpp"
 #include "fpxelem.hpp"
-
-#include <vector>
 
 template<class Integer>
 class Fqelem;

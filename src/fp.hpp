@@ -1,13 +1,13 @@
 #ifndef __FIELDP_HPP
 #define __FIELDP_HPP
 
+#include <string>
+#include <vector>
+
 #include "types.hpp"
 #include "exceptions.hpp"
 #include "zelem.hpp"            // to_string
 #include "generalPurpose.hpp"   // millerRabin
-
-#include <string>
-#include <vector>
 
 template<class Integer> class Fpelem;
 

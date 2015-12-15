@@ -1,14 +1,13 @@
 #ifndef __FELEMBASE_HPP
 #define __FELEMBASE_HPP
 
-#include "generalPurpose.hpp" // ExtendedEuclideanAlgorithm (eea)
-#include "exceptions.hpp"
-
 #include <stdexcept>        // std::runtime_error
 #include <iosfwd>           // std::ostream
 #include <memory>           // std::unique_ptr
 #include <string>           // std::to_string
 
+#include "generalPurpose.hpp" // ExtendedEuclideanAlgorithm (eea)
+#include "exceptions.hpp"
 
 template<typename Felem, typename Fbase, typename Quotient, typename Integer>
 class FelemBase{

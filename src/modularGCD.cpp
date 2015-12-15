@@ -1,15 +1,18 @@
 #include "modularGCD.hpp"
-#include "generalPurpose.hpp"
-#include "integerCRA.hpp"
-#include "zxelem.hpp"
-#include "types.hpp"
+
 #include <algorithm> // std::min
+#include <vector>
 #include <chrono>
 #include <random>
 #include <limits>
 
+#include "generalPurpose.hpp"
+#include "integerCRA.hpp"
+#include "zxelem.hpp"
+#include "types.hpp"
+
 big_int randomPrime (){
-	std::mt19937 generator(std::chrono::system_clock::now().time_since_epoch().count());
+    std::mt19937 generator(std::chrono::system_clock::now().time_since_epoch().count());
     std::uniform_int_distribution<int> distr(1, std::numeric_limits<int>::max()/2-2);
     int a;
     do{
@@ -32,19 +35,19 @@ Fpxelem_b redModP(const Zxelem_b &a, const Fp_b &f){
  *  reduction.
  * */
 Zxelem_b modularGCD(Zxelem_b a, Zxelem_b b){
-	big_int ia = content(a); a /= ia;
-	big_int ib = content(b); b /= ib;
-	//Compute coefficient bound of gcd(a, b)
-	big_int ic = gcd (ia, ib);
-	big_int g = gcd (a.lc(), b.lc());
-	big_int q = 0;
+    big_int ia = content(a); a /= ia;
+    big_int ib = content(b); b /= ib;
+    //Compute coefficient bound of gcd(a, b)
+    big_int ic = gcd(ia, ib);
+    big_int g = gcd(a.lc(), b.lc());
+    big_int q = 0;
     Zxelem_b h = 0;
     Zxelem_b c;
     big_int p;
     std::size_t n = std::min(a.deg(), b.deg());
-	big_int limit = (1<<n)*g*std::min(normInf(a), normInf(b));
+    big_int limit = (1<<n)*g*std::min(normInf(a), normInf(b));
 
-	while (true){
+    while (true){
         do{
             p = randomPrime();
         }while(g % p == 0);
@@ -81,5 +84,5 @@ Zxelem_b modularGCD(Zxelem_b a, Zxelem_b b){
         }
         else if(cp.deg() == 0)
             return ic;
-	}
+    }
 }

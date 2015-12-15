@@ -1,14 +1,15 @@
 #ifndef __HENSEL_SUBSETS_HPP
 #define __HENSEL_SUBSETS_HPP
 
-#include "zxelem.hpp"
-#include "fpxelem.hpp"
-#include "types.hpp"
 #include <set>
 #include <vector>
 #include <utility>
 #include <stack>
 #include <map>
+
+#include "zxelem.hpp"
+#include "fpxelem.hpp"
+#include "types.hpp"
 
 struct DegTag{
 	unsigned int deg, tag;

@@ -1,3 +1,9 @@
+#include "hensel.hpp"
+
+#include <vector>
+#include <utility>
+#include <iostream> // TODO Quitar
+
 #include "fp.hpp"
 #include "fpelem.hpp"
 #include "fpxelem.hpp"
@@ -7,9 +13,6 @@
 #include "henselSubsets.hpp"
 #include "factorizationFq.hpp"
 #include "generalPurpose.hpp"
-#include <vector>
-#include <utility>
-#include <iostream> // TODO Quitar
 
 const bool verbose = false;
 

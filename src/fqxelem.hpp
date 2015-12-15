@@ -2,11 +2,11 @@
 #ifndef __FQXELEM_HPP
 #define __FQXELEM_HPP
 
+#include <vector>
+
 #include "fq.hpp"
 #include "fqelem.hpp"
 #include "polRing.hpp"
-
-#include <vector>
 
 template<class Integer>
 class Fqxelem : public PolynomialRing<Fqxelem<Integer>, Fqelem<Integer>>{

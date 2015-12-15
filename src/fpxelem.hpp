@@ -2,6 +2,8 @@
 #ifndef __FPXELEM2_HPP
 #define __FPXELEM2_HPP
 
+#include <algorithm>    // std::transform
+#include <vector>
 #include "types.hpp"
 #include "fp.hpp"
 #include "fpelem.hpp"
