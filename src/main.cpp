@@ -119,8 +119,6 @@ void pruebasHenselSqFree(){
 
 	Zxelem_b u(0), w(0);
 	Zxelem_b pol(v);
-	//HenselLifting(pol, Fpxelem_b(fp), Fpxelem_b(ffp), u, w);
-	//cout << Zxelem_b(r)*Zxelem_b(t) << endl;
 	cout << pol << endl << endl;
 	auto a =  factorizationHenselSquareFree(pol);
 	Zxelem_b aux(1);

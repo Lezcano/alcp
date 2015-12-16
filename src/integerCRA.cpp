@@ -60,7 +60,7 @@ big_int integerCRA (const std::vector<big_int> & m, const std::vector<big_int> &
 	}
     // Compute the result using horner's algorithm
 	big_int result = v[n];
-	for (std::size_t k = n-1; k >= 0; --k){
+	for (int k = n-1; k >= 0; --k){//This must be int because size_t is always >=0 so the loop would be infinite
 		result = result*m[k]+v[k];
 	}
 	return result;

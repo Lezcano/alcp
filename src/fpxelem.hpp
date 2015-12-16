@@ -12,7 +12,7 @@
 
 template<class Integer> class Zxelem;
 
-template<class Integer = big_int>
+template<class Integer>
 class Fpxelem : public PolynomialRing<Fpxelem<Integer>, Fpelem<Integer>>{
     private:
         using FBase = PolynomialRing<Fpxelem<Integer>, Fpelem<Integer>>;

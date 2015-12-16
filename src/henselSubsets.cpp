@@ -12,18 +12,17 @@
 
 const bool verbose = false;
 
-//TODO: De momento solo uso el grado de poli, mirar
-HenselSubsets::HenselSubsets(const Zxelem_b &poli):
-    semiSumOfDeg (poli.deg()/2),
-    sumOfDeg (poli.deg()),
-    intersection(intersectionSize, 1),
+HenselSubsets::HenselSubsets(const Zxelem_b &poly):
+    semiSumOfDeg (poly.deg()/2),
+    sumOfDeg (poly.deg()),
+    intersection(poly.deg()/2+1, 1),
     howManyPrimes (6),
     index (-1),
     index_intersection (-1),
     hadRemoved (false),
-    last(poli) { };
+    last(poly) { };
 
-bool HenselSubsets::oneMorePrime(){
+bool HenselSubsets::oneMorePrime(){//Heuristic used to determine if the algorithm should use one more prime
     return global.size() != howManyPrimes;
 }
 
@@ -33,28 +32,26 @@ bool HenselSubsets::oneMorePrime(){
  * Guardarse este set sirve para reconstruir de manera eficiente las posibles sumas, funciona de la siguiente manera. Para generar la primera suma, supongamos que el vector intersection nos dice que la suma vale i. En ese caso cogeremos el primer elemento del set de i y nos fijamos en qué valor tiene su grado (sea d éste), si el grado es exactamente i entonces ya tenemos una configuración. Si no, nos fijamos en el set de i-d y cogemos el primer elemento y comprobamos si el grado es exactamente i-d y si no lo es procedemos recursivamente. La implementación de esto se hace guardando en una pila cada uno de los elementos de los sets que vamos recorriendo y guardamos también los índices que determinan de qué set eran los elementos. Llevamos también una pila con polinomios en la que la base de la pila tiene el polinomio indicado por el tag de la base de la pila de elementos del set, y en general en una posición cualquiera n de la pila llevamos el producto de la posición anterior multiplicado por el polinomio que determina el tag de la posición n de la pila de elementos de los sets. Esto se hace para generar eficientemente los polinomios que devolvemos en cada iteración (cada iteración será amortizada cte + una division de polinomios). ¿Qué se hace en cada iteración? Se coge el elemento de la pila de los elementos del set y se quita la cima y se sustituye por el siguiente elemento del último set. Si éste se nos ha acabado, hacemos otro pop y cogemos el siguiente elemento del set que nos ha quedado y seguimos hasta reconstruir otra solución.
  * */
 
-//TODO: Por otro lado los sets los tiro a la basura salvo el del bueno, por lo que quizá sea mejor calcularlo una vez que ya sepamos cuál es el bueno
-
-void HenselSubsets::insert(const std::vector<std::pair<Fpxelem_b, unsigned int> > & factors, const Fpxelem_b & poli){
-    if (index != -1) return; //Si ya he llamado una vez a bestOption no puedo instertar más
+void HenselSubsets::insert(const std::vector<std::pair<Fpxelem_b, unsigned int> > & factors, const Fpxelem_b & poly){
+    if (index != -1) return; //bestOption has been called once at least, insert more primes is useless
     size_t ind = global.size();
     global.push_back({
-        poli,
+        poly,
         factors,
         std::vector<unsigned int>(),
         std::vector<std::set<DegTag, ord> >(semiSumOfDeg+1, std::set<DegTag, ord>()),
         std::map<unsigned int, unsigned int>(),
         0}
-    ); //Quiero guardarme una referencia a factors
+    ); //TODO: Quiero guardarme una referencia a factors
     std::vector<unsigned int> aux[2] = {std::vector<unsigned int>(semiSumOfDeg+1, 0), std::vector<unsigned int>(semiSumOfDeg+1, 0)};
     int which = 0;
     unsigned int tag = 0;
-    //Voy creando un vector que en la posición i contiene el número de maneras que hay de sumar i con los grados de factors
+    //I use a vector that at index i contains how many of ways there exist of obtain i combining the factors' degrees
     for (unsigned int i = 0; i < factors.size(); i++){
         unsigned int deg = factors[i].first.deg();
         for (unsigned int j = 0; j < factors[i].second; j++){
             global[ind].map[tag]= i;
-            for (unsigned int k = 1 ; k <= semiSumOfDeg; k++){//Sólo nos hace falta calcular las cosas hasta la mitad del grado
+            for (unsigned int k = 1 ; k <= semiSumOfDeg; k++){//It is only necesary to compute everything until a half of the degree
                 if (aux[which][k] != 0 && k + deg <= semiSumOfDeg){
                     aux[1-which][k+deg] += aux[which][k];
                     global[ind].predecessor[k+deg].insert({deg, tag});
@@ -68,7 +65,7 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem_b, unsigned int> 
             which = 1 - which;
             tag++;
         }
-    } //Ahora tengo en aux[which] un vector con las multiplicidades de las posibles sumas
+    } //Now in aux[which] are the multiplicities of the possible sums
     if(verbose){
         std::cout << "Posibles sumas para el primo " << factors[0].first.getSize() << std::endl;
         for (unsigned int i = 1; i <= semiSumOfDeg; i++){
@@ -84,9 +81,7 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem_b, unsigned int> 
         }
     }
 
-    //<end Quitar>
-
-    //Ahora vamos a hacer la intersección con intersection
+    //Let's intersect this results with the vector 'intersection'
     for (unsigned int i = 0; i <= semiSumOfDeg; i++){
         if (aux[which][i] != 0){
             if (intersection[i] == 0)
@@ -97,7 +92,6 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem_b, unsigned int> 
         else{
             if (intersection[i] != 0){
                 intersection[i] = 0;
-                intersectionSize--;
                 for (unsigned int j = 0; j < ind; j++ ){
                     global[j].numOfCases -= global[j].sums[i];
                 }
@@ -123,18 +117,17 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem_b, unsigned int> 
 }
 
 Option HenselSubsets::bestOption(){
-    if (index == -1){
+    if (index == -1){//This is only executed the first time this function is called
         if (global.size() == 0) return {false, Fpxelem_b(), Fpxelem_b()};//The polynomials are irrelevant
         unsigned int min = global[0].numOfCases;
         index = 0;
-        for (unsigned int i = 1; i < global.size(); i++) {
+        for (unsigned int i = 1; i < global.size(); i++) 
             if (min > global[i].numOfCases){
                 min = global[i].numOfCases;
                 index = i;
             }
-        }
         globind = std::move(global[index]);
-        global.clear();//TODO: Gestionar bien este destructor. Destruyo todo, es memoria que ya no necesito. En teoría así debería valer.
+        global.clear();
         if(verbose){
             std::cout << "El primo que he escogido es " << globind.pol.getSize() << " y hay " << min << " posibilidades" << std::endl;
             std::cout << "Esta es la factorizacion modulo el primo:";
@@ -145,13 +138,13 @@ Option HenselSubsets::bestOption(){
     }
     if (stackIt.empty()){
         hadRemoved = false;
-        while (++index_intersection <= semiSumOfDeg &&
+        while (++index_intersection <= semiSumOfDeg && //Find the next candidate
                 (intersection[index_intersection] == 0 || globind.predecessor[index_intersection].empty()) );
-        if (index_intersection >= semiSumOfDeg+1) return {false, Fpxelem_b(), Fpxelem_b() };//The polynomials are irrelevant
+        if (index_intersection >= semiSumOfDeg+1) return {false, Fpxelem_b(), Fpxelem_b() };//We have finished. (The polynomials returned are irrelevant)
         stackIt.push(globind.predecessor[index_intersection].begin());
         stackInd.push(index_intersection);
         stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
-        while (stackIt.top()->deg != stackInd.top()){//Esto es facil que falle si no se programa bien, si da un error al depurar busca aquí
+        while (stackIt.top()->deg != stackInd.top()){
             if (globind.predecessor[stackInd.top() - stackIt.top()->deg].empty() ||
                 globind.predecessor[stackInd.top() - stackIt.top()->deg].begin()->tag >= stackIt.top()->tag){
 
@@ -219,7 +212,7 @@ Option HenselSubsets::bestOption(){
         else
             stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 
-        while (stackIt.top()->deg != stackInd.top()){//Esto es facil que falle si no se programa bien, si da un error al depurar busca aquí
+        while (stackIt.top()->deg != stackInd.top()){
             if (globind.predecessor[stackInd.top() - stackIt.top()->deg].empty() ||
                 globind.predecessor[stackInd.top() - stackIt.top()->deg].begin()->tag >= stackIt.top()->tag){
 
@@ -269,7 +262,7 @@ void HenselSubsets::removeFirstLastOption(Zxelem_b w){
             globind.predecessor[i].erase(dt);
         stackIt.pop(); stackPol.pop(); stackInd.pop();
     }
-    DegTag dt = *stackIt.top();//El último elemento lo borro al final para poder hacer bien lo de avanzar el puntero
+    DegTag dt = *stackIt.top();//The last element is erased at the end of the function in order to increase correctly the pointers to the next possibility
 
     if (++stackIt.top() == globind.predecessor[stackInd.top()].end()){
         stackIt.pop(); stackPol.pop(); stackInd.pop();

@@ -88,15 +88,20 @@ std::vector< Zxelem_b > factorizationHenselSquareFree(Zxelem_b poli, HenselSubse
 	std::vector< Zxelem_b > result;
 	int asd =0, primes[13] = {3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43};
 	while (hs.oneMorePrime()){
+		/*/
+		 big_int prime = randomPrime();//TODO Coger el codigo del gcd modular y ponerlo con una cota más grande¿?
+		/*/
 		if (verbose && asd >= 13) {
 			std::cout << "Los primos no valen para este polinomio" << std::endl;
 			return result;
 		}
 		big_int prime = primes[asd++];
+		/**/
 		Fpxelem_b aux(poli, prime);
 		if (poli.lc()%prime == 0 || gcd(aux, Fpxelem_b(poli.derivative(), prime)) != 1)
 			continue;
-		auto factorsModP = factorizationCantorZassenhaus(aux);//¿Como coger el primo?
+
+		auto factorsModP = factorizationCantorZassenhaus(aux);
 		hs.insert(factorsModP, aux);
 	}
 
