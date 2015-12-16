@@ -1,14 +1,15 @@
 #ifndef __HENSEL_SUBSETS_HPP
 #define __HENSEL_SUBSETS_HPP
 
-#include "zxelem.hpp"
-#include "fpxelem.hpp"
-#include "types.hpp"
 #include <set>
 #include <vector>
 #include <utility>
 #include <stack>
 #include <map>
+
+#include "zxelem.hpp"
+#include "fpxelem.hpp"
+#include "types.hpp"
 
 struct DegTag{
 	unsigned int deg, tag;
@@ -23,12 +24,12 @@ public:
 
 struct Option {
 	bool b;
-	Fpxelem u, w;
+	Fpxelem_b u, w;
 };
 
 struct Pri{
-	Fpxelem pol;
-	std::vector< std::pair< Fpxelem, unsigned int> > factors;
+	Fpxelem_b pol;
+	std::vector< std::pair< Fpxelem_b, unsigned int> > factors;
 	std::vector<unsigned int> sums;
 	std::vector<std::set<DegTag, ord> > predecessor;
 	std::map<unsigned int, unsigned int>map;
@@ -37,31 +38,31 @@ struct Pri{
 
 class HenselSubsets{
 	public:
-		HenselSubsets(Zxelem poli);
+		HenselSubsets(const Zxelem_b &poli);
 
 		bool oneMorePrime();
-		void insert(const std::vector<std::pair<Fpxelem, unsigned int> > & factors, const Fpxelem & poli);
+		void insert(const std::vector<std::pair<Fpxelem_b, unsigned int> > & factors, const Fpxelem_b & poli);
 
 		Option bestOption();
 
-		void removeFirstLastOption(Zxelem w);
+		void removeFirstLastOption(Zxelem_b w);
 
-		Zxelem getLast();
+		Zxelem_b getLast();
 
-	private:
-		const unsigned int howManyPrimes;
-		std::vector<Pri> global;
-		Pri globind;
-		std::vector<unsigned int> intersection;
-		unsigned int semiSumOfDeg;
-		unsigned int sumOfDeg;
-		int index;
-		bool hadRemoved;
-		unsigned int index_intersection;
-		std::stack<unsigned int> stackInd;
-		std::stack<Fpxelem> stackPol;
-		std::stack<std::set<DegTag, ord>::iterator> stackIt;
-		Zxelem last;
+    private:
+        unsigned int semiSumOfDeg;
+        unsigned int sumOfDeg;
+        std::vector<unsigned int> intersection;
+        const unsigned int howManyPrimes;
+        std::vector<Pri> global;
+        int index;
+        unsigned int index_intersection;
+        Pri globind;
+        bool hadRemoved;
+        Zxelem_b last;
+        std::stack<unsigned int> stackInd;
+        std::stack<Fpxelem_b> stackPol;
+        std::stack<std::set<DegTag, ord>::iterator> stackIt;
 };
 
 #endif // __HENSEL_SUBSETS_HPP_

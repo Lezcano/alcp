@@ -35,7 +35,7 @@ big_int reciprocal (big_int a, big_int q){
  *
  */
 big_int integerCRA (const std::vector<big_int> & m, const std::vector<big_int> & u){
-	const int n = m.size()-1;
+	const int n = static_cast<int>(m.size()-1);
 	big_int prod, aux;
 	std::vector<big_int> inv(n), v(n+1);
 	if(m.size() != u.size())
@@ -60,7 +60,7 @@ big_int integerCRA (const std::vector<big_int> & m, const std::vector<big_int> &
 	}
     // Compute the result using horner's algorithm
 	big_int result = v[n];
-	for (int k = n-1; k >= 0; --k){
+	for (std::size_t k = n-1; k >= 0; --k){
 		result = result*m[k]+v[k];
 	}
 	return result;

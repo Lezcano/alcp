@@ -7,6 +7,7 @@
 #include <vector>
 #include <algorithm>        // find_if
 #include <utility>          // pair, make_pair
+#include <functional>       // not_equal_to
 #include <string>           // to_string
 
 template<typename Fxelem, typename Felem>
@@ -27,6 +28,8 @@ class PolynomialRing{
                 if(!compatible(aux, e))
                     throw ENotCompatible("Not all the elements in the array are in the same ring.");
         }
+
+        PolynomialRing(const PolynomialRing &other) = default;
 
         Fxelem & operator=(const Fxelem &rhs){
             if(&rhs != this){
@@ -186,6 +189,7 @@ class PolynomialRing{
         friend inline Fxelem normalForm(const Fxelem &e){ return e/unit(e); }
 
         friend std::string to_string(const Fxelem &f){
+            using std::to_string;
             std::string s = "";
             if(f._v.size() == 1)
                 return to_string(f._v[0]);

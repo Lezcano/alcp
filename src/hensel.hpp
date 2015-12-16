@@ -4,14 +4,13 @@
 #include<vector>
 #include<utility>
 #include "henselSubsets.hpp"
+#include "fpxelem.hpp"
+#include "zxelem.hpp"
 
-class Zxelem;
-class Fpxelem;
 
+bool HenselLifting (const Zxelem_b &polynomial, Fpxelem_b u1, Fpxelem_b w1, Zxelem_b & u, Zxelem_b & w);
 
-bool HenselLifting (const Zxelem &polynomial, Fpxelem u1, Fpxelem w1, Zxelem & u, Zxelem & w);
-
-std::vector< std::pair < Zxelem, unsigned int > > factorizationHensel(const Zxelem & pol);
-std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli);
-std::vector< Zxelem > factorizationHenselSquareFree(const Zxelem & poli, HenselSubsets & hs);
+std::vector< std::pair < Zxelem_b, unsigned int > > factorizationHensel(const Zxelem_b & pol);
+std::vector< Zxelem_b > factorizationHenselSquareFree(const Zxelem_b & poli);
+std::vector< Zxelem_b > factorizationHenselSquareFree(Zxelem_b poli, HenselSubsets & hs);
 #endif // __HENSEL

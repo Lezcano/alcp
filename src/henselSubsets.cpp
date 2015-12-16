@@ -1,5 +1,5 @@
 #include "henselSubsets.hpp"
-#include "types.hpp"
+
 #include <vector>
 #include <set>
 #include <algorithm>
@@ -8,20 +8,23 @@
 #include <map>
 #include <iostream> //TODO quitar
 
+#include "types.hpp"
+
+const bool verbose = false;
+
 //TODO: De momento solo uso el grado de poli, mirar
-HenselSubsets::HenselSubsets(Zxelem poli):
-    last(poli),
-	semiSumOfDeg (poli.deg()/2),
-	sumOfDeg (poli.deg()),
-	intersection(poli.deg()/2+1, 1),
-	howManyPrimes (6),
-	index (-1),
-	index_intersection (-1),
-	hadRemoved (false)
-{}
+HenselSubsets::HenselSubsets(const Zxelem_b &poli):
+    semiSumOfDeg (poli.deg()/2),
+    sumOfDeg (poli.deg()),
+    intersection(intersectionSize, 1),
+    howManyPrimes (6),
+    index (-1),
+    index_intersection (-1),
+    hadRemoved (false),
+    last(poli) { };
 
 bool HenselSubsets::oneMorePrime(){
-	return global.size() != howManyPrimes;
+    return global.size() != howManyPrimes;
 }
 
 
@@ -32,253 +35,256 @@ bool HenselSubsets::oneMorePrime(){
 
 //TODO: Por otro lado los sets los tiro a la basura salvo el del bueno, por lo que quizá sea mejor calcularlo una vez que ya sepamos cuál es el bueno
 
+void HenselSubsets::insert(const std::vector<std::pair<Fpxelem_b, unsigned int> > & factors, const Fpxelem_b & poli){
+    if (index != -1) return; //Si ya he llamado una vez a bestOption no puedo instertar más
+    size_t ind = global.size();
+    global.push_back({
+        poli,
+        factors,
+        std::vector<unsigned int>(),
+        std::vector<std::set<DegTag, ord> >(semiSumOfDeg+1, std::set<DegTag, ord>()),
+        std::map<unsigned int, unsigned int>(),
+        0}
+    ); //Quiero guardarme una referencia a factors
+    std::vector<unsigned int> aux[2] = {std::vector<unsigned int>(semiSumOfDeg+1, 0), std::vector<unsigned int>(semiSumOfDeg+1, 0)};
+    int which = 0;
+    unsigned int tag = 0;
+    //Voy creando un vector que en la posición i contiene el número de maneras que hay de sumar i con los grados de factors
+    for (unsigned int i = 0; i < factors.size(); i++){
+        unsigned int deg = factors[i].first.deg();
+        for (unsigned int j = 0; j < factors[i].second; j++){
+            global[ind].map[tag]= i;
+            for (unsigned int k = 1 ; k <= semiSumOfDeg; k++){//Sólo nos hace falta calcular las cosas hasta la mitad del grado
+                if (aux[which][k] != 0 && k + deg <= semiSumOfDeg){
+                    aux[1-which][k+deg] += aux[which][k];
+                    global[ind].predecessor[k+deg].insert({deg, tag});
+                }
+            }
+            if (deg <= semiSumOfDeg){
+                aux[1-which][deg]++;
+                global[ind].predecessor[deg].insert({deg, tag});
+            }
+            aux[which] = aux[1-which];
+            which = 1 - which;
+            tag++;
+        }
+    } //Ahora tengo en aux[which] un vector con las multiplicidades de las posibles sumas
+    if(verbose){
+        std::cout << "Posibles sumas para el primo " << factors[0].first.getSize() << std::endl;
+        for (unsigned int i = 1; i <= semiSumOfDeg; i++){
+                if (aux[which][i] != 0) {
+                    std::cout << i << " ";
+                }
+            }
+        std::cout << std::endl;
 
-void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > & factors, const Fpxelem & poli){
-	if (index != -1) return; //Si ya he llamado una vez a bestOption no puedo instertar más
-	size_t ind = global.size();
-	global.push_back({
-		poli,
-		factors,
-		std::vector<unsigned int>(),
-		std::vector<std::set<DegTag, ord> >(semiSumOfDeg+1, std::set<DegTag, ord>()),
-		std::map<unsigned int, unsigned int>(),
-		0}
-	); //Quiero guardarme una referencia a factors
-	std::vector<unsigned int> aux[2] = {std::vector<unsigned int>(semiSumOfDeg+1, 0), std::vector<unsigned int>(semiSumOfDeg+1, 0)};
-	int which = 0;
-	unsigned int tag = 0;
-	//Voy creando un vector que en la posición i contiene el número de maneras que hay de sumar i con los grados de factors
-	for (unsigned int i = 0; i < factors.size(); i++){
-		unsigned int deg = factors[i].first.deg();
-		for (unsigned int j = 0; j < factors[i].second; j++){
-			global[ind].map[tag]= i;
-			for (unsigned int k = 1 ; k <= semiSumOfDeg; k++){//Sólo nos hace falta calcular las cosas hasta la mitad del grado
-				if (aux[which][k] != 0 && k + deg <= semiSumOfDeg){
-					aux[1-which][k+deg] += aux[which][k];
-					global[ind].predecessor[k+deg].insert({deg, tag});
-				}
-			}
-			if (deg <= semiSumOfDeg){
-				aux[1-which][deg]++;
-				global[ind].predecessor[deg].insert({deg, tag});
-			}
-			aux[which] = aux[1-which];
-			which = 1 - which;
-			tag++;
-		}
-	} //Ahora tengo en aux[which] un vector con las multiplicidades de las posibles sumas
-	//TODO:Quitar
-	std::cout << "Posibles sumas para el primo " << factors[0].first.getSize() << std::endl;
-	for (unsigned int i = 1; i <= semiSumOfDeg; i++){
-			if (aux[which][i] != 0) {
-				std::cout << i << " ";
-			}
-		}
-
-	std::cout << std::endl;
-
-	for (auto aaa: global[ind].factors){
-        if(aaa.second == 1) std::cout << aaa.first << std::endl;
-        else std::cout << "("<< aaa.first << ")^" << aaa.second <<std::endl;
+        for (auto aaa: global[ind].factors){
+            if(aaa.second == 1) std::cout << aaa.first << std::endl;
+            else std::cout << "("<< aaa.first << ")^" << aaa.second <<std::endl;
+        }
     }
 
-	//<end Quitar>
+    //<end Quitar>
 
-	//Ahora vamos a hacer la intersección con intersection
-	for (unsigned int i = 0; i <= semiSumOfDeg; i++){
-		if (aux[which][i] != 0){
-			if (intersection[i] == 0)
-				aux[which][i] = 0;
-			else
-				global[ind].numOfCases += aux[which][i];
-		}
-		else{
-			if (intersection[i] != 0){
-				intersection[i] = 0;
-				intersectionSize--;
-				for (unsigned int j = 0; j < ind; j++ ){
-					global[j].numOfCases -= global[j].sums[i];
-				}
-			}
-		}
-	}
-	global[ind].sums = aux[which];
+    //Ahora vamos a hacer la intersección con intersection
+    for (unsigned int i = 0; i <= semiSumOfDeg; i++){
+        if (aux[which][i] != 0){
+            if (intersection[i] == 0)
+                aux[which][i] = 0;
+            else
+                global[ind].numOfCases += aux[which][i];
+        }
+        else{
+            if (intersection[i] != 0){
+                intersection[i] = 0;
+                intersectionSize--;
+                for (unsigned int j = 0; j < ind; j++ ){
+                    global[j].numOfCases -= global[j].sums[i];
+                }
+            }
+        }
+    }
+    global[ind].sums = aux[which];
 
-	std::cout << "Numero de casos con este primo teniendo los resultados anteriores: " << global[ind].numOfCases << std::endl;
-	std::cout << "=====" << std::endl;
+    if(verbose){
+        std::cout << "Numero de casos con este primo teniendo los resultados anteriores: " << global[ind].numOfCases << std::endl;
+        std::cout << "=====" << std::endl;
+    }
 
-	/*
-	 for (auto j : global[ind].predecessor){
-		std::cout << ":";
-		for (auto k: j){
-			std::cout << k.deg << " " << k.tag<< "; ";
-		}
-		std::cout << ":" << std::endl;
-	}
-	*/
+    /*
+     for (auto j : global[ind].predecessor){
+        std::cout << ":";
+        for (auto k: j){
+            std::cout << k.deg << " " << k.tag<< "; ";
+        }
+        std::cout << ":" << std::endl;
+    }
+    */
 }
 
 Option HenselSubsets::bestOption(){
-	if (index == -1){
-		if (global.size() == 0) return {false, Fpxelem(), Fpxelem()};//The polynomials are irrelevant
-		unsigned int min = global[0].numOfCases;
-		index = 0;
-		for (unsigned int i = 1; i < global.size(); i++) {
-			if (min > global[i].numOfCases){
-				min = global[i].numOfCases;
-				index = i;
-			}
-		}
-		globind = std::move(global[index]);
-		global.clear();//TODO: Gestionar bien este destructor. Destruyo todo, es memoria que ya no necesito. En teoría así debería valer.
-		std::cout << "El primo que he escogido es " << globind.pol.getSize() << " y hay " << min << " posibilidades" << std::endl;
-		std::cout << "Esta es la factorizacion modulo el primo:";
-		for (auto aaa: globind.factors)
-			std::cout << "("<< aaa.first << ")^" << aaa.second <<std::endl;
-		std::cout << "=====" << std::endl;
-	}
-	if (stackIt.empty()){
-		hadRemoved = false;
-		while (++index_intersection <= semiSumOfDeg &&
-				(intersection[index_intersection] == 0 || globind.predecessor[index_intersection].empty()) );
-		if (index_intersection >= semiSumOfDeg+1) return {false, Fpxelem(), Fpxelem() };//The polynomials are irrelevant
-		stackIt.push(globind.predecessor[index_intersection].begin());
-		stackInd.push(index_intersection);
-		stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
-		while (stackIt.top()->deg != stackInd.top()){//Esto es facil que falle si no se programa bien, si da un error al depurar busca aquí
-			if (globind.predecessor[stackInd.top() - stackIt.top()->deg].empty() ||
-				globind.predecessor[stackInd.top() - stackIt.top()->deg].begin()->tag >= stackIt.top()->tag){
+    if (index == -1){
+        if (global.size() == 0) return {false, Fpxelem_b(), Fpxelem_b()};//The polynomials are irrelevant
+        unsigned int min = global[0].numOfCases;
+        index = 0;
+        for (unsigned int i = 1; i < global.size(); i++) {
+            if (min > global[i].numOfCases){
+                min = global[i].numOfCases;
+                index = i;
+            }
+        }
+        globind = std::move(global[index]);
+        global.clear();//TODO: Gestionar bien este destructor. Destruyo todo, es memoria que ya no necesito. En teoría así debería valer.
+        if(verbose){
+            std::cout << "El primo que he escogido es " << globind.pol.getSize() << " y hay " << min << " posibilidades" << std::endl;
+            std::cout << "Esta es la factorizacion modulo el primo:";
+            for (auto aaa: globind.factors)
+                std::cout << "("<< aaa.first << ")^" << aaa.second <<std::endl;
+            std::cout << "=====" << std::endl;
+        }
+    }
+    if (stackIt.empty()){
+        hadRemoved = false;
+        while (++index_intersection <= semiSumOfDeg &&
+                (intersection[index_intersection] == 0 || globind.predecessor[index_intersection].empty()) );
+        if (index_intersection >= semiSumOfDeg+1) return {false, Fpxelem_b(), Fpxelem_b() };//The polynomials are irrelevant
+        stackIt.push(globind.predecessor[index_intersection].begin());
+        stackInd.push(index_intersection);
+        stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
+        while (stackIt.top()->deg != stackInd.top()){//Esto es facil que falle si no se programa bien, si da un error al depurar busca aquí
+            if (globind.predecessor[stackInd.top() - stackIt.top()->deg].empty() ||
+                globind.predecessor[stackInd.top() - stackIt.top()->deg].begin()->tag >= stackIt.top()->tag){
 
-				auto it = stackIt.top();
-				stackIt.pop();
-				it++;
-				while(!stackIt.empty() &&
+                auto it = stackIt.top();
+                stackIt.pop();
+                it++;
+                while(!stackIt.empty() &&
                         (it == globind.predecessor[stackInd.top()].end() ||
                          it->tag >= stackIt.top()->tag)){
-					it = stackIt.top();
-					it++;
-					stackIt.pop(); stackPol.pop(); stackInd.pop();
-				}
-				if (it == globind.predecessor[stackInd.top()].end()){
-					stackPol.pop(); stackInd.pop();
-					return bestOption();
-				}
-				stackPol.pop();
-				stackInd.pop();
-				if (stackInd.empty())
-					stackInd.push(index_intersection);
-				else
-					stackInd.push(stackInd.top() - stackIt.top()->deg);
-				stackIt.push(it);
-				if (stackPol.empty())
-					stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
-				else
-					stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
-			}
-			else{
-				stackInd.push(stackInd.top() - stackIt.top()->deg);
-				stackIt.push(globind.predecessor[stackInd.top()].begin());
-				stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
+                    it = stackIt.top();
+                    it++;
+                    stackIt.pop(); stackPol.pop(); stackInd.pop();
+                }
+                if (it == globind.predecessor[stackInd.top()].end()){
+                    stackPol.pop(); stackInd.pop();
+                    return bestOption();
+                }
+                stackPol.pop();
+                stackInd.pop();
+                if (stackInd.empty())
+                    stackInd.push(index_intersection);
+                else
+                    stackInd.push(stackInd.top() - stackIt.top()->deg);
+                stackIt.push(it);
+                if (stackPol.empty())
+                    stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
+                else
+                    stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
+            }
+            else{
+                stackInd.push(stackInd.top() - stackIt.top()->deg);
+                stackIt.push(globind.predecessor[stackInd.top()].begin());
+                stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 
-			}
-		}
-		return {true, stackPol.top(), globind.pol / stackPol.top() };
-	}
-	else{
-		if (index_intersection > semiSumOfDeg) return {false, Fpxelem(), Fpxelem() };//The polynomials are irrelevant
-		auto it = stackIt.top();
-		stackIt.pop();
-		if (hadRemoved)
-			hadRemoved = false; //At this point stackIt.size() should always be 1.
-		else
-			it++;
-		while(!stackIt.empty() && (it == globind.predecessor[stackInd.top()].end() || it->tag >= stackIt.top()->tag)){
-			it = stackIt.top();
-			it++;
-			stackIt.pop(); stackPol.pop(); stackInd.pop();
-		}
-		if (it == globind.predecessor[stackInd.top()].end()){
-			stackPol.pop(); stackInd.pop();
-			return bestOption();
-		}
-		stackPol.pop();
-		stackInd.pop();
-		if (stackInd.empty())
-			stackInd.push(index_intersection);
-		else
-			stackInd.push(stackInd.top() - stackIt.top()->deg);
-		stackIt.push(it);
-		if (stackPol.empty())
-			stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
-		else
-			stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
+            }
+        }
+        return {true, stackPol.top(), globind.pol / stackPol.top() };
+    }
+    else{
+        if (index_intersection > semiSumOfDeg) return {false, Fpxelem_b(), Fpxelem_b() };//The polynomials are irrelevant
+        auto it = stackIt.top();
+        stackIt.pop();
+        if (hadRemoved)
+            hadRemoved = false; //At this point stackIt.size() should always be 1.
+        else
+            it++;
+        while(!stackIt.empty() && (it == globind.predecessor[stackInd.top()].end() || it->tag >= stackIt.top()->tag)){
+            it = stackIt.top();
+            it++;
+            stackIt.pop(); stackPol.pop(); stackInd.pop();
+        }
+        if (it == globind.predecessor[stackInd.top()].end()){
+            stackPol.pop(); stackInd.pop();
+            return bestOption();
+        }
+        stackPol.pop();
+        stackInd.pop();
+        if (stackInd.empty())
+            stackInd.push(index_intersection);
+        else
+            stackInd.push(stackInd.top() - stackIt.top()->deg);
+        stackIt.push(it);
+        if (stackPol.empty())
+            stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
+        else
+            stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
 
-		while (stackIt.top()->deg != stackInd.top()){//Esto es facil que falle si no se programa bien, si da un error al depurar busca aquí
-			if (globind.predecessor[stackInd.top() - stackIt.top()->deg].empty() ||
-				globind.predecessor[stackInd.top() - stackIt.top()->deg].begin()->tag >= stackIt.top()->tag){
+        while (stackIt.top()->deg != stackInd.top()){//Esto es facil que falle si no se programa bien, si da un error al depurar busca aquí
+            if (globind.predecessor[stackInd.top() - stackIt.top()->deg].empty() ||
+                globind.predecessor[stackInd.top() - stackIt.top()->deg].begin()->tag >= stackIt.top()->tag){
 
-				auto it = stackIt.top();
-				stackIt.pop();
-				it++;
-				while(!stackIt.empty() && (it == globind.predecessor[stackInd.top()].end() || it->tag >= stackIt.top()->tag)){
-					it = stackIt.top();
-					it++;
-					stackIt.pop(); stackPol.pop(); stackInd.pop();
-				}
-				if (it == globind.predecessor[stackInd.top()].end()){
-					stackPol.pop(); stackInd.pop();
-					return bestOption();
-				}
-				stackPol.pop();
-				stackInd.pop();
-				if (stackInd.empty())
-					stackInd.push(index_intersection);
-				else
-					stackInd.push(stackInd.top() - stackIt.top()->deg);
-				stackIt.push(it);
-				if (stackPol.empty())
-					stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
-				else
-					stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
-			}
-			else{
-				stackInd.push(stackInd.top() - stackIt.top()->deg);
-				stackIt.push(globind.predecessor[stackInd.top()].begin());
-				stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
-			}
-		}
-		return {true, stackPol.top(), globind.pol / stackPol.top() };
-	}
+                auto it = stackIt.top();
+                stackIt.pop();
+                it++;
+                while(!stackIt.empty() && (it == globind.predecessor[stackInd.top()].end() || it->tag >= stackIt.top()->tag)){
+                    it = stackIt.top();
+                    it++;
+                    stackIt.pop(); stackPol.pop(); stackInd.pop();
+                }
+                if (it == globind.predecessor[stackInd.top()].end()){
+                    stackPol.pop(); stackInd.pop();
+                    return bestOption();
+                }
+                stackPol.pop();
+                stackInd.pop();
+                if (stackInd.empty())
+                    stackInd.push(index_intersection);
+                else
+                    stackInd.push(stackInd.top() - stackIt.top()->deg);
+                stackIt.push(it);
+                if (stackPol.empty())
+                    stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
+                else
+                    stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
+            }
+            else{
+                stackInd.push(stackInd.top() - stackIt.top()->deg);
+                stackIt.push(globind.predecessor[stackInd.top()].begin());
+                stackPol.push(stackPol.top() * globind.factors[ globind.map[stackIt.top()->tag] ].first);
+            }
+        }
+        return {true, stackPol.top(), globind.pol / stackPol.top() };
+    }
 }
 
 
-void HenselSubsets::removeFirstLastOption(Zxelem w){
-	globind.pol /= stackPol.top();
-	last = w;
-	sumOfDeg -= stackPol.top().deg();
-	semiSumOfDeg = sumOfDeg/2;
-	while(stackIt.size() > 1){
-		DegTag dt = *stackIt.top();
-		for (unsigned int i = 1; i <= semiSumOfDeg; i++)
-			globind.predecessor[i].erase(dt);
-		stackIt.pop(); stackPol.pop(); stackInd.pop();
-	}
-	DegTag dt = *stackIt.top();//El último elemento lo borro al final para poder hacer bien lo de avanzar el puntero
+void HenselSubsets::removeFirstLastOption(Zxelem_b w){
+    globind.pol /= stackPol.top();
+    last = w;
+    sumOfDeg -= stackPol.top().deg();
+    semiSumOfDeg = sumOfDeg/2;
+    while(stackIt.size() > 1){
+        DegTag dt = *stackIt.top();
+        for (unsigned int i = 1; i <= semiSumOfDeg; i++)
+            globind.predecessor[i].erase(dt);
+        stackIt.pop(); stackPol.pop(); stackInd.pop();
+    }
+    DegTag dt = *stackIt.top();//El último elemento lo borro al final para poder hacer bien lo de avanzar el puntero
 
-	if (++stackIt.top() == globind.predecessor[stackInd.top()].end()){
-		stackIt.pop(); stackPol.pop(); stackInd.pop();
-	}
-	else{
-		stackPol.pop(); stackInd.pop();
-		stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
-		stackInd.push(index_intersection);
-	}
+    if (++stackIt.top() == globind.predecessor[stackInd.top()].end()){
+        stackIt.pop(); stackPol.pop(); stackInd.pop();
+    }
+    else{
+        stackPol.pop(); stackInd.pop();
+        stackPol.push(globind.factors[ globind.map[stackIt.top()->tag] ].first);
+        stackInd.push(index_intersection);
+    }
 
-	for (unsigned int i = 1; i <= semiSumOfDeg; i++)
-		globind.predecessor[i].erase(dt);
-	hadRemoved = true; 
+    for (unsigned int i = 1; i <= semiSumOfDeg; i++)
+        globind.predecessor[i].erase(dt);
+    hadRemoved = true; 
 }
 
-Zxelem HenselSubsets::getLast(){
-	return last;
+Zxelem_b HenselSubsets::getLast(){
+    return last;
 }

@@ -262,7 +262,7 @@ bool pollardRhoLogarithm(long long g, long long h, long long n, long long & log)
 
 
 template big_int fastPowMod<big_int, big_int>(const big_int &a, big_int b, const big_int & p);
-template Fpxelem fastPowMod<Fpxelem, big_int>(const Fpxelem &a, big_int b, const Fpxelem & p);
+template Fpxelem_b fastPowMod<Fpxelem_b, big_int>(const Fpxelem_b &a, big_int b, const Fpxelem_b & p);
 
 template big_int fastPow<big_int, int>(const big_int& a, int b);
 template big_int fastPow<big_int, unsigned int>(const big_int& a, unsigned int b);
@@ -270,14 +270,14 @@ template big_int fastPow<big_int, unsigned long>(const big_int& a, unsigned long
 template big_int fastPow<big_int, unsigned long long>(const big_int& a, unsigned long long b);
 //template big_int fastPow<big_int, std::size_t>(const big_int& a, std::size_t b);
 template big_int fastPow<big_int, big_int>(const big_int& a, big_int b);
-template Fpelem fastPow<Fpelem, big_int>(const Fpelem& a, big_int b);
-template Fqelem fastPow<Fqelem, big_int>(const Fqelem& a, big_int b);
+template Fpelem_b fastPow<Fpelem_b, big_int>(const Fpelem_b& a, big_int b);
+template Fqelem_b fastPow<Fqelem_b, big_int>(const Fqelem_b& a, big_int b);
 
 template int gcd<int>(int a, int b);
 template big_int gcd<big_int>(big_int a, big_int b);
-template Fpxelem gcd<Fpxelem>(Fpxelem a, Fpxelem b);
-template Fqxelem gcd<Fqxelem>(Fqxelem a, Fqxelem b);
+template Fpxelem_b gcd<Fpxelem_b>(Fpxelem_b a, Fpxelem_b b);
+template Fqxelem_b gcd<Fqxelem_b>(Fqxelem_b a, Fqxelem_b b);
 
 template big_int eea<big_int>(big_int a, big_int b, big_int &x, big_int &y);
-template Fpxelem eea<Fpxelem>(Fpxelem a, Fpxelem b, Fpxelem &x, Fpxelem &y);
-template Fqxelem eea<Fqxelem>(Fqxelem a, Fqxelem b, Fqxelem &x, Fqxelem &y);
+template Fpxelem_b eea<Fpxelem_b>(Fpxelem_b a, Fpxelem_b b, Fpxelem_b &x, Fpxelem_b &y);
+template Fqxelem_b eea<Fqxelem_b>(Fqxelem_b a, Fqxelem_b b, Fqxelem_b &x, Fqxelem_b &y);
