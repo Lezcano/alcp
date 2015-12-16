@@ -53,7 +53,6 @@ class HenselSubsets{
 		std::vector<Pri> global;
 		Pri globind;
 		std::vector<unsigned int> intersection;
-		unsigned int intersectionSize;
 		unsigned int semiSumOfDeg;
 		unsigned int sumOfDeg;
 		int index;
@@ -62,7 +61,6 @@ class HenselSubsets{
 		std::stack<unsigned int> stackInd;
 		std::stack<Fpxelem> stackPol;
 		std::stack<std::set<DegTag, ord>::iterator> stackIt;
-		unsigned int numOfFactors;
 		Zxelem last;
 };
 

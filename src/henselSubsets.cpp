@@ -11,14 +11,12 @@
 //TODO: De momento solo uso el grado de poli, mirar
 HenselSubsets::HenselSubsets(Zxelem poli):
     last(poli),
-	intersectionSize (poli.deg()/2+1),
 	semiSumOfDeg (poli.deg()/2),
 	sumOfDeg (poli.deg()),
-	intersection(intersectionSize, 1),
+	intersection(poli.deg()/2+1, 1),
 	howManyPrimes (6),
 	index (-1),
 	index_intersection (-1),
-	numOfFactors (0),
 	hadRemoved (false)
 {}
 
@@ -53,7 +51,6 @@ void HenselSubsets::insert(const std::vector<std::pair<Fpxelem, unsigned int> > 
 	for (unsigned int i = 0; i < factors.size(); i++){
 		unsigned int deg = factors[i].first.deg();
 		for (unsigned int j = 0; j < factors[i].second; j++){
-			numOfFactors++;
 			global[ind].map[tag]= i;
 			for (unsigned int k = 1 ; k <= semiSumOfDeg; k++){//Sólo nos hace falta calcular las cosas hasta la mitad del grado
 				if (aux[which][k] != 0 && k + deg <= semiSumOfDeg){
