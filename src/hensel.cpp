@@ -16,9 +16,23 @@
 
 const bool verbose = false;
 
-//std::vector< pair < Zxelem_b, unsigned int > > squareFreeFactChar0(const & Zxelem_b){
-//
-//}
+std::vector< pair < Zxelem_b, unsigned int > > squareFreeFactChar0(const & Zxelem_b){
+	Fpxelem result;
+	int i;
+	Fpxelem b = pol.derivative();
+	Fpxelem c = gcd (b, pol);
+	Fpxelem w = pol/c;
+	while (c != 1){
+		Fpxelem y = gcd(w, c);
+		z = w/y;
+		result.push_back(z, i);
+		i++;
+		w = y;
+		c = c/y;
+	}
+	result.push_back(w, i);
+	return result;
+}
 
 /**
  * Input:
@@ -35,14 +49,6 @@ const bool verbose = false;
  * 			If there are not such polynomials the function returns false
  */
 
-/* Cosas que necesito
- * 		Polinomios en Z, es decir Z[x]
- *		Multiplicar un big_int por un Zx
- *		Comparación del un polinomio en Zx con el número 0
- *		Dividir un polinomio en Zx por un entero
- *		Sumar polinomios en Z_p[x] con polinomios en Z[x]
- *
- * */
 bool HenselLifting (const Zxelem_b &polynomial, Fpxelem_b u1, Fpxelem_b w1, Zxelem_b & u, Zxelem_b & w){
 	//TODO: if (u1.getField.getP() != w1.getField.getP())
 	big_int p = u1.getField().getP();
@@ -138,9 +144,9 @@ std::vector< Zxelem_b > factorizationHenselSquareFree(const Zxelem_b & poli){
 	HenselSubsets hs(poli);
 	return factorizationHenselSquareFree(poli, hs);
 }
-/*
+
 std::vector< std::pair < Zxelem_b, unsigned int > > factorizationHensel(const Zxelem_b & pol){
-	//auto aux = squareFreeFactChar0 (pol);
+	auto aux = squareFreeFactChar0 (pol);
 	std::vector< std::pair < Zxelem_b, unsigned int > result;
 	for (auto & pair: aux){
 		auto factors = factorizationHenselSquareFree (pair.first);
@@ -150,4 +156,4 @@ std::vector< std::pair < Zxelem_b, unsigned int > > factorizationHensel(const Zx
 	}
 	return result;
 }
-*/
+
