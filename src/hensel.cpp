@@ -16,7 +16,7 @@
 
 const bool verbose = false;
 
-std::vector< pair < Zxelem_b, unsigned int > > squareFreeFactChar0(const & Zxelem_b){
+std::vector< std::pair < Zxelem_b, unsigned int > > squareFreeFactChar0(const & Zxelem_b){
 	Fpxelem result;
 	int i;
 	Fpxelem b = pol.derivative();

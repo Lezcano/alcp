@@ -8,7 +8,7 @@
 #include "zxelem.hpp"
 
 
-std::vector< pair < Zxelem_b, unsigned int > > squareFreeFactChar0(const & Zxelem_b);
+std::vector< std::pair < Zxelem_b, unsigned int > > squareFreeFactChar0(const Zxelem_b &);
 
 bool HenselLifting (const Zxelem_b &polynomial, Fpxelem_b u1, Fpxelem_b w1, Zxelem_b & u, Zxelem_b & w);
 
