@@ -168,12 +168,10 @@ T gcd(T a, T b){
     T aux;
     if(a == 0 && b == 0)
         return a;
-    std::cout << a << std::endl << b << std::endl << std::endl;
     while(b != 0){
         aux = b;
         b = a%b;
         a = aux;
-        std::cout << a << std::endl << b << std::endl << std::endl;
     }
     return normalForm(a);
 }
