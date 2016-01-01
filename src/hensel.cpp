@@ -16,21 +16,21 @@
 
 const bool verbose = false;
 
-std::vector< pair < Zxelem_b, unsigned int > > squareFreeFactChar0(const & Zxelem_b){
-	Fpxelem result;
-	int i;
-	Fpxelem b = pol.derivative();
-	Fpxelem c = gcd (b, pol);
-	Fpxelem w = pol/c;
+std::vector< std::pair < Zxelem_b, unsigned int > > squareFreeFactChar0(const Zxelem_b &pol){
+	std::vector< std::pair < Zxelem_b, unsigned int > > result;
+	unsigned int i = 1;
+	Zxelem_b b = pol.derivative();
+	Zxelem_b c = gcd (b, pol);
+	Zxelem_b w = pol/c;
 	while (c != 1){
-		Fpxelem y = gcd(w, c);
-		z = w/y;
-		result.push_back(z, i);
+		Zxelem_b y = gcd(w, c);
+		Zxelem_b z = w/y;
+		result.push_back(std::make_pair(z, i));
 		i++;
 		w = y;
 		c = c/y;
 	}
-	result.push_back(w, i);
+	result.push_back(std::make_pair(w, i));
 	return result;
 }
 
@@ -147,11 +147,11 @@ std::vector< Zxelem_b > factorizationHenselSquareFree(const Zxelem_b & poli){
 
 std::vector< std::pair < Zxelem_b, unsigned int > > factorizationHensel(const Zxelem_b & pol){
 	auto aux = squareFreeFactChar0 (pol);
-	std::vector< std::pair < Zxelem_b, unsigned int > result;
+	std::vector< std::pair < Zxelem_b, unsigned int > > result;
 	for (auto & pair: aux){
 		auto factors = factorizationHenselSquareFree (pair.first);
 		for (auto & elem : factors){
-			result.push_back(elem, pair.second);
+			result.push_back(std::make_pair(elem, pair.second));
 		}
 	}
 	return result;

@@ -136,6 +136,31 @@ void pruebasHenselSqFree(){
 
 }
 
+void pruebasHenselNoSeparable(){
+
+	std::vector<big_int> v = {1, 2, 1};
+
+	Zxelem_b u(0), w(0);
+	Zxelem_b pol(v);
+	cout << pol << endl << endl;
+	auto a =  factorizationHensel(pol);
+	Zxelem_b aux(1);
+	for (auto p : a){
+		for (unsigned int i =0; i< p.second; i++){
+			aux*=p.first;
+		}
+		cout << "(" << p.first << ")^" << p.second << endl;
+	}
+	if (aux == pol){
+		cout << "Bien factorizado!!" << endl;
+	}
+	else{
+		cout << ":( Lo siento, no se ha factorizado bien." << endl;
+
+	}
+
+}
+
 int main (){
 	/*
 	Fp_b field(5);
@@ -156,7 +181,8 @@ int main (){
 
 //    testCRA();
 //    testModularGCD();
-    pruebasHenselSqFree();
+ //   pruebasHenselSqFree();
+    pruebasHenselNoSeparable();
 //    testGoodOldGCD();
 //    symForm();
 

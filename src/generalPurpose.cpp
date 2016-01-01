@@ -167,11 +167,13 @@ template<typename T>
 T gcd(T a, T b){
     T aux;
     if(a == 0 && b == 0)
-        throw std::runtime_error("GCD(0, 0) does not exist.");
+        return a;
+    std::cout << a << std::endl << b << std::endl << std::endl;
     while(b != 0){
         aux = b;
         b = a%b;
         a = aux;
+        std::cout << a << std::endl << b << std::endl << std::endl;
     }
     return normalForm(a);
 }
@@ -277,6 +279,7 @@ template int gcd<int>(int a, int b);
 template big_int gcd<big_int>(big_int a, big_int b);
 template Fpxelem_b gcd<Fpxelem_b>(Fpxelem_b a, Fpxelem_b b);
 template Fqxelem_b gcd<Fqxelem_b>(Fqxelem_b a, Fqxelem_b b);
+template Zxelem_b gcd<Zxelem_b>(Zxelem_b a, Zxelem_b b);
 
 template big_int eea<big_int>(big_int a, big_int b, big_int &x, big_int &y);
 template Fpxelem_b eea<Fpxelem_b>(Fpxelem_b a, Fpxelem_b b, Fpxelem_b &x, Fpxelem_b &y);
