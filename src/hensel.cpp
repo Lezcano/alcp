@@ -13,6 +13,7 @@
 #include "henselSubsets.hpp"
 #include "factorizationFq.hpp"
 #include "generalPurpose.hpp"
+#include "modularGCD.hpp"
 
 const bool verbose = false;
 
@@ -20,10 +21,10 @@ std::vector< std::pair < Zxelem_b, unsigned int > > squareFreeFactChar0(const Zx
 	std::vector< std::pair < Zxelem_b, unsigned int > > result;
 	unsigned int i = 1;
 	Zxelem_b b = pol.derivative();
-	Zxelem_b c = gcd (b, pol);
+	Zxelem_b c = modularGCD(b, pol);
 	Zxelem_b w = pol/c;
 	while (c != 1){
-		Zxelem_b y = gcd(w, c);
+		Zxelem_b y = modularGCD(w, c);
 		Zxelem_b z = w/y;
 		result.push_back(std::make_pair(z, i));
 		i++;
