@@ -132,12 +132,12 @@ void pollardoLogarithm(bool verbose){
     long long log;
 
     // Compute log_2(5) in F_2019
-    pollardRhoLogarithm(2, 5, 2019, log);
+    pollardRhoLogarithm(2, 5, 1019, log);
     if(verbose) {
         cout << "Log " << log << endl;
-        cout << "Pow " << fastPowMod<big_int, big_int>(2, log, 2019) << endl;
+        cout << "Pow " << fastPowMod<big_int, big_int>(2, log, 1019) << endl;
     }
-    if(fastPowMod<long long, long long>(2,log,2019) == 5)
+    if(fastPowMod<long long, long long>(2,log,1019) == 5)
         cout << "Ok. Pollard rho discrete logarithm algorithm" << endl;
     else
         cout << "XX. Pollard rho fails to compute log_2(5) in F_2019" << endl;
