@@ -2,7 +2,11 @@
 
 [✓] Addition and multiplication of 63-bit numbers using at most 64-bit registers - Russian peasant algorithm
 
-[✓] Implementation of the finite field GF(p) 
+[✓] Implementation of a quotien of an ED by a principal ideal
+  
+[✓] Implement the finite field GF(p) = Z / <p> 
+
+[✓] Implement the finite field GF(p^n) = GF(p)[X] / <f>
 
 [✓] Euclides algorithm for an ED
 
@@ -10,7 +14,7 @@
 
 [✓] Modular Euclidean algorithm
 
-[✓] Implement polinomial field with coeficientes in GF(p)
+[✓] Implement polynomial field with coefficients in GF(p)
 
 [✓] Irreducibility criterion for GF(p)[X]
 
@@ -22,6 +26,6 @@
 
 [✓] Pollard's ρ algorithm for integer factorization
 
-[✓] Discrete logarithm in Gf(q) - Pollard's ρ algorithm for logarithms
+[✓] Discrete logarithm in GF(q) - Pollard's ρ algorithm for logarithms
 
 [✓] Miller-Rabin
