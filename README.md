@@ -6,11 +6,9 @@
 
 [✓] Euclides algorithm for an ED
 
-[✗] Euclides algorithm for an UFD
-
 [✓] Chinese remainder algorithm
 
-[~] Modular Euclidean algorithm
+[✓] Modular Euclidean algorithm
 
 [✓] Implement polinomial field with coeficientes in GF(p)
 
@@ -25,7 +23,5 @@
 [✓] Pollard's ρ algorithm for integer factorization
 
 [✓] Discrete logarithm in Gf(q) - Pollard's ρ algorithm for logarithms
-
-[✗] Minimal polynomial of α+β and α*β when Q[α] and Q[β] are algebraic extensions of Q
 
 [✓] Miller-Rabin
