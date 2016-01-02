@@ -3,7 +3,6 @@
 #include "exceptions.hpp"
 #include "types.hpp"
 #include "zelem.hpp"
-#include <iostream>
 #include "fpxelem.hpp"
 #include "fqxelem.hpp"
 #include "fpelem.hpp"

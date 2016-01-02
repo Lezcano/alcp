@@ -22,7 +22,7 @@ namespace alcp {
         // Base field
         using F = Fp<Integer>;
         using Felem = Fpelem<Integer>;
-        // Inherit consturctors
+        // Inherit ctors
         using FBase::PolynomialRing;
 
         Fpxelem() = default;

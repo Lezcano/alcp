@@ -106,15 +106,13 @@ void auxFactor(int a, bool verbose){
         auxFactor(fact,verbose);
         auxFactor(a/fact, verbose);
     }
-    else
-    if(verbose)
+    else if(verbose)
         cout << std::max(fact, a) << " ";
 }
 
 void pollardoFactorTest(bool verbose){
     bool error = false;
-    //vector<int> aux{3,5,9,18,26,900};
-    vector<int> aux{25};
+    vector<int> aux{3,5,9,18,26,900};
     for(auto& a : aux){
         if(verbose)
             cout << a << " ";
@@ -130,13 +128,15 @@ void pollardoFactorTest(bool verbose){
         cout << "Ok. Pollard rho factoring algorithm" << endl;
 }
 
-void pollardoLogarithm(){
+void pollardoLogarithm(bool verbose){
     long long log;
 
     // Compute log_2(5) in F_2019
     pollardRhoLogarithm(2, 5, 2019, log);
-    cout << "Log " << log << endl;
-    cout << "Pow " << fastPowMod<big_int, big_int>(2,log,2019) << endl;
+    if(verbose) {
+        cout << "Log " << log << endl;
+        cout << "Pow " << fastPowMod<big_int, big_int>(2, log, 2019) << endl;
+    }
     if(fastPowMod<long long, long long>(2,log,2019) == 5)
         cout << "Ok. Pollard rho discrete logarithm algorithm" << endl;
     else
@@ -199,13 +199,13 @@ void pruebasHenselNoSeparable(){
 }
 
 int main () {
-//    testCRA();
-//    testModularGCD();
-//    pollardoFactorTest(true);
-    pollardoLogarithm();
-//    pruebasHenselSqFree(false);
-//    pruebasHenselNoSeparable();
-//    testGoodOldGCD();
-//    symForm();
+    testCRA();
+    testModularGCD();
+    pollardoFactorTest(false);
+    pollardoLogarithm(false);
+    pruebasHenselSqFree(false);
+   // pruebasHenselNoSeparable();
+    testGoodOldGCD();
+    symForm();
 }
 

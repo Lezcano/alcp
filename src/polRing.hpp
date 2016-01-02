@@ -16,41 +16,32 @@ namespace alcp {
     public:
         PolynomialRing() = default;
 
-        // Inmersion from the base ring
+        // Immersion from the base ring
         PolynomialRing(const Felem &e) : _v(std::vector<Felem>({e})) { }
 
         PolynomialRing(const std::vector<Felem> &v) : _v(v) {
-            if (v.size() == 0)
-                throw EEmptyVector("The vector used to define the element of R[X] is empty.");
-            // Remove trailing zeros
-            this->removeTrailingZeros();
-            Felem aux = this->lc();
-            for (auto &e : v)
-                if (!compatible(aux, e))
-                    throw ENotCompatible("Not all the elements in the array are in the same ring.");
+            if (v.size() != 0) {
+                // Remove trailing zeros
+                this->removeTrailingZeros();
+                Felem aux = this->lc();
+                for (auto &e : v)
+                    if (!compatible(aux, e))
+                        throw ENotCompatible("Not all the elements in the array are in the same ring.");
+            }
         }
 
         PolynomialRing(const PolynomialRing &other) = default;
+        PolynomialRing(PolynomialRing &&other) = default;
 
-        Fxelem &operator=(const Felem &rhs) {
-            if (this->initialized() && !compatible(this->lc(), rhs))
-                throw ENotCompatible(
-                        "Asignation failed. The vectors " + to_string(static_cast<Fxelem &>(*this)) + " and " +
-                        to_string(rhs) + " are not in the same ring.");
-            _v = std::vector<Felem>({rhs});
-            return static_cast<Fxelem &>(*this);
-        }
-
-
-        Fxelem &operator=(const Fxelem &rhs) {
-            if (&rhs != this) {
+        PolynomialRing &operator=(const PolynomialRing &rhs) {
+            if (&rhs != this && rhs.initialized()) {
                 if (this->initialized() && !compatible(this->lc(), rhs.lc()))
                     throw ENotCompatible(
                             "Asignation failed. The vectors " + to_string(static_cast<Fxelem &>(*this)) + " and " +
-                            to_string(rhs) + " are not in the same ring.");
+                            to_string(static_cast<const Fxelem &>(rhs)) + " are not in the same ring.");
                 _v = rhs._v;
             }
-            return static_cast<Fxelem &>(*this);
+            return *this;
         }
 
         friend inline bool operator==(const Fxelem &lhs, const Fxelem &rhs) {
