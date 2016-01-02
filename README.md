@@ -18,7 +18,7 @@ Basic data structures:
 
 Main algorithms:
 
-[✓] Euclides algorithm for an ED
+[✓] Extended euclides algorithm for an ED
 
 [✓] Chinese remainder algorithm
 
