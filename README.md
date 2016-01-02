@@ -1,22 +1,22 @@
 # Classical Computer Algebra Algorithms
 
-Basic data structures:
+## Basic data structures:
 
 [✓] Quotient of an ED by a principal ideal: R / <a>
   
-  [✓] Finite field GF(p) = Z / <p> 
+    [✓] Finite field GF(p) = Z / <p> 
 
-  [✓] Finite field GF(q) = GF(p)[X] / <f>
+    [✓] Finite field GF(q) = GF(p)[X] / <f>
 
 [✓] Polynomial ring of an ED: R[X]
 
-  [✓] Finite field GF(p)[X]
+    [✓] Finite field GF(p)[X]
 
-  [✓] Finite field GF(q)[X]
+    [✓] Finite field GF(q)[X]
 
-  [✓] Finite field Z[X]
+    [✓] Finite field Z[X]
 
-Main algorithms:
+## Main algorithms:
 
 [✓] Extended euclides algorithm for an ED
 
@@ -30,7 +30,7 @@ Main algorithms:
 
 [✓] Modular Euclidean algorithm
 
-Misc:
+## Misc:
 
 [✓] Addition and multiplication of 63-bit numbers using at most 64-bit registers - Russian peasant algorithm
 
