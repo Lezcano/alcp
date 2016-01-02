@@ -3,6 +3,8 @@
 
 #include<boost/multiprecision/cpp_int.hpp>
 
-using big_int = long long int;//boost::multiprecision::cpp_int;
+namespace alcp {
+    using big_int = long long int;//boost::multiprecision::cpp_int;
+}
 
 #endif // __TYPES_HPP
