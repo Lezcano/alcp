@@ -3,7 +3,6 @@
 #include "exceptions.hpp"
 #include "types.hpp"
 #include "zelem.hpp"
-#include <iostream>
 #include "fpxelem.hpp"
 #include "fqxelem.hpp"
 #include "fpelem.hpp"
@@ -245,11 +244,12 @@ namespace alcp {
 
 // Suppose n prime, else r^-1 should be computed more carefully
     bool pollardRhoLogarithm(long long g, long long h, long long n, long long &log) {
+        n--;
         auto f = [=](long long &x, long long &a, long long &b) {
             switch (x % 3) {
-                   case 0: x = x*x % (n-1);  a =  a*2  % n;  b =  b*2  % n;  break;
-                   case 1: x = x*g % (n-1);  a = (a+1) % n;                  break;
-                   case 2: x = x*h % (n-1);                  b = (b+1) % n;  break;
+                   case 0: x = x*x % (n+1);  a =  a*2  % n;  b =  b*2  % n;  break;
+                   case 1: x = x*g % (n+1);  a = (a+1) % n;                  break;
+                   case 2: x = x*h % (n+1);                  b = (b+1) % n;  break;
             }
         };
         long long x1 = 1, a1 = 0, b1 = 0;
@@ -261,19 +261,22 @@ namespace alcp {
             f(x2, a2, b2);
             f(x2, a2, b2);
         } while (x2 != x1);
-        long long r = (b1 - b2) % n;
+        long long r = (b2 - b1) % n;
         if(r < 0)
             r += n;
         if (r == 0) return false;
-        long long ir, aux;
-        // compute r1 = r^-1
-        eea(r, n-1, ir, aux);
+        long long ir, aux, aa;
+        aa = (a1 - a2) % n;
+        if(aa < 0)
+            aa += n;
+        long long gc = gcd(r, aa);
+        r /= gc; aa /= gc;
+        if(eea(r, n, ir, aux) != 1)
+            return false;
+        ir %= n;
         if(ir < 0)
-            ir += n-1;
-        aux = (a2 - a1) % n-1;
-        if(aux < 0)
-            aux += n-1;
-        log = (ir * aux) % n-1;
+            ir += n;
+        log = (ir * aa) % n;
         return true;
     }
 

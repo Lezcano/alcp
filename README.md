@@ -1,20 +1,26 @@
 # Classical Computer Algebra Algorithms
 
-[✓] Addition and multiplication of 63-bit numbers using at most 64-bit registers - Russian peasant algorithm
+## Basic data structures:
 
-[✓] Implementation of the finite field GF(p) 
+[✓] Quotient of an ED by a principal ideal: R / <a>
+  
+- [✓] Finite field GF(p) = Z / <p> 
 
-[✓] Euclides algorithm for an ED
+- [✓] Finite field GF(q) = GF(p)[X] / <f>
 
-[✗] Euclides algorithm for an UFD
+[✓] Polynomial ring of an ED: R[X]
+
+- [✓] Finite field GF(p)[X]
+
+- [✓] Finite field GF(q)[X]
+
+- [✓] Finite field Z[X]
+
+## Main algorithms:
+
+[✓] Extended euclides algorithm for an ED
 
 [✓] Chinese remainder algorithm
-
-[~] Modular Euclidean algorithm
-
-[✓] Implement polinomial field with coeficientes in GF(p)
-
-[✓] Irreducibility criterion for GF(p)[X]
 
 [✓✓] Berlekamp 
 
@@ -22,10 +28,16 @@
 
 [✓✓~] Hensel
 
+[✓] Modular Euclidean algorithm
+
+## Misc:
+
+[✓] Addition and multiplication of 63-bit numbers using at most 64-bit registers - Russian peasant algorithm
+
+[✓] Irreducibility criterion for GF(p)[X]
+
 [✓] Pollard's ρ algorithm for integer factorization
 
-[✓] Discrete logarithm in Gf(q) - Pollard's ρ algorithm for logarithms
-
-[✗] Minimal polynomial of α+β and α*β when Q[α] and Q[β] are algebraic extensions of Q
+[✓] Discrete logarithm in GF(q) - Pollard's ρ algorithm for logarithms
 
 [✓] Miller-Rabin

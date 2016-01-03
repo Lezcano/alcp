@@ -35,7 +35,6 @@ namespace alcp {
          * */
         Zxelem(const Fpxelem<Integer> &e) : RBase(toZxelemSym(e)) { }
 
-
         friend Fpxelem<Integer> toFpxelem(const Zxelem &e, Integer p) {
             std::vector<Fpelem<Integer>> v(e.deg() + 1);
             auto f = Fp<Integer>(p);
