@@ -26,12 +26,14 @@ namespace alcp {
 		while (c != 1) {
 			Zxelem_b y = modularGCD(w, c);
 			Zxelem_b z = w / y;
-			result.push_back(std::make_pair(z, i));
+			if (z != 1)
+				result.push_back(std::make_pair(z, i));
 			i++;
 			w = y;
 			c = c / y;
 		}
-		result.push_back(std::make_pair(w, i));
+		if (w != 1)
+			result.push_back(std::make_pair(w, i));
 		return result;
 	}
 
@@ -151,8 +153,12 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 	}
 
 	std::vector<std::pair<Zxelem_b, unsigned int> > factorizationHensel(const Zxelem_b &pol) {
-		auto aux = squareFreeFactChar0(pol);
 		std::vector<std::pair<Zxelem_b, unsigned int> > result;
+		if (pol.deg() == 0){
+			result.push_back(std::make_pair(pol, 1));
+			return result;
+		}
+		auto aux = squareFreeFactChar0(pol);
 		for (auto &pair: aux) {
 			auto factors = factorizationHenselSquareFree(pair.first);
 			for (auto &elem : factors) {

@@ -175,11 +175,14 @@ void pruebasHenselSqFree(bool verbose){
 
 void pruebasHenselNoSeparable(){
 
-	std::vector<big_int> v = {1, 2, 1};
+	//std::vector<big_int> v = {1, 2, 1};
+	//std::vector<big_int> v = {2, 1};
+	std::vector<big_int> v = {0, 0, 1, 12, 76, 338, 1186, 3498, 9021, 20890, 44267, 87048, 160559, 280146, 465560, 741044, 1135042, 1679466, 2408474, 3356734, 4557185, 6038362, 7821425, 9917110, 12322885, 15020626, 17975113, 21133584, 24426490, 27769486, 31066590, 34214356, 37106840, 39641082, 41722773, 43271726, 44226738, 44549434, 44226738, 43271726, 41722773, 39641082, 37106840, 34214356, 31066590, 27769486, 24426490, 21133584, 17975113, 15020626, 12322885, 9917110, 7821425, 6038362, 4557185, 3356734, 2408474, 1679466, 1135042, 741044, 465560, 280146, 160559, 87048, 44267, 20890, 9021, 3498, 1186, 338, 76, 12, 1};//[(x^12+x^11+x^10+x^9+x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+1)*(x^10+x^9+x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+1)*(x^6+x^5+x^4+x^3+x^2+x+1)*(x^4+x^3+x^2+x+1)*(x^2+x+1)*(x+1)*x]^2
 
 	Zxelem_b u(0), w(0);
 	Zxelem_b pol(v);
 	cout << pol << endl << endl;
+
 	auto a =  factorizationHensel(pol);
 	Zxelem_b aux(1);
 	for (auto p : a){
@@ -202,9 +205,9 @@ int main () {
 //    testCRA();
 //    testModularGCD();
 //    pollardoFactorTest(true);
-    pollardoLogarithm();
+//    pollardoLogarithm();
 //    pruebasHenselSqFree(false);
-//    pruebasHenselNoSeparable();
+    pruebasHenselNoSeparable();
 //    testGoodOldGCD();
 //    symForm();
 }

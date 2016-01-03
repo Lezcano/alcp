@@ -136,13 +136,18 @@ namespace alcp {
  * */
     template<typename Fxelem>
     std::vector<std::pair<Fxelem, unsigned int> > partialFactorDD(Fxelem pol) {
-        int n = pol.deg();
+    	//result[i].first will be a product of irreducible polynomials with degree result[i].second
+    	std::vector<std::pair<Fxelem, unsigned int> > result;
+    	int n = pol.deg();
+    	if (n == 1){
+    		result.push_back(std::make_pair(pol, 1));
+    		return result;
+    	}
         auto mat = formMatrix(pol);
         //first iteration is performed out of the loop because we have r in mat (there is no need to compute it again)
         std::vector<typename Fxelem::Felem> r = mat[1];
 
-        //result[i].first will be a product of irreducible polynomials with degree result[i].second
-        std::vector<std::pair<Fxelem, unsigned int> > result;
+
         unsigned int i = 1;
         r[1] -= 1;
         result.push_back(std::make_pair(gcd(Fxelem(r), pol), i));
@@ -426,7 +431,7 @@ namespace alcp {
     }
 
     template<typename Fxelem>
-    std::vector<std::pair<Fxelem, unsigned int> > factorizationBerlekamp(const Fxelem &pol) {
+    std::vector<std::pair<Fxelem, unsigned int> > factorizationBerlekamp(const Fxelem &pol) {//TODO: probar con el polinomio 1, si no funciona ponerlo como caso particular
         auto aux = squareFreeFF(pol);
         std::vector<std::pair<Fxelem, unsigned int> > result;
         for (auto &pair: aux) {
@@ -440,8 +445,12 @@ namespace alcp {
 
     template<typename Fxelem>
     std::vector<std::pair<Fxelem, unsigned int> > factorizationCantorZassenhaus(const Fxelem &pol) {
-        auto aux = squareFreeFF(pol);
-        std::vector<std::pair<Fxelem, unsigned int> > result;
+    	std::vector<std::pair<Fxelem, unsigned int> > result;
+    	if (pol == 1){
+    		result.push_back(std::make_pair(pol, 1));
+    		return result;
+    	}
+    	auto aux = squareFreeFF(pol);
         for (auto &pair: aux) {
             auto polAndDegree = partialFactorDD(pair.first);
 
