@@ -202,13 +202,13 @@ void pruebasHenselNoSeparable(){
 }
 
 int main () {
-//    testCRA();
-//    testModularGCD();
-//    pollardoFactorTest(true);
-//    pollardoLogarithm();
-//    pruebasHenselSqFree(false);
+    testCRA();
+    testModularGCD();
+    pollardoFactorTest(false);
+    pollardoLogarithm(false);
+    pruebasHenselSqFree(false);
     pruebasHenselNoSeparable();
-//    testGoodOldGCD();
-//    symForm();
+    testGoodOldGCD();
+    symForm();
 }
 

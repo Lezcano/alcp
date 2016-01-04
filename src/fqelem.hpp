@@ -65,6 +65,8 @@ namespace alcp {
 
         bool operator!=(const Fq &rhs) const { return _p != rhs._p && _m != rhs._m; }
 
+        const F getField() const{ return F(p, m); }
+
         friend std::string to_string(const Fq<Integer> &e) {
             using std::to_string;
             return "F" + to_string(e.getP()) + "^" + to_string(e.getM());
