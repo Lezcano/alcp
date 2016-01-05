@@ -4,7 +4,10 @@
 #include "quotientRing.hpp"
 #include "fpxelem.hpp"
 #include "types.hpp"
+
 #include <type_traits>
+#include <vector>
+#include <map>
 
 namespace alcp {
     template<class Integer>
@@ -18,13 +21,10 @@ namespace alcp {
 
             v.back() = _base.get(1);
             v[0] = _base.get(1);
-            // Hopefully this ends in a reasonable amount of time
-            //  Maybe set a timer?
-            // The probability of getting an irreducible polynomial
-            //  in each iteration is 1/n
             while (!Fpxelem<Integer>(v).irreducible()) {
                 this->increment(v);
-                if (v[0] == 0) // It's divisible by the polynomial p(x) = x
+                // It's divisible by the polynomial x
+                if (v[0] == 0)
                     this->increment(v);
             }
             _mod = Fpxelem<Integer>(v);
@@ -33,11 +33,11 @@ namespace alcp {
         Fq(const Fq<Integer> &f) = default;
 
         Fqelem<Integer> get(Integer n) const {
-            return Fqelem<Integer>(Fpxelem<Integer>(_base.get(n)), Fq(*this));
+            return Fqelem<Integer>(Fpxelem<Integer>(_base.get(n)), _mod);
         }
 
         Fqelem<Integer> get(Fpxelem<Integer> f) const {
-            return Fqelem<Integer>(f, Fq(*this));
+            return Fqelem<Integer>(f, _mod);
         }
 
         Fpxelem<Integer> mod() const { return _mod; }
@@ -65,8 +65,6 @@ namespace alcp {
 
         bool operator!=(const Fq &rhs) const { return _p != rhs._p && _m != rhs._m; }
 
-        const F getField() const{ return F(p, m); }
-
         friend std::string to_string(const Fq<Integer> &e) {
             using std::to_string;
             return "F" + to_string(e.getP()) + "^" + to_string(e.getM());
@@ -83,6 +81,10 @@ namespace alcp {
             return false; // We are done
         }
 
+        friend class Fqelem<Integer>;
+        Fq(Integer p, std::size_t m, const Fpxelem<Integer>& mod) :
+                _p(p), _m(m), _base(_mod[0].getField()), _mod(mod) { }
+
         Integer _p;
         std::size_t _m;
         Fp<Integer> _base;
@@ -91,20 +93,22 @@ namespace alcp {
 
 
     template<class Integer = big_int>
-    class Fqelem : public QuotientRing<Fqelem, Fq, Fpxelem<Integer>, Integer> {
+    class Fqelem : public QuotientRing<Fqelem, Fpxelem<Integer>, Integer> {
     private:
-        using FBase = QuotientRing<Fqelem, Fq, Fpxelem<Integer>, Integer>;
+        using FBase = QuotientRing<Fqelem, Fpxelem<Integer>, Integer>;
 
     public:
         using FBase::QuotientRing;
         using FBase::operator=;
+        using F = Fq<Integer>;
 
-        Fqelem() = default;
+        F getField() const{ return F(p(), m(), this->_mod); }
 
     private:
-        friend class Fq<Integer>;
+        Integer p() const{ return this->_mod.getSize(); }
+        std::size_t m() const{ return this->_mod.deg(); }
 
-        Fqelem(const Fpxelem<Integer> n, Fq<Integer> f) : FBase(n, f) { }
+        friend class Fq<Integer>;
     };
 
     using Fqelem_b = Fqelem<big_int>;
