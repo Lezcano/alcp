@@ -26,7 +26,7 @@
 
 [✓✓✓] Cantor-Zassenhaus
 
-[✓✓~] Hensel
+[✓✓✓] Hensel
 
 [✓] Modular Euclidean algorithm
 
