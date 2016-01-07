@@ -2,6 +2,7 @@
 #define __FQELEM_HPP
 
 #include "quotientRing.hpp"
+#include "zelem.hpp"
 #include "fpxelem.hpp"
 #include "types.hpp"
 

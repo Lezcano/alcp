@@ -86,7 +86,7 @@ namespace alcp {
                 big_int exponent = fastPow(p, c.getField().getM() - 1);
                 //This for computes c = c^{1/p}
                 std::vector<typename Fxelem::Felem> rootPOfC;
-                for (int j = 0; j <= c.deg(); j += p)
+                for (big_int j = 0; j <= c.deg(); j += p)
                     if (c[j] != 0)
                         rootPOfC.push_back(fastPow(c[j], exponent));
                     else {

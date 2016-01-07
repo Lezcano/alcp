@@ -33,7 +33,7 @@ namespace alcp {
         return static_cast<long long>(res);
     }
 
-// std::string to_string(big_int e){return e.convert_to<std::string>();}
+   // std::string to_string(big_int e){return e.convert_to<std::string>();}
 
     template<typename T>
     bool compatible(T, T) {

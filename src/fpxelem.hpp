@@ -4,6 +4,7 @@
 
 #include <algorithm>    // std::transform
 #include <vector>
+
 #include "types.hpp"
 #include "fpelem.hpp"
 #include "zxelem.hpp"

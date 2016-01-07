@@ -21,7 +21,7 @@ namespace alcp {
             index(-1),
             index_intersection(-1),
             hadRemoved(false),
-            last(poly) { };
+            last(poly) { }
 
     bool HenselSubsets::oneMorePrime() {//Heuristic used to determine if the algorithm should use one more prime
         return global.size() != howManyPrimes;

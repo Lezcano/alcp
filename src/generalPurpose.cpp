@@ -266,7 +266,7 @@ namespace alcp {
             r += n;
         if (r == 0) return false;
         long long ir, aux, aa;
-        aa = (a1 - a2) % n;
+          aa = (a1 - a2) % n;
         if(aa < 0)
             aa += n;
         long long gc = gcd(r, aa);
