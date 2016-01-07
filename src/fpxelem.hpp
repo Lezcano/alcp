@@ -70,9 +70,9 @@ namespace alcp {
 
 
         // non-member functions
-        friend Fpxelem getZero(const Fpxelem<Integer> &e) { return Fpxelem<Integer>(e.getField().get(0)); }
+        friend Fpxelem getZero(const Fpxelem<Integer> &e) { return Fpxelem<Integer>(getZero(e.lc())); }
 
-        friend Fpxelem getOne(const Fpxelem<Integer> &e) { return Fpxelem<Integer>(e.getField().get(1)); }
+        friend Fpxelem getOne(const Fpxelem<Integer> &e) { return Fpxelem<Integer>(getOne(e.lc())); }
 
         friend const Felem unit(const Fpxelem<Integer> &e) { return e.lc(); }
 

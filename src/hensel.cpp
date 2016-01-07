@@ -62,8 +62,7 @@ namespace alcp {
 		u1 *= (lc * u1.lc().inv()); //This is more efficient than normalize and then multiply by lc
 		w1 *= (lc * w1.lc().inv());
 
-		Fpxelem_b s(u1.getField().get(0)), t(
-				u1.getField().get(0)); //This is a random value because s & t must be initialized
+		Fpxelem_b s, t;
 		eea(u1, w1, s, t);//This must always be 1. Test it!!
 		u = Zxelem_b(u1);
 		u[u.deg()] = leadCoef;

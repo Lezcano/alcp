@@ -90,7 +90,7 @@ namespace alcp {
                     if (c[j] != 0)
                         rootPOfC.push_back(fastPow(c[j], exponent));
                     else {
-                        rootPOfC.push_back(c.getField().get(0));
+                        rootPOfC.push_back(getZero(c[j]));
                     }
                 auto aux = squareFreeFF(Fxelem(rootPOfC));
 
@@ -113,7 +113,7 @@ namespace alcp {
                 if (a[j] != 0)
                     rootPOfA.push_back(fastPow(a[j], exponent));
                 else {
-                    rootPOfA.push_back(a.getField().get(0));
+                    rootPOfA.push_back(getZero(a[j]));
                 }
             auto aux = squareFreeFF(Fxelem(rootPOfA));
 
@@ -186,11 +186,11 @@ namespace alcp {
     template<typename Fxelem>
     void fastPowModPol(Fxelem &a, big_int b, std::vector<Fxelem> pwrsX, int deg) {
         if (b == 0) {
-            a = Fxelem(a.getField().get(1));
+            a = getOne(a);
         }
         else {
             Fxelem aux = a;
-            a = Fxelem(a.getField().get(1));
+            a = getOne(a);
             while (b != 0) {
                 if (b % 2 == 0) {
                     aux *= aux;
@@ -240,7 +240,7 @@ namespace alcp {
         int m = polDeg / n;
 
         std::vector<Fxelem> pwrsX;
-        std::vector<typename Fxelem::Felem> r(2 * polDeg - 1, pol.getField().get(0));
+        std::vector<typename Fxelem::Felem> r(2 * polDeg - 1, getZero(pol.lc()));
         r[polDeg - 1] = 1; //r == (0, 0, ..., 1)
         for (int i = polDeg; i <= 2 * polDeg - 2; ++i) {
             // r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
@@ -270,7 +270,7 @@ namespace alcp {
             }
             else {
                 fastPowModPol<Fxelem>(v, (fastPow(pol.getField().getSize(), n) - 1) / 2, pwrsX, pol.deg());
-                v -= pol.getField().get(1);
+                v -= getOne(pol);
             }
             Fxelem g = gcd(pol, v);
             if (g != 1 && g != pol) {
@@ -295,11 +295,10 @@ namespace alcp {
  */
     template<typename Fxelem>
     matrix<typename Fxelem::Felem> formMatrix(const Fxelem &pol) {
-        typename Fxelem::F f = pol.getField();
-        big_int q = f.getSize();
+        big_int q = pol.getField().getSize();
         int n = pol.deg();
 
-        std::vector<typename Fxelem::Felem> r(n, f.get(0));
+        std::vector<typename Fxelem::Felem> r(n, getZero(pol.lc()));
         r[0] = 1; //r == (1, 0, ..., 0)
         matrix<typename Fxelem::Felem> result;
         result.push_back(r);
