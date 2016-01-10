@@ -142,8 +142,28 @@ void pollardoLogarithm(bool verbose){
     else
         cout << "XX. Pollard rho fails to compute log_2(5) in F_2019" << endl;
 
-
 }
+
+bool increment(std::vector<Fpelem<long long>> &act){
+    for (auto e = act.begin(); e != act.end(); ++e) {
+        *e += 1;
+        if (*e != 0)
+            return true;
+    }
+    return false; // We are done
+}
+
+void pruebasCoutFpxelem(int opt){
+    Fp<long long> f(5);
+    std::vector<Fpelem<long long>> v (3, f.get(0));
+    do {
+        if(opt & 1)
+            std::cout << Fpxelem_b(v) << std::endl;
+        if(opt & 2)
+            std::cout << Zxelem_b(Fpxelem_b(v)) << std::endl;
+    } while (increment(v));
+}
+
 void pruebasHenselSqFree(bool verbose){
 	//std::vector<big_int> v = {0, 4, 22, -44, 3, 20, -2, -4, 1};
 	//std::vector<big_int> v = {121, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
@@ -210,5 +230,6 @@ int main () {
     pruebasHenselNoSeparable();
     testGoodOldGCD();
     symForm();
+    //pruebasCoutFpxelem(2);
 }
 

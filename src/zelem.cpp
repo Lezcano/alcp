@@ -1,6 +1,5 @@
-#include <string>
-
 #include "zelem.hpp"
+
 
 namespace alcp {
 /**
@@ -35,55 +34,6 @@ namespace alcp {
 
    // std::string to_string(big_int e){return e.convert_to<std::string>();}
 
-    template<typename T>
-    bool compatible(T, T) {
-        return true;
-    }
-
-    template<typename T>
-    int unit(T e) {
-        return e >= 0 ? 1 : -1;
-    }
-
-    template<typename T>
-    T normalForm(T e) { return e / unit<T>(e); }
-
-    template<typename T>
-    T getZero(T) {
-        return 0;
-    }
-
-    template<typename T>
-    T getOne(T) {
-        return 1;
-    }
-
-
-    template bool compatible<big_int>(big_int lhs, big_int rhs);
-
-    template int unit<big_int>(big_int e);
-
-    template big_int normalForm<big_int>(big_int e);
-
-    template big_int getZero<big_int>(big_int e);
-
-    template big_int getOne<big_int>(big_int e);
-
-    template bool compatible<int>(int lhs, int rhs);
-
-    template int unit<int>(int e);
-
-    template int normalForm<int>(int e);
-
-    template int getZero<int>(int e);
-
-    template int getOne<int>(int e);
-
-// template bool compatible<long long>(long long lhs, long long rhs);
-// template long long unit<long long>(long long e);
-// template long long normalForm<long long>(long long e);
-// template long long getZero<long long>(long long e);
-// template long long getOne<long long>(long long e);
 }
 
 

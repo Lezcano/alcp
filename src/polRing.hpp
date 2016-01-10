@@ -1,14 +1,14 @@
 #ifndef __POL_RING_HPP
 #define __POL_RING_HPP
 
-#include "types.hpp"
-#include "exceptions.hpp"
-
 #include <vector>
 #include <algorithm>        // find_if
 #include <utility>          // pair, make_pair
 #include <functional>       // not_equal_to
 #include <string>           // to_string
+
+#include "types.hpp"
+#include "exceptions.hpp"
 
 namespace alcp {
     template<typename Fxelem, typename Felem>
@@ -197,41 +197,45 @@ namespace alcp {
 
         friend std::string to_string(const Fxelem &f) {
             using std::to_string;
-            std::string s = "";
-            if (f._v.size() == 1)
-                return to_string(f._v[0]);
-            if (f._v.size() == 2) {
-                if (f._v[1] != 1)
-                    s = to_string(f._v[1]);
-                s += "x";
-                if (f._v[0] != 0)
-                    s += "+" + to_string(f._v[0]);
-                return s;
-            }
-            if (f._v.back() != 1)
-                s += to_string(f._v.back());
-            s += "x^" + std::to_string(f._v.size() - 1);
+            if(f.deg() == 0)
+                return to_string(f.lc());
 
-            for (size_t i = f._v.size() - 2; i >= 2; --i) {
-                if (f._v[i] != 0) {
+            std::string aux(to_string_coef(f.lc()));
+            if(aux[0] == '+'){
+                aux.erase(0,1);
+                if(aux == "1")
+                    aux = "";
+            }
+            else if(aux == "-1")
+                aux = "-";
+            std::string s(aux);
+
+            s += "x";
+            if(f.deg() != 1)
+                s += "^" + std::to_string(f.deg());
+
+            for (int i = static_cast<int>(f._v.size()) - 2; i >= 1; --i) {
+                if (f._v[i] == 0)
+                    continue;
+                aux = to_string_coef(f._v[i]);
+                if (aux == "+1")
                     s += "+";
-                    if (f._v[i] != 1)
-                        s += to_string(f._v[i]);
-                    s += "x^" + std::to_string(i);
-                }
-            }
-            if (f._v[1] != 0) {
-                s += "+";
-                if (f._v[1] != 1)
-                    s += to_string(f._v[1]);
+                else if (aux == "-1")
+                    s += "-";
+                else
+                    s += aux;
+
                 s += "x";
+                if(i != 1)
+                    s += "^" + std::to_string(i);
+
             }
-            if (f._v[0] != 0)
-                s += "+" + to_string(f._v[0]);
+            if(f._v[0] != 0)
+                s += to_string_coef(f._v[0]);
             return s;
         }
 
-        friend inline std::ostream &operator<<(std::ostream &os, const Fxelem &f) {
+        friend inline std::ostream& operator<<(std::ostream &os, const Fxelem &f) {
             return os << to_string(f);
         }
 
@@ -240,7 +244,7 @@ namespace alcp {
 
     private:
         void removeTrailingZeros() {
-            const Felem zero = getZero(this->lc());
+            Felem zero = getZero(this->lc());
             _v.erase(
                     std::find_if(
                             _v.rbegin(),
@@ -249,7 +253,7 @@ namespace alcp {
                     _v.end());
             // In case it was the polynomial equal to zero
             if (_v.size() == 0)
-                _v.push_back(zero);
+                _v.push_back(std::move(zero));
         }
 
         bool initialized() const { return _v.size() != 0; }

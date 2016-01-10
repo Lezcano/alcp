@@ -213,6 +213,7 @@ namespace alcp {
             return to_string(e._num);
         }
 
+
     protected:
         QuotientRing(const Quotient& num, const Quotient& mod) : _num(num), _mod(mod), _init(true){ }
 

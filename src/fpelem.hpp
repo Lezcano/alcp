@@ -1,16 +1,15 @@
 #ifndef __FPELEM_HPP
 #define __FPELEM_HPP
 
+#include <string>
+#include <vector>
+#include <cctype>
+
 #include "types.hpp"
 #include "exceptions.hpp"
 #include "zelem.hpp"            // to_string
 #include "generalPurpose.hpp"   // millerRabin
 #include "quotientRing.hpp"
-
-#include <string>
-#include <vector>
-#include <set>
-#include <iostream>
 
 namespace alcp {
     template<class Integer>
@@ -81,6 +80,11 @@ namespace alcp {
         using F = Fp<Integer>;
 
         F getField() const{ return F(this->_mod, true); }
+
+        friend std::string to_string_coef(const Fpelem& e){
+            using std::to_string;
+            return "+" + to_string(e);
+        }
 
     private:
         friend class Fp<Integer>;
