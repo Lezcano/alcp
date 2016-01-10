@@ -1,17 +1,17 @@
 #ifndef __FACTORIZATION_FQ
 #define __FACTORIZATION_FQ
 
-#include <vector>
-#include <utility>
-#include <algorithm>
-#include <utility>
-#include <random>
-#include <chrono>
-
-#include "fpxelem.hpp"
-#include "fqxelem.hpp"
-#include "generalPurpose.hpp"
-#include "types.hpp"
+//#include <vector>
+//#include <utility>
+//#include <algorithm>
+//#include <utility>
+//#include <random>
+//#include <chrono>
+//
+//#include "fpxelem.hpp"
+//#include "fqxelem.hpp"
+//#include "generalPurpose.hpp"
+//#include "types.hpp"
 namespace alcp {
     /* Detalles de la implementación:
      *  formMatrix:
@@ -144,6 +144,18 @@ namespace alcp {
     		return result;
     	}
         auto mat = formMatrix(pol);
+		auto mat2 = formMatrixBigQ(pol);
+		bool salir = false;
+		for (int i =0; i<mat.size() && !salir; i++){	
+			for (int j =0; j<mat[i].size(); j++){
+				if(mat[i][j] != mat2[i][j]){
+					salir = true;
+					break;
+				}
+		}
+		if (salir) 
+			std::cout<< "Las matrices no coinciden" << endl;
+
         //first iteration is performed out of the loop because we have r in mat (there is no need to compute it again)
         std::vector<typename Fxelem::Felem> r = mat[1];
 
@@ -316,7 +328,17 @@ namespace alcp {
     }
 	template<typename Fxelem>
     matrix<typename Fxelem::Felem> formMatrixBigQ(const Fxelem &pol) {
+        big_int q = pol.getField().getSize();
+		int polDeg = pol.deg();
+		std::vector<typename Fxelem::Felem> rr(polDeg, getZero(pol.lc()));
+        rr[0] = 1; //rr == (1, 0, ..., 0)
+		matrix<typename Fxelem::Felem> result;
+        result.push_back(rr);
+		if (polDeg == 1) 
+			return result;
+
 		std::vector<Fxelem> pwrsX;
+
         std::vector<typename Fxelem::Felem> r(2 * polDeg - 1, getZero(pol.lc()));
         r[polDeg - 1] = 1; //r == (0, 0, ..., 1)
         for (int i = polDeg; i <= 2 * polDeg - 2; ++i) {
@@ -330,14 +352,17 @@ namespace alcp {
             pwrsX.push_back(Fxelem(r));
             r[i] = 0;
         }
-		
-		
-		aux *= aux;
-		for (int i = 0; i <= (int) (aux.deg()) - deg; ++i) {//aux.deg is always <= 2*deg-2
-       		if (aux[i + deg] != 0)
-               aux += Fxelem(aux[i + deg]) * pwrsX[i];
-        }
 
+       result.push_back(pwrsX[0]); //x^n mod pol
+
+        for (int i = 2; i <= (n - 1); ++i) {
+			result.push_back(result.back()*result[1]); //push_back(x^{i*n});
+			for (int j = 0; j <= (int) (result[i].deg()) - deg; ++j) {//At this point result[i].deg is always <= 2*deg-2
+       			if (result[i][j + deg] != 0)
+       	      		result[i] += Fxelem(result[i][j + deg]) * pwrsX[j];
+      		 }
+		}
+        return result;
 	}
 
 /**
