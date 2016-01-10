@@ -315,6 +315,32 @@ namespace alcp {
         return result;
     }
 
+    template<typename Fxelem>
+    matrix<typename Fxelem::Felem> formMatrixBigQ(const Fxelem &pol) {
+		std::vector<Fxelem> pwrsX;
+        std::vector<typename Fxelem::Felem> r(2 * polDeg - 1, getZero(pol.lc()));
+        r[polDeg - 1] = 1; //r == (0, 0, ..., 1)
+        for (int i = polDeg; i <= 2 * polDeg - 2; ++i) {
+            // r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
+            auto aux = r[polDeg - 1];
+            for (big_int j = polDeg - 1; j >= 1; --j) {
+                r[j] = r[j - 1] - aux * pol[j];
+            }
+            r[0] = -aux * pol[0];
+            r[i] = -1;
+            pwrsX.push_back(Fxelem(r));
+            r[i] = 0;
+        }
+		
+		
+		aux *= aux;
+		for (int i = 0; i <= (int) (aux.deg()) - deg; ++i) {//aux.deg is always <= 2*deg-2
+       		if (aux[i + deg] != 0)
+               aux += Fxelem(aux[i + deg]) * pwrsX[i];
+        }
+
+	}
+
 /**
  * Input: a square matrix.
  * Output: a basis for the kernel of a matrix. The matrix is destroyed.
