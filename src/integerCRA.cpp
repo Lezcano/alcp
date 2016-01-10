@@ -1,11 +1,15 @@
+#include "integerCRA.hpp"
+
 #include <vector>
+
 #include "types.hpp"
+#include "zelem.hpp"
 #include "generalPurpose.hpp"
 
 namespace alcp {
-/* Auxiliary function. Finds x such that
- * ax = 1 (mod q)
- * */
+    /* Auxiliary function. Finds x such that
+     * ax = 1 (mod q)
+     * */
 	big_int reciprocal(big_int a, big_int q) {
 		big_int x, y;
 		eea(a, q, x, y);

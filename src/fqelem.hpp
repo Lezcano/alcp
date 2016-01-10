@@ -1,14 +1,15 @@
 #ifndef __FQELEM_HPP
 #define __FQELEM_HPP
 
-#include "quotientRing.hpp"
-#include "zelem.hpp"
-#include "fpxelem.hpp"
-#include "types.hpp"
-
 #include <type_traits>
 #include <vector>
-#include <map>
+
+#include "quotientRing.hpp"
+#include "zelem.hpp"
+#include "fpelem.hpp"
+#include "fpxelem.hpp"
+#include "generalPurpose.hpp"
+#include "types.hpp"
 
 namespace alcp {
     template<class Integer>
@@ -104,6 +105,15 @@ namespace alcp {
         using F = Fq<Integer>;
 
         F getField() const{ return F(p(), m(), this->_mod); }
+
+        friend std::string to_string_coef(const Fqelem& e){
+            using std::to_string;
+            std::string s(to_string(e));
+            // Not-so-nifty hack for the sake of readablity
+            if(s.find('x') == std::string::npos)
+                return "+" + to_string(e._num.lc());
+            return "+(" + s + ")" ;
+        }
 
     private:
         Integer p() const{ return this->_mod.getSize(); }

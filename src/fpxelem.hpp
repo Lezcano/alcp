@@ -1,6 +1,6 @@
 // Implementation of a GF(p) field
-#ifndef __FPXELEM2_HPP
-#define __FPXELEM2_HPP
+#ifndef __FPXELEM_HPP
+#define __FPXELEM_HPP
 
 #include <algorithm>    // std::transform
 #include <vector>
@@ -95,7 +95,6 @@ namespace alcp {
         friend bool operator!=(Integer lhs, const Fpxelem<Integer> &rhs) {
             return !(rhs == lhs);
         }
-
     };
 
     using Fpxelem_b = Fpxelem<big_int>;

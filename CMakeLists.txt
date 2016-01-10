@@ -5,7 +5,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 set(SOURCE_FILES
     src/exceptions.hpp
-    src/factorizationFq.cpp
     src/factorizationFq.hpp
     src/fpelem.hpp
     src/fpxelem.hpp
