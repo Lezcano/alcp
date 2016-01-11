@@ -4,18 +4,18 @@
 #include <sstream>
 
 UserInterface::UserInterface(){
-	cmds["factorBerlekamp"] = new ComandBerlekamp();
-	cmds["factorCZ"] = new ComandCantorZassenhaus();
-	cmds["factorHensel"] = new ComandHensel();
-	cmds["modularGCD"] = new ComandModularGCD();
-	cmds["chineseRA"] = new ComandCRA();
-	cmds["eea_ed"] = new ComandEEA_ED();
-	cmds["factorInteger"] = new ComandPolardFactor();
-	cmds["discreteLog"] = new ComandPolardLog();
-	cmds["isPrime"] = new ComandMillerRabin();
-	cmds["isIrreducibleGFp"] = new ComandIrrGFp();
+	cmds["factorBerlekamp"] = new CommandBerlekamp();
+	cmds["factorCZ"] = new CommandCantorZassenhaus();
+	cmds["factorHensel"] = new CommandHensel();
+	cmds["modularGCD"] = new CommandModularGCD();
+	cmds["chineseRA"] = new CommandCRA();
+	cmds["eea_ed"] = new CommandEEA_ED();
+	cmds["factorInteger"] = new CommandPolardFactor();
+	cmds["discreteLog"] = new CommandPolardLog();
+	cmds["isPrime"] = new CommandMillerRabin();
+	cmds["isIrreducibleGFp"] = new CommandIrrGFp();
 	//TODO: Preguntar a Mario por el Russian peasant
-	//cmds["O"] = new ComandMillerRabin();
+	//cmds["O"] = new CommandMillerRabin();
 }
 void run(){
 	string cmdline;
@@ -46,13 +46,13 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return elems;
 }
 
-class Comand {
+class Command {
 	public:
 	private: 
 }
 
 
-class ComandBerlekamp: public Comand {
+class CommandBerlekamp: public Command {
 public:
 	run(vector<string> args){
 		try{
@@ -95,7 +95,7 @@ public:
 		}
 	}
 }
-class ComandCantorZassenhaus: public Comand {
+class CommandCantorZassenhaus: public Command {
 public:
 	run(vector<string> args){
 		if (args.size() != )
@@ -106,7 +106,7 @@ public:
 
 	}
 }
-class ComandHensel: public Comand {
+class CommandHensel: public Command {
 public:
 	run(vector<string> args){
 		if (args.size() != )
@@ -117,7 +117,7 @@ public:
 
 	}
 }
-class ComandModularGCD: public Comand {
+class CommandModularGCD: public Command {
 public:
 	run(vector<string> args){
 		if (args.size() != )
@@ -128,7 +128,7 @@ public:
 
 	}
 }
-class ComandCRA: public Comand {
+class CommandCRA: public Command {
 public:
 	run(vector<string> args){
 		if (args.size() != )
@@ -139,7 +139,7 @@ public:
 
 	}
 }
-class ComandEEA_ED: public Comand {
+class CommandEEA_ED: public Command {
 public:
 	run(vector<string> args){
 		if (args.size() != )
@@ -150,7 +150,7 @@ public:
 
 	}
 }
-class ComandPolardFactor: public Comand {
+class CommandPolardFactor: public Command {
 public:
 	run(vector<string> args){
 		if (args.size() != )
@@ -161,7 +161,7 @@ public:
 
 	}
 }
-class ComandPolardLog: public Comand {
+class CommandPolardLog: public Command {
 public:
 	run(vector<string> args){
 		if (args.size() != )
@@ -172,7 +172,7 @@ public:
 
 	}
 }
-class ComandMillerRabin: public Comand {
+class CommandMillerRabin: public Command {
 public:
 	run(vector<string> args){
 		if (args.size() != )
@@ -183,7 +183,7 @@ public:
 
 	}
 }
-class ComandIrrGFp: public Comand {
+class CommandIrrGFp: public Command {
 public:
 	run(vector<string> args){
 		if (args.size() != )

@@ -9,7 +9,7 @@ class UserInterface {
 	public:
 		void run();	
 	private:
-		static map<string, Comands> cmds;
+		static map<string, Commands> cmds;
 
 }
 
