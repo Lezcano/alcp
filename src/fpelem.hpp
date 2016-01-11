@@ -19,9 +19,6 @@ namespace alcp {
     class Fp {
     public:
         Fp(Integer p) : _p(p) {
-            using std::to_string;
-            using alcp::to_string;
-
             if (_p <= 0 || !millerRabin(_p))
                 throw EpNotPrime("Could not create F" + to_string(_p) + ". " + to_string(_p) + " is not prime.");
         }
@@ -55,8 +52,6 @@ namespace alcp {
         bool operator!=(const Fp &rhs) const { return _p != rhs._p; }
 
         friend std::string to_string(const Fp<Integer> &f) {
-            using std::to_string;
-            using alcp::to_string;
             return "F" + to_string(f._p);
         }
 
@@ -84,8 +79,6 @@ namespace alcp {
         F getField() const{ return F(this->_mod, true); }
 
         friend std::string to_string_coef(const Fpelem& e){
-            using std::to_string;
-            using alcp::to_string;
             return "+" + to_string(e);
         }
 

@@ -1,5 +1,7 @@
 #include "zelem.hpp"
 
+#include <string>
+
 
 namespace alcp {
 /**
@@ -32,7 +34,4 @@ namespace alcp {
         return static_cast<long long>(res);
     }
 
-    std::string to_string(big_int e){return e.convert_to<std::string>();}
 }
-
-

@@ -220,8 +220,6 @@ namespace alcp {
         friend inline Fxelem normalForm(const Fxelem &e) { return e / unit(e); }
 
         friend std::string to_string(const Fxelem &f) {
-            using std::to_string;
-            using alcp::to_string;
             if(f.deg() == 0)
                 return to_string(f.lc());
 
