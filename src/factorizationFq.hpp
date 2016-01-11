@@ -347,7 +347,7 @@ namespace alcp {
        Fxelem xq = Fxelem({getZero(pol.lc()), getOne(pol.lc())});
        fastPowModPol(xq, pol.getField().getSize(), pwrsX, polDeg);
        Fxelem aux = xq;
-       auto aux2 = static_cast<std::vector<Fpelem_b> >(xq);
+       auto aux2 = static_cast<std::vector<typename Fxelem::Felem> >(xq);
        aux2.resize(polDeg, getZero(pol.lc()));
        result.push_back(aux2); //x^q mod pol
 
@@ -357,7 +357,7 @@ namespace alcp {
        			if (aux[j + polDeg] != 0)
        	      		aux += Fxelem(aux[j + polDeg]) * pwrsX[j];
       		 }
-			auto aux2 = static_cast<std::vector<Fpelem_b> >(aux);
+			auto aux2 = static_cast<std::vector<typename Fxelem::Felem> >(aux);
 		    aux2.resize(polDeg, getZero(pol.lc()));
 		    result.push_back(aux2);
 		}
@@ -455,7 +455,7 @@ namespace alcp {
         std::vector<Fxelem> factors;
         factors.push_back(pol);
         big_int r = 0;
-        auto mat = formMatrix(pol);
+        auto mat = formMatrixBigQ(pol);
         int n = pol.deg();
         for (int i = 0; i < n; ++i)
             mat[i][i] -= 1;

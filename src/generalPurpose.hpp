@@ -38,7 +38,7 @@ namespace alcp {
     }
 
     /**
-     * Extended Euclidean Algorithm for an arbitrary DE
+     * Extended Euclidean Algorithm for an arbitrary ED
      *
      * Description:
      *  Given two integers a, b it computes:
@@ -98,7 +98,7 @@ namespace alcp {
             xx = r1;
             yy = r2;
         }
-        // TODO: IDK why doesn't it work without the casting
+        // TODO: IDK why it doesn't work without the casting
         x /= unit(static_cast<T>(ua * unit(a)));
         y /= unit(static_cast<T>(ub * unit(a)));
         return normalForm(a);

@@ -3,15 +3,24 @@
 
 #include <iostream>
 #include <map>
+#include <string>
+#include <sstream>
 
-
-class UserInterface {
+namespace alcp {
+	class Command {
 	public:
-		void run();	
+		virtual void parseAndRun(std::stringstream & args){}
 	private:
-		static map<string, Commands> cmds;
+	};
 
+	class UserInterface {
+	public:
+		UserInterface();
+		void run();
+		void help();
+	private:
+		static std::map< std::string, Command> cmds;
+	};
 }
-
 #endif // __FACTORIZATION_FQ
 

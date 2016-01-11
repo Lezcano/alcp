@@ -9,6 +9,7 @@
 #include "hensel.hpp"
 #include "modularGCD.hpp"
 #include "generalPurpose.hpp"
+#include "userInterface.hpp"
 
 #include <iostream>
 #include <vector>
@@ -223,7 +224,8 @@ void pruebasHenselNoSeparable(){
 }
 
 int main () {
-
+	UserInterface ui = UserInterface();
+	ui.run();
 
 
     //testCRA();
