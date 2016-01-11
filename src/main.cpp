@@ -43,7 +43,7 @@ void testModularGCD(){
                      Zxelem_b({21,-9,-4,0,5,0,3}),
                      Zxelem_b({1,2,1})};
     Zxelem_b res[n] = {Zxelem_b({15,14,1}),
-                       Zxelem_b({1}),
+                       Zxelem_b(vector<big_int>({1})),
                        Zxelem_b(vector<big_int>({1,1}))};
     for(i=0;i<n;++i)
         if(res[i] != modularGCD(a[i], b[i])){
@@ -144,7 +144,7 @@ void pollardoLogarithm(bool verbose){
 
 }
 
-bool increment(std::vector<Fpelem<long long>> &act){
+bool increment(std::vector<Fpelem<big_int>> &act){
     for (auto e = act.begin(); e != act.end(); ++e) {
         *e += 1;
         if (*e != 0)
@@ -154,8 +154,8 @@ bool increment(std::vector<Fpelem<long long>> &act){
 }
 
 void pruebasCoutFpxelem(int opt){
-    Fp<long long> f(5);
-    std::vector<Fpelem<long long>> v (3, f.get(0));
+    Fp<big_int> f(5);
+    std::vector<Fpelem<big_int>> v (3, f.get(0));
     do {
         if(opt & 1)
             std::cout << Fpxelem_b(v) << std::endl;
@@ -165,6 +165,7 @@ void pruebasCoutFpxelem(int opt){
 }
 
 void pruebasHenselSqFree(bool verbose){
+	//std::vector<big_int> v = {1, 1, 1};
 	//std::vector<big_int> v = {0, 4, 22, -44, 3, 20, -2, -4, 1};
 	//std::vector<big_int> v = {121, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
 	//std::vector<big_int> v = {576, 0, -960, 0, 352, 0, -40, 0, 1};
@@ -222,14 +223,15 @@ void pruebasHenselNoSeparable(){
 }
 
 int main () {
-    testCRA();
-    testModularGCD();
-    pollardoFactorTest(false);
-    pollardoLogarithm(false);
-    pruebasHenselSqFree(false);
+
+    //testCRA();
+    //testModularGCD();
+    //pollardoFactorTest(false);
+    //pollardoLogarithm(false);
+   // pruebasHenselSqFree(true);
     pruebasHenselNoSeparable();
-    testGoodOldGCD();
-    symForm();
+    //testGoodOldGCD();
+    //symForm();
     //pruebasCoutFpxelem(2);
 }
 

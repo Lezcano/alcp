@@ -210,6 +210,7 @@ namespace alcp {
 
         friend std::string to_string(const Felem &e) {
             using std::to_string;
+            using alcp::to_string;
             return to_string(e._num);
         }
 
@@ -224,6 +225,7 @@ namespace alcp {
 
         void checkInSameField(const QuotientRing &rhs, std::string &&error) const {
             using std::to_string;
+            using alcp::to_string;
             if (!compatible(static_cast<const Felem &>(*this),
                             static_cast<const Felem &>(rhs)))
                 throw EOperationUnsupported(

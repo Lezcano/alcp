@@ -74,7 +74,7 @@ namespace alcp {
 
         friend Fpxelem getOne(const Fpxelem<Integer> &e) { return Fpxelem<Integer>(getOne(e.lc())); }
 
-        friend const Felem unit(const Fpxelem<Integer> &e) { return e.lc(); }
+        friend Fpxelem unit(const Fpxelem<Integer> &e) { return e.lc(); }
 
         friend bool compatible(const Fpxelem<Integer> &lhs, const Fpxelem<Integer> &rhs) {
             return lhs.getField() == rhs.getField();

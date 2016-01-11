@@ -69,6 +69,7 @@ namespace alcp {
 
         friend std::string to_string(const Fq<Integer> &e) {
             using std::to_string;
+            using alcp::to_string;
             return "F" + to_string(e.getP()) + "^" + to_string(e.getM());
         }
 
@@ -108,6 +109,7 @@ namespace alcp {
 
         friend std::string to_string_coef(const Fqelem& e){
             using std::to_string;
+            using alcp::to_string;
             std::string s(to_string(e));
             // Not-so-nifty hack for the sake of readablity
             if(s.find('x') == std::string::npos)

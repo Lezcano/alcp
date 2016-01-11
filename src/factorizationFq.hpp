@@ -1,17 +1,17 @@
 #ifndef __FACTORIZATION_FQ
 #define __FACTORIZATION_FQ
 
-//#include <vector>
-//#include <utility>
-//#include <algorithm>
-//#include <utility>
-//#include <random>
-//#include <chrono>
-//
-//#include "fpxelem.hpp"
-//#include "fqxelem.hpp"
-//#include "generalPurpose.hpp"
-//#include "types.hpp"
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <utility>
+#include <random>
+#include <chrono>
+
+#include "fpxelem.hpp"
+#include "fqxelem.hpp"
+#include "generalPurpose.hpp"
+#include "types.hpp"
 namespace alcp {
     /* Detalles de la implementación:
      *  formMatrix:
@@ -86,7 +86,7 @@ namespace alcp {
                 big_int exponent = fastPow(p, c.getField().getM() - 1);
                 //This for computes c = c^{1/p}
                 std::vector<typename Fxelem::Felem> rootPOfC;
-                for (big_int j = 0; j <= c.deg(); j += p)
+                for (std::size_t j = 0; j <= c.deg(); j += static_cast<std::size_t>(p))
                     if (c[j] != 0)
                         rootPOfC.push_back(fastPow(c[j], exponent));
                     else {
@@ -95,7 +95,7 @@ namespace alcp {
                 auto aux = squareFreeFF(Fxelem(rootPOfC));
 
                 for (auto &pair: aux) {
-                    pair.second *= p;
+                    pair.second *= static_cast<unsigned int>(p);
                 }
                 result.insert(
                         result.end(),
@@ -109,7 +109,7 @@ namespace alcp {
             big_int exponent = fastPow(p, a.getField().getM() - 1);
             //This for computes a = a^{1/p}
             std::vector<typename Fxelem::Felem> rootPOfA;
-            for (int j = 0; j <= a.deg(); j += p)
+            for (int j = 0; j <= a.deg(); j += static_cast<unsigned int>(p))
                 if (a[j] != 0)
                     rootPOfA.push_back(fastPow(a[j], exponent));
                 else {
@@ -118,7 +118,7 @@ namespace alcp {
             auto aux = squareFreeFF(Fxelem(rootPOfA));
 
             for (auto &pair: aux) {
-                pair.second *= p;
+                pair.second *= static_cast<unsigned int>(p);
             }
             result.insert(
                     result.end(),
@@ -138,23 +138,14 @@ namespace alcp {
     std::vector<std::pair<Fxelem, unsigned int> > partialFactorDD(Fxelem pol) {
     	//result[i].first will be a product of irreducible polynomials with degree result[i].second
     	std::vector<std::pair<Fxelem, unsigned int> > result;
+
     	int n = pol.deg();
     	if (n == 1){
     		result.push_back(std::make_pair(pol, 1));
     		return result;
     	}
-        auto mat = formMatrix(pol);
-		auto mat2 = formMatrixBigQ(pol);
-		bool salir = false;
-		for (int i =0; i<mat.size() && !salir; i++){	
-			for (int j =0; j<mat[i].size(); j++){
-				if(mat[i][j] != mat2[i][j]){
-					salir = true;
-					break;
-				}
-		}
-		if (salir) 
-			std::cout<< "Las matrices no coinciden" << endl;
+        //auto mat = formMatrix(pol);
+		auto mat = formMatrixBigQ(pol);
 
         //first iteration is performed out of the loop because we have r in mat (there is no need to compute it again)
         std::vector<typename Fxelem::Felem> r = mat[1];
@@ -228,8 +219,8 @@ namespace alcp {
     template<typename Fxelem>
     Fxelem randomPol(const typename Fxelem::F &field, int degree) {
         //TODO esto genera números aleatorios de 64, parece suficiente, pero si q es mayor que 2^63 en realidad no lo es...
-        std::mt19937_64 generator(std::chrono::system_clock::now().time_since_epoch().count());
         std::vector<typename Fxelem::Felem> r;
+        std::mt19937_64 generator(std::chrono::system_clock::now().time_since_epoch().count());
         for (int i = 0; i <= degree; ++i) {
             r.push_back(field.get(generator()));
         }
@@ -257,7 +248,7 @@ namespace alcp {
         for (int i = polDeg; i <= 2 * polDeg - 2; ++i) {
             // r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
             auto aux = r[polDeg - 1];
-            for (big_int j = polDeg - 1; j >= 1; --j) {
+            for (std::size_t j = polDeg - 1; j >= 1; --j) {
                 r[j] = r[j - 1] - aux * pol[j];
             }
             r[0] = -aux * pol[0];
@@ -313,11 +304,12 @@ namespace alcp {
         std::vector<typename Fxelem::Felem> r(n, getZero(pol.lc()));
         r[0] = 1; //r == (1, 0, ..., 0)
         matrix<typename Fxelem::Felem> result;
+       
         result.push_back(r);
-        for (big_int i = 1; i <= (n - 1) * q; ++i) {
+        for (big_int i = 1; i <= (n - 1) * q; ++i) { 
             // r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
             auto aux = r[n - 1];
-            for (big_int j = n - 1; j >= 1; --j) {
+            for (std::size_t j = n - 1; j >= 1; --j) {
                 r[j] = r[j - 1] - aux * pol[j];
             }
             r[0] = -aux * pol[0];
@@ -328,7 +320,6 @@ namespace alcp {
     }
 	template<typename Fxelem>
     matrix<typename Fxelem::Felem> formMatrixBigQ(const Fxelem &pol) {
-        big_int q = pol.getField().getSize();
 		int polDeg = pol.deg();
 		std::vector<typename Fxelem::Felem> rr(polDeg, getZero(pol.lc()));
         rr[0] = 1; //rr == (1, 0, ..., 0)
@@ -344,7 +335,7 @@ namespace alcp {
         for (int i = polDeg; i <= 2 * polDeg - 2; ++i) {
             // r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
             auto aux = r[polDeg - 1];
-            for (big_int j = polDeg - 1; j >= 1; --j) {
+            for (int j = polDeg - 1; j >= 1; --j) {
                 r[j] = r[j - 1] - aux * pol[j];
             }
             r[0] = -aux * pol[0];
@@ -353,18 +344,26 @@ namespace alcp {
             r[i] = 0;
         }
 
-       result.push_back(pwrsX[0]); //x^n mod pol
+       Fxelem xq = Fxelem({getZero(pol.lc()), getOne(pol.lc())});
+       fastPowModPol(xq, pol.getField().getSize(), pwrsX, polDeg);
+       Fxelem aux = xq;
+       auto aux2 = static_cast<std::vector<Fpelem_b> >(xq);
+       aux2.resize(polDeg, getZero(pol.lc()));
+       result.push_back(aux2); //x^q mod pol
 
-        for (int i = 2; i <= (n - 1); ++i) {
-			result.push_back(result.back()*result[1]); //push_back(x^{i*n});
-			for (int j = 0; j <= (int) (result[i].deg()) - deg; ++j) {//At this point result[i].deg is always <= 2*deg-2
-       			if (result[i][j + deg] != 0)
-       	      		result[i] += Fxelem(result[i][j + deg]) * pwrsX[j];
+        for (int i = 2; i <= (int)(polDeg) - 1; ++i) {
+			 aux = aux*xq; //(x^{i*q});
+			for (int j = 0; j <= (int) (aux.deg()) - polDeg; ++j) {//At this point result[i].deg is always <= 2*deg-2
+       			if (aux[j + polDeg] != 0)
+       	      		aux += Fxelem(aux[j + polDeg]) * pwrsX[j];
       		 }
+			auto aux2 = static_cast<std::vector<Fpelem_b> >(aux);
+		    aux2.resize(polDeg, getZero(pol.lc()));
+		    result.push_back(aux2);
 		}
         return result;
 	}
-
+	
 /**
  * Input: a square matrix.
  * Output: a basis for the kernel of a matrix. The matrix is destroyed.

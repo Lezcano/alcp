@@ -13,34 +13,35 @@ namespace alcp {
 
     std::string to_string(big_int e);
 
-    template<typename T, class = typename std::enable_if<std::is_integral<T>::value>::type>
+    template<typename T, class = typename std::enable_if<is_integral<T>::value>::type>
     std::string to_string_coef(T e){
         using std::to_string;
+        using alcp::to_string;
         if(e < 0) return to_string(e);
         return "+" + to_string(e);
     }
 
-    template<typename T, class = typename std::enable_if<std::is_integral<T>::value>::type>
+    template<typename T, class = typename std::enable_if<is_integral<T>::value>::type>
     bool compatible(T, T) {
         return true;
     }
 
-    template<typename T, class = typename std::enable_if<std::is_integral<T>::value>::type>
-    int unit(T e) {
+    template<typename T, class = typename std::enable_if<is_integral<T>::value>::type>
+    T unit(T e) {
         return e >= 0 ? 1 : -1;
     }
 
-    template<typename T, class = typename std::enable_if<std::is_integral<T>::value>::type>
+    template<typename T, class = typename std::enable_if<is_integral<T>::value>::type>
     T normalForm(T e) {
         return e / unit<T>(e);
     }
 
-    template<typename T, class = typename std::enable_if<std::is_integral<T>::value>::type>
+    template<typename T, class = typename std::enable_if<is_integral<T>::value>::type>
     T getZero(T) {
         return 0;
     }
 
-    template<typename T, class = typename std::enable_if<std::is_integral<T>::value>::type>
+    template<typename T, class = typename std::enable_if<is_integral<T>::value>::type>
     T getOne(T) {
         return 1;
     }

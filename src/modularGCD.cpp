@@ -48,7 +48,7 @@ namespace alcp {
         big_int ic = gcd(ia, ib);
         big_int g = gcd(a.lc(), b.lc());
         big_int q = 0;
-        Zxelem_b h = 0;
+        Zxelem_b h = static_cast<big_int>(0);
         Zxelem_b c;
         big_int p;
         std::size_t n = std::min(a.deg(), b.deg());

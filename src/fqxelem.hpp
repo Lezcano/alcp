@@ -34,7 +34,7 @@ namespace alcp {
 
         friend Fqxelem<Integer> getOne(const Fqxelem<Integer> &e) { return Fqxelem<Integer>(e.getField().get(0)); }
 
-        friend const Fqelem<Integer> unit(const Fqxelem<Integer> &e) { return e.lc(); }
+        friend Fqxelem<Integer> unit(const Fqxelem<Integer> &e) { return e.lc(); }
 
         friend bool compatible(const Fqxelem<Integer> &lhs, const Fqxelem<Integer> &rhs) {
             return lhs.getField() == rhs.getField();

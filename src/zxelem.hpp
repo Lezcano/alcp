@@ -48,7 +48,7 @@ namespace alcp {
 
         friend Zxelem<Integer> getOne(const Zxelem<Integer> &e) { return Zxelem<Integer>(1); }
 
-        friend Integer unit(const Zxelem<Integer> &e) { return unit(e.lc()); }
+        friend Zxelem<Integer> unit(const Zxelem<Integer> &e) { return unit(e.lc()); }
 
         friend bool compatible(const Zxelem<Integer> &, const Zxelem<Integer> &) {
             return true;

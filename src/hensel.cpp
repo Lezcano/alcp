@@ -100,7 +100,7 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 		std::vector<Zxelem_b> result;
 		int asd = 0, primes[13] = {3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43};
 		while (hs.oneMorePrime()) {
-			/*/
+			/**/
              big_int prime = randomPrime();//TODO Coger el codigo del gcd modular y ponerlo con una cota más grande¿?
             /*/
 			if (verbose && asd >= 13) {

@@ -32,6 +32,7 @@ namespace alcp {
 
         PolynomialRing(const PolynomialRing &other) = default;
         PolynomialRing(PolynomialRing &&other) = default;
+        explicit operator std::vector<Felem>() const { return _v; }
 
         PolynomialRing &operator=(const PolynomialRing &rhs) {
             if (&rhs != this && rhs.initialized()) {
@@ -169,6 +170,29 @@ namespace alcp {
             return Fxelem(static_cast<const Fxelem &>(*this)) %= rhs;
         }
 
+
+        friend inline Fxelem operator+(const Fxelem &lhs, const Felem &rhs){ return lhs + Fxelem(rhs); }
+        friend inline Fxelem operator-(const Fxelem &lhs, const Felem &rhs){ return lhs - Fxelem(rhs); }
+        friend inline Fxelem operator*(const Fxelem &lhs, const Felem &rhs){ return lhs * Fxelem(rhs); }
+        friend inline Fxelem operator/(const Fxelem &lhs, const Felem &rhs){ return lhs / Fxelem(rhs); }
+        friend inline Fxelem operator%(const Fxelem &lhs, const Felem &rhs){ return lhs % Fxelem(rhs); }
+        friend inline bool operator==(const Fxelem &lhs, const Felem &rhs){ return lhs == Fxelem(rhs); }
+        friend inline bool operator!=(const Fxelem &lhs, const Felem &rhs){ return lhs != Fxelem(rhs); }
+
+        friend inline Fxelem &operator+=(Fxelem &lhs, const Felem &rhs){return lhs += Fxelem(rhs); }
+        friend inline Fxelem &operator-=(Fxelem &lhs, const Felem &rhs){ return lhs -= Fxelem(rhs); }
+        friend inline Fxelem &operator*=(Fxelem &lhs, const Felem &rhs){ return lhs *= Fxelem(rhs); }
+        friend inline Fxelem &operator/=(Fxelem &lhs, const Felem &rhs){ return lhs /= Fxelem(rhs); }
+        friend inline Fxelem &operator%=(Fxelem &lhs, const Felem &rhs){ return lhs %= Fxelem(rhs); }
+
+        friend inline Fxelem operator+(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) + rhs; }
+        friend inline Fxelem operator-(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) - rhs; }
+        friend inline Fxelem operator*(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) * rhs; }
+        friend inline Fxelem operator/(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) / rhs; }
+        friend inline Fxelem operator%(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) % rhs; }
+        friend inline bool operator==(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) == rhs; }
+        friend inline bool operator!=(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) != rhs; }
+
         const Felem &operator[](size_t i) const { return _v[i]; }
 
         Felem &operator[](size_t i) { return _v[i]; }
@@ -197,6 +221,7 @@ namespace alcp {
 
         friend std::string to_string(const Fxelem &f) {
             using std::to_string;
+            using alcp::to_string;
             if(f.deg() == 0)
                 return to_string(f.lc());
 
