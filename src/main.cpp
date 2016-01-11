@@ -224,12 +224,14 @@ void pruebasHenselNoSeparable(){
 
 int main () {
 
+
+
     //testCRA();
     //testModularGCD();
     //pollardoFactorTest(false);
     //pollardoLogarithm(false);
    // pruebasHenselSqFree(true);
-    pruebasHenselNoSeparable();
+    //pruebasHenselNoSeparable();
     //testGoodOldGCD();
     //symForm();
     //pruebasCoutFpxelem(2);
