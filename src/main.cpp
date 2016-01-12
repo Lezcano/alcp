@@ -237,5 +237,6 @@ int main () {
     //testGoodOldGCD();
     //symForm();
     //pruebasCoutFpxelem(2);
+	return 0;
 }
 
