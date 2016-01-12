@@ -67,6 +67,7 @@ namespace alcp{
 			}
 		}
 	}
+
 	void UserInterface::help(){
 		for (auto &pair: cmds){
 			std::cout << pair.first << std::endl;
@@ -139,6 +140,8 @@ namespace alcp{
 				}
 			}
 			else{
+				if (!args.eof())
+					throw 1; //throw new ParseError();
 				Fp_b f(p);
 				std::vector<Fpelem_b> vf;
 				for (unsigned int i = 0; i < vf.size(); i++){
@@ -195,6 +198,8 @@ namespace alcp{
 				}
 			}
 			else{
+				if (!args.eof())
+					throw 1; //throw new ParseError();
 				Fp_b f(p);
 				std::vector<Fpelem_b> vf;
 				for (unsigned int i = 0; i < vf.size(); i++){
@@ -220,7 +225,8 @@ namespace alcp{
 		std::cout << "Factorizes a polynomial in GF(p^m)[x] using Cantor-Zassenhaus algorithm, being GF(p^m) the finite field with p^m elements, with p prime and m a natural number." << std::endl;
 		std::cout << "FORMAT" << std::endl;
 		std::cout<< "   " << name << "((a_0, a_1, ..., a_n), p)" << std::endl;
-		std::cout<< "   " << name << "((a_0, a_1, ..., a_n), p, m)"<< std::endl;
+		//TODO
+		std::cout<< " En proceso....  " << name << "(((a0_0, a_01, ...a0_n0), ..., (am_0, ..., am_nm)), p, m)"<< std::endl;
 	}
 	void UserInterface::CommandHensel::parseAndRun(std::stringstream & args){
 		try{
