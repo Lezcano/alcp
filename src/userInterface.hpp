@@ -1,48 +1,115 @@
 #ifndef __USER_INTERFACE
 #define __USER_INTERFACE
 
-#include "command.hpp"
-#include <iostream>
 #include <map>
 #include <string>
 #include <sstream>
+#include <iostream>
+#include <vector>
+
+#include "types.hpp"
+#include "fpelem.hpp"
+#include "fpxelem.hpp"
+#include "fqelem.hpp"
+#include "zxelem.hpp"
+#include "exceptions.hpp"
+#include "factorizationFq.hpp"
+#include "integerCRA.hpp"
+#include "hensel.hpp"
+#include "modularGCD.hpp"
+#include "generalPurpose.hpp"
 
 namespace alcp {
 
-//TODO: This should be a singleton,
-	class UserInterface {
+	class UserInterface {//This is a singleton
+	private: class Command;
 	public:
+
 		UserInterface();
-		static void run();
-		static void help();
-		static bool isCommand (const std::string & s);
-		static Command && getCommand(const std::string & s);
+		static UserInterface& instance();
+		bool isCommand (const std::string & s);
+		void run();
+		void help();
+		void callHelp(const std::string & s);
 	private:
-		static std::map< std::string, Command> cmds = {
-				std::make_pair<std::string, Command>(
-						"help", CommandHelp()),
-				std::make_pair<std::string, Command>(
-						"factorBerlekamp", CommandBerlekamp()),
-				std::make_pair<std::string, Command>(
-						"factorCZ", CommandCantorZassenhaus()),
-				std::make_pair<std::string, Command>(
-						"factorHensel", CommandHensel()),
-				std::make_pair<std::string, Command>(
-						"modularGCD", CommandModularGCD()),
-				std::make_pair<std::string, Command>(
-						"chineseRA", CommandCRA()),
-				std::make_pair<std::string, Command>(
-						"eea_ed", CommandEEA_ED()),
-				std::make_pair<std::string, Command>(
-						"factorInteger", CommandPolardFactor()),
-				std::make_pair<std::string, Command>(
-						"discreteLog", CommandPolardLog()),
-				std::make_pair<std::string, Command>(
-						"isPrime", CommandMillerRabin()),
-				std::make_pair<std::string, Command>(
-						"isIrreducibleGFp", CommandIrrGFp())
-			};
-			//cmds[""] = new CommandMillerRabin();
-};
-#endif // __FACTORIZATION_FQ
+		std::map< std::string, std::unique_ptr<Command> > cmds;
+
+///////////////////////////////////////////////////////////////////////////////
+// Commands
+///////////////////////////////////////////////////////////////////////////////
+		class Command {
+			public:
+				virtual void parseAndRun(std::stringstream & args) = 0;
+				virtual void help (const std::string & name) = 0;
+		};
+
+		class CommandHelp: public Command{
+			public:
+				CommandHelp() = default;
+				void parseAndRun(std::stringstream & args) override;
+				void help (const std::string & name) override;
+		};
+
+		class CommandBerlekamp: public Command{
+			public:
+				void parseAndRun(std::stringstream & args) override;
+				void help (const std::string & name) override;
+		};
+
+		class CommandCantorZassenhaus: public Command{
+			public:
+				void parseAndRun(std::stringstream & args) override;
+				void help (const std::string & name) override;
+		};
+
+		class CommandHensel: public Command{
+			public:
+				void parseAndRun(std::stringstream & args) override;
+				void help (const std::string & name) override;
+		};
+
+		class CommandModularGCD: public Command{
+			public:
+				void parseAndRun(std::stringstream & args) override;
+				void help (const std::string & name) override;
+		};
+
+		class CommandCRA: public Command{
+			public:
+				void parseAndRun(std::stringstream & args) override;
+				void help (const std::string & name) override;
+		};
+
+		class CommandEEA_ED: public Command{
+			public:
+				void parseAndRun(std::stringstream & args) override;
+				void help (const std::string & name) override;
+		};
+
+		class CommandPollardFactor: public Command{
+			public:
+				void parseAndRun(std::stringstream & args) override;
+				void help (const std::string & name) override;
+		};
+
+		class CommandPollardLog: public Command{
+			public:
+				void parseAndRun(std::stringstream & args) override;
+				void help (const std::string & name) override;
+		};
+
+		class CommandMillerRabin: public Command{
+			public:
+				void parseAndRun(std::stringstream & args) override;
+				void help (const std::string & name) override;
+		};
+
+		class CommandIrrGFp: public Command{
+			public:
+				void parseAndRun(std::stringstream & args) override;
+				void help (const std::string & name) override;
+		};
+	};
+}
+#endif // __USER_INTERFACE
 

@@ -224,8 +224,7 @@ void pruebasHenselNoSeparable(){
 }
 
 int main () {
-	UserInterface ui = UserInterface();
-	ui.run();
+	UserInterface::instance().run();
 
 
     //testCRA();
