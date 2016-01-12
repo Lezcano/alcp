@@ -32,6 +32,12 @@ namespace alcp {
             _mod = Fpxelem<Integer>(v);
         }
 
+        Fq(Integer p, std::size_t m, Fpxelem<Integer> mod) : _p(p), _m(m), _base(p), _mod(mod){
+            if(!mod.irreducible())
+                throw std::runtime_exception("The polinomial provided to Fq was not irreducible.");
+        }
+
+
         Fq(const Fq<Integer> &f) = default;
 
         Fqelem<Integer> get(Integer n) const {
