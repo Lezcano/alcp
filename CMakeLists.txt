@@ -24,6 +24,8 @@ set(SOURCE_FILES
     src/polRing.hpp
     src/quotientRing.hpp
     src/types.hpp
+    src/userInterface.hpp
+    src/userInterface.cpp
     src/zelem.cpp
     src/zelem.hpp
     src/zxelem.hpp)
