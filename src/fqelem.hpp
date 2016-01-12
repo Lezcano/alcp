@@ -3,6 +3,7 @@
 
 #include <type_traits>
 #include <vector>
+#include <stdexcept>
 
 #include "quotientRing.hpp"
 #include "zelem.hpp"
@@ -34,7 +35,7 @@ namespace alcp {
 
         Fq(Integer p, std::size_t m, Fpxelem<Integer> mod) : _p(p), _m(m), _base(p), _mod(mod){
             if(!mod.irreducible())
-                throw std::runtime_exception("The polinomial provided to Fq was not irreducible.");
+                throw std::runtime_error("The polinomial provided to Fq was not irreducible.");
         }
 
 
@@ -89,7 +90,8 @@ namespace alcp {
         }
 
         friend class Fqelem<Integer>;
-        Fq(Integer p, std::size_t m, const Fpxelem<Integer>& mod) :
+        // The same not-so-cool trick
+        Fq(Integer p, std::size_t m, const Fpxelem<Integer>& mod, bool) :
                 _p(p), _m(m), _base(_mod[0].getField()), _mod(mod) { }
 
         Integer _p;
@@ -109,7 +111,7 @@ namespace alcp {
         using FBase::operator=;
         using F = Fq<Integer>;
 
-        F getField() const{ return F(p(), m(), this->_mod); }
+        F getField() const{ return F(p(), m(), this->_mod, true); }
 
         friend std::string to_string_coef(const Fqelem& e){
             std::string s(to_string(e));
