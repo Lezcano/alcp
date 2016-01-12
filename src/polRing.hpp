@@ -89,8 +89,8 @@ namespace alcp {
             return (static_cast<Fxelem &>(*this) += (-rhs));
         }
 
-        Fxelem operator-(const Fxelem &rhs) {
-            return Fxelem(static_cast<Fxelem &>(*this)) -= rhs;
+        Fxelem operator-(const Fxelem &rhs) const{
+            return Fxelem(static_cast<const Fxelem &>(*this)) -= rhs;
         }
 
         Fxelem &operator*=(const Fxelem &rhs) {
