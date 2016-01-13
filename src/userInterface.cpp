@@ -52,19 +52,24 @@ namespace alcp{
 		std::cout << "Write \"help\" for help" << std::endl;
 		std::cout << ">> ";
 
-		std::stringstream ss;
-		getline(ss, cmdline);
+		getline(std::cin, cmdline);
+		std::stringstream ss(cmdline);
 		while (ss.str() != "quit"){
 			std::string cmd;
 			getline(ss, cmd, '(');
 			auto it = cmds.find(cmd);
+
 			if (it == cmds.end()){
-				std::cout << "Unrecognized option";
+				std::cout << "Unrecognized option" << std::endl;
 				this->help();
 			}
 			else{
 				(it->second)->parseAndRun(ss);
 			}
+			std::cout << ">> ";
+			getline(std::cin, cmdline);
+			ss.str(cmdline);
+			ss.flush();
 		}
 	}
 
@@ -87,19 +92,19 @@ namespace alcp{
 	bool comma(std::stringstream & args);
 	bool isVector(std::stringstream & args, std::vector<big_int> & v);
 	bool closedParen(std::stringstream & args);
-
+	bool end(std::stringstream & args);
 	
 	void UserInterface::CommandHelp::parseAndRun(std::stringstream & args){
 		std::string s;
 		char c;
 		if ((args >> c) && c == '(' ){
 			getline(args, s, ')');
-			if (!args.eof() || !UserInterface::instance().isCommand(s))
+			if (!end(args) || !UserInterface::instance().isCommand(s))
 				throw 1;
 			UserInterface::instance().callHelp(s);
 		}
 		else{
-			if (!args.eof())
+			if (!end(args))
 				throw 1;
 			UserInterface::instance().help();
 		}
@@ -117,14 +122,15 @@ namespace alcp{
 			std::vector<big_int> v;
 			big_int p;
 			big_int exp;
-			if (!isVector(args, v) || !comma(args) || !(args >> p) || !closedParen(args))
+			char c;
+			if (!isVector(args, v) || !comma(args) || !(args >> p) || !(args >> c))
 				throw 1; //throw new ParseError();
-			if ( (args.str())[0] != ')'){
+			if ( c == ','){
 				if (!(args >> exp) ||  !closedParen(args))
 					throw 1; //throw new ParseError();
 				Fq_b f(p, exp);
 				std::vector<Fqelem_b> vf;
-				for (unsigned int i = 0; i < vf.size(); i++){
+				for (unsigned int i = 0; i < v.size(); i++){
 					vf.push_back(f.get(v[i]));
 				}
 				Fqxelem_b pol(vf);
@@ -140,22 +146,25 @@ namespace alcp{
 				}
 			}
 			else{
-				if (!args.eof())
+				if (c != ')' || !end(args)){
 					throw 1; //throw new ParseError();
+				}
 				Fp_b f(p);
+
 				std::vector<Fpelem_b> vf;
-				for (unsigned int i = 0; i < vf.size(); i++){
+				for (unsigned int i = 0; i < v.size(); i++){
 					vf.push_back(f.get(v[i]));
 				}
 				Fpxelem_b pol(vf);
 				auto factors = factorizationBerlekamp(pol);
-				std::cout << "Factors:" << std::endl;
+				std::cout << "The factors of the polynomial:" << std::endl << "    " << pol << std::endl;
+				std::cout << "are the following:" << std::endl;
 				for (auto &pair: factors){
 					if (pair.second != 1)
 						std::cout << "( ";
 					std::cout << pair.first;
 					if (pair.second != 1)
-						std::cout << ")^" << pair.second;
+						std::cout << " )^" << pair.second;
 					std::cout << std::endl;
 				}
 			}
@@ -175,19 +184,21 @@ namespace alcp{
 			std::vector<big_int> v;
 			big_int p;
 			big_int exp;
-			if (!isVector(args, v) || !comma(args) || !(args >> p) || !closedParen(args))
+			char c;
+			if (!isVector(args, v) || !comma(args) || !(args >> p) || !(args >> c))
 				throw 1; //throw new ParseError();
-			if ( (args.str())[0] != ')'){
-				if (!(args >> exp) || !closedParen(args))
+			if ( c == ','){
+				if (!(args >> exp) ||  !closedParen(args))
 					throw 1; //throw new ParseError();
 				Fq_b f(p, exp);
 				std::vector<Fqelem_b> vf;
-				for (unsigned int i = 0; i < vf.size(); i++){
+				for (unsigned int i = 0; i < v.size(); i++){
 					vf.push_back(f.get(v[i]));
 				}
 				Fqxelem_b pol(vf);
 				auto factors = factorizationCantorZassenhaus(pol);
-				std::cout << "Factors:" << std::endl;
+				std::cout << "The factors of the polynomial:" << std::endl << "    " << pol << std::endl;
+				std::cout << "are the following:" << std::endl;
 				for (auto &pair: factors){
 					if (pair.second != 1)
 						std::cout << "( ";
@@ -198,11 +209,11 @@ namespace alcp{
 				}
 			}
 			else{
-				if (!args.eof())
+				if (c != ')' || !end(args))
 					throw 1; //throw new ParseError();
 				Fp_b f(p);
 				std::vector<Fpelem_b> vf;
-				for (unsigned int i = 0; i < vf.size(); i++){
+				for (unsigned int i = 0; i < v.size(); i++){
 					vf.push_back(f.get(v[i]));
 				}
 				Fpxelem_b pol(vf);
@@ -226,7 +237,8 @@ namespace alcp{
 		std::cout << "FORMAT" << std::endl;
 		std::cout<< "   " << name << "((a_0, a_1, ..., a_n), p)" << std::endl;
 		//TODO
-		std::cout<< " En proceso....  " << name << "(((a0_0, a_01, ...a0_n0), ..., (am_0, ..., am_nm)), p, m)"<< std::endl;
+		std::cout << "   " << name << "(((a0_0, a_01, ...a0_n0), ..., (am_0, ..., ak_nk)), p, (b_0, ..., b_m))"<< std::endl;
+		std::cout << "      " << "The first k+1 vectors will be polynomials the coefficients";
 	}
 	void UserInterface::CommandHensel::parseAndRun(std::stringstream & args){
 		try{
@@ -337,7 +349,7 @@ namespace alcp{
 			big_int num;
 			if (!(args >> num) || !closedParen(args))
 				throw 1; //throw new ParseError();
-			std::cout << num << "is ";
+			std::cout << num << " is ";
 			if(!millerRabin(num))
 				std::cout << "not ";
 			std::cout << "prime" << std::endl;
@@ -389,11 +401,9 @@ namespace alcp{
 		if (!(args >> c) || c != '(')
 			return false;
 		getline(args, s, ')');
-		if ( args.eof() )
-			return false;
 		std::stringstream aux(s);
 		big_int num;
-		if (!args >> num)
+		if (!(aux >> num))
 			return false;
 		v.push_back(num);
 		while (aux >> c >> num){
@@ -406,6 +416,13 @@ namespace alcp{
 	bool closedParen(std::stringstream & args){
 		char c;
 		if (!(args >> c) || c!= ')' )
+			return false;
+		return true;
+	}
+
+	bool end(std::stringstream & args){
+		char c;
+		if (args >> c)
 			return false;
 		return true;
 	}

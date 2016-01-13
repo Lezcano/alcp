@@ -39,6 +39,7 @@ namespace alcp {
         }
 
         Fqelem<Integer> get(Fpxelem<Integer> f) const {
+            f %= _mod;
             return Fqelem<Integer>(f, _mod);
         }
 
