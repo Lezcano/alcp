@@ -15,7 +15,7 @@
 #include "modularGCD.hpp"
 
 namespace alcp {
-	const bool verbose = false;
+	const bool verbose = true;
 
 	std::vector<std::pair<Zxelem_b, unsigned int> > squareFreeFactChar0(const Zxelem_b &pol) {
 		std::vector<std::pair<Zxelem_b, unsigned int> > result;
@@ -57,6 +57,7 @@ namespace alcp {
 		big_int p = u1.getField().getP();
 		big_int bound = normInf(polynomial) * fastPow((big_int) 2, polynomial.deg());
 		big_int leadCoef = polynomial.lc();
+		std::cout << "u: " << leadCoef << std::endl;
 		Zxelem_b pol = polynomial * leadCoef;
 		Fpxelem_b::Felem lc = u1.getField().get(leadCoef);
 		u1 *= (lc * u1.lc().inv()); //This is more efficient than normalize and then multiply by lc
@@ -66,9 +67,11 @@ namespace alcp {
 		eea(u1, w1, s, t);//This must always be 1. Test it!!
 		u = Zxelem_b(u1);
 		u[u.deg()] = leadCoef;
+		std::cout << "u: " << u << std::endl;
 		w = Zxelem_b(w1);
 		w[w.deg()] = leadCoef;
 		Zxelem_b err = pol - u * w;
+		std::cout << "err: " << err << std::endl;
 		big_int modulus = p;
 		bound = 2 * bound * leadCoef;
 
@@ -78,6 +81,10 @@ namespace alcp {
 			u += Zxelem_b(t * c + qr.first * u1) * modulus;
 			w += Zxelem_b(qr.second) * modulus;
 			err = pol - u * w;
+			std::cout << "u: " << u << std::endl;
+			std::cout << "w: " << w << std::endl;
+			std::cout << "err: " << err << std::endl;
+
 			modulus *= p;
 		}
 
@@ -100,7 +107,7 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 		std::vector<Zxelem_b> result;
 		int asd = 0, primes[13] = {3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43};
 		while (hs.oneMorePrime()) {
-			/**/
+			/*/
              big_int prime = randomPrime();//TODO Coger el codigo del gcd modular y ponerlo con una cota más grande¿?
             /*/
 			if (verbose && asd >= 13) {
