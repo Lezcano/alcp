@@ -50,26 +50,25 @@ namespace alcp{
 		std::string cmdline;
 		std::cout << "Computer algebra system by Mario Lezcano and David Martinez" << std::endl;
 		std::cout << "Write \"help\" for help" << std::endl;
-		std::cout << ">> ";
+		while(true){
+			std::cout << ">> ";
+			getline(std::cin, cmdline);
+			std::stringstream ss(cmdline);
+			getline(ss, cmdline, '(');
 
-		getline(std::cin, cmdline);
-		std::stringstream ss(cmdline);
-		while (ss.str() != "quit"){
-			std::string cmd;
-			getline(ss, cmd, '(');
-			auto it = cmds.find(cmd);
+			if(cmdline == "quit")
+				break;
+
+			auto it = cmds.find(cmdline);
 
 			if (it == cmds.end()){
 				std::cout << "Unrecognized option" << std::endl;
-				this->help();
+				std::cout << "Write \"help\" for help" << std::endl;
+				//this->help();
 			}
 			else{
 				(it->second)->parseAndRun(ss);
 			}
-			std::cout << ">> ";
-			getline(std::cin, cmdline);
-			ss.str(cmdline);
-			ss.flush();
 		}
 	}
 
@@ -84,7 +83,6 @@ namespace alcp{
 	void UserInterface::callHelp(const std::string & s){
 		cmds[s]->help(s);
 	}
-
 
 /////////////////////////////////////////////////////////////////////////////
 // Commands
