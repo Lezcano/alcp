@@ -223,6 +223,20 @@ void pruebasHenselNoSeparable(){
 
 }
 
+void factorIntegers(){
+    for(int i = 0; i < 29; i++){
+        auto m = factorInteger(i);
+        cout << i << ": ";
+        for(auto a : m){
+            cout << a.first;
+            if(a.second != 1)
+                cout << "^" << a.second;
+            cout << " ";
+        }
+        cout << endl;
+    }
+}
+
 int main () {
 	UserInterface::instance().run();
 
@@ -231,11 +245,13 @@ int main () {
     //testModularGCD();
     //pollardoFactorTest(false);
     //pollardoLogarithm(false);
-   // pruebasHenselSqFree(true);
+    //pruebasHenselSqFree(true);
     //pruebasHenselNoSeparable();
     //testGoodOldGCD();
     //symForm();
     //pruebasCoutFpxelem(2);
+    //factorIntegers();
+
 	return 0;
 }
 
