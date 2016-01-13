@@ -67,6 +67,7 @@ namespace alcp {
     std::vector<std::pair<Fxelem, unsigned int> > squareFreeFF(Fxelem a) {
         unsigned int i = 1;
         std::vector<std::pair<Fxelem, unsigned int> > result;
+
         Fxelem b = a.derivative();
         if (b != 0) {
             Fxelem c = gcd(a, b);
@@ -74,7 +75,7 @@ namespace alcp {
             while (w != 1) {
                 Fxelem y = gcd(w, c);
                 Fxelem z = w / y;
-                if (z != 1)
+                if (z.deg() != 0 )
                     result.push_back(std::make_pair(z, i));
                 i++;
                 w = y;
@@ -480,28 +481,34 @@ namespace alcp {
 
     template<typename Fxelem>
     std::vector<std::pair<Fxelem, unsigned int> > factorizationBerlekamp(const Fxelem &pol) {//TODO: probar con el polinomio 1, si no funciona ponerlo como caso particular
-        auto aux = squareFreeFF(pol);
-        std::vector<std::pair<Fxelem, unsigned int> > result;
+    	std::vector<std::pair<Fxelem, unsigned int> > result;
+    	if (pol.deg() <= 1){
+			result.push_back(std::make_pair(pol, 1));
+			return result;
+		}
+    	auto lc = pol.lc();
+    	auto aux = squareFreeFF(pol/lc);
         for (auto &pair: aux) {
             auto aux2 = berlekamp_simple(pair.first);
             for (auto &factor: aux2) {
                 result.push_back(std::make_pair(factor, pair.second));
             }
         }
+        result[0].first *= lc;
         return result;
     }
 
     template<typename Fxelem>
     std::vector<std::pair<Fxelem, unsigned int> > factorizationCantorZassenhaus(const Fxelem &pol) {
     	std::vector<std::pair<Fxelem, unsigned int> > result;
-    	if (pol == 1){
+    	if (pol.deg() <= 1){
     		result.push_back(std::make_pair(pol, 1));
     		return result;
     	}
-    	auto aux = squareFreeFF(pol);
+    	auto lc = pol.lc();
+    	auto aux = squareFreeFF(pol/lc);
         for (auto &pair: aux) {
             auto polAndDegree = partialFactorDD(pair.first);
-
             for (auto &elem: polAndDegree) {
                 auto aux2 = splitFactorsDD(elem.first, elem.second);
                 for (auto &factor: aux2) {
@@ -511,6 +518,7 @@ namespace alcp {
                 }
             }
         }
+        result[0].first *= lc;
         return result;
     }
 }

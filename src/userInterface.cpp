@@ -253,7 +253,7 @@ namespace alcp{
 					std::cout << "( ";
 				std::cout << pair.first;
 				if (pair.second != 1)
-					std::cout << ")^" << pair.second;
+					std::cout << " )^" << pair.second;
 				std::cout << std::endl;
 			}
 		}catch(...){
