@@ -57,19 +57,23 @@ namespace alcp {
 		big_int p = u1.getField().getP();
 		big_int bound = normInf(polynomial) * fastPow((big_int) 2, polynomial.deg());
 		big_int leadCoef = polynomial.lc();
-		std::cout << "u: " << leadCoef << std::endl;
 		Zxelem_b pol = polynomial * leadCoef;
 		Fpxelem_b::Felem lc = u1.getField().get(leadCoef);
 		u1 *= (lc * u1.lc().inv()); //This is more efficient than normalize and then multiply by lc
 		w1 *= (lc * w1.lc().inv());
 
 		Fpxelem_b s, t;
-		eea(u1, w1, s, t);//This must always be 1. Test it!!
+		if (eea(u1, w1, s, t) != 1)//This must always be 1. Test it!!
+			std::cout << "error, error, gcd is not 1 " << std::endl;
+		if(s*u1 +t*w1 != 1){
+			std::cout << "error, error, bad eea " << std::endl;
+		}
 		u = Zxelem_b(u1);
 		u[u.deg()] = leadCoef;
 		std::cout << "u: " << u << std::endl;
 		w = Zxelem_b(w1);
 		w[w.deg()] = leadCoef;
+		std::cout << "w: " << w << std::endl;
 		Zxelem_b err = pol - u * w;
 		std::cout << "err: " << err << std::endl;
 		big_int modulus = p;
@@ -81,6 +85,9 @@ namespace alcp {
 			u += Zxelem_b(t * c + qr.first * u1) * modulus;
 			w += Zxelem_b(qr.second) * modulus;
 			err = pol - u * w;
+			if (qr.second*u1 + (t*c+qr.first*u1)*w1 != c){
+				std::cout << "error, error, is not c " << std::endl;
+			}
 			std::cout << "u: " << u << std::endl;
 			std::cout << "w: " << w << std::endl;
 			std::cout << "err: " << err << std::endl;
@@ -130,6 +137,11 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 			if (verbose) {
 				std::cout << "Intento elevar esto:" << std::endl;
 				std::cout << option.u << std::endl << option.w << std::endl;
+			}
+			if (gcd(option.u, option.w) != 1){
+				continue;
+				if (verbose)
+					std::cout << "u y w no eran coprimos" << std::endl;
 			}
 			if (HenselLifting(poli, option.u, option.w, u, w)) {
 				//The first factor is always irreducible because hs first iterates through the options in ascending order with respect to the degree of the first polynomial

@@ -234,7 +234,8 @@ namespace alcp {
  *
  * */
     template<typename Fxelem>
-    std::vector<Fxelem> splitFactorsDD(const Fxelem &pol, int n) {
+    std::vector<Fxelem> splitFactorsDD(Fxelem pol, int n) {
+    	//std::cout << "Factorizo esto: " << pol << std::endl;
         int polDeg = pol.deg();
         if (polDeg <= n) {
             std::vector<Fxelem> factors;
@@ -278,6 +279,7 @@ namespace alcp {
             }
             Fxelem g = gcd(pol, v);
             if (g != 1 && g != pol) {
+            	//std::cout << "Se divide en: " << g << "   y   " << pol/g<< std::endl;
                 std::vector<Fxelem> factors = splitFactorsDD(g, n);
                 std::vector<Fxelem> factors2 = splitFactorsDD(pol / g, n);
                 factors.insert(
@@ -346,7 +348,7 @@ namespace alcp {
         }
 
        Fxelem xq = Fxelem({getZero(pol.lc()), getOne(pol.lc())});
-       fastPowModPol(xq, pol.getField().getSize(), pwrsX, polDeg);
+       fastPowModPol<Fxelem>(xq, pol.getField().getSize(), pwrsX, polDeg);
        Fxelem aux = xq;
        auto aux2 = static_cast<std::vector<typename Fxelem::Felem> >(xq);
        aux2.resize(polDeg, getZero(pol.lc()));
@@ -510,6 +512,9 @@ namespace alcp {
         for (auto &pair: aux) {
             auto polAndDegree = partialFactorDD(pair.first);
             for (auto &elem: polAndDegree) {
+            	std::cout << "El n es: " << elem.second << std::endl;
+            	std::cout << "El p es: " << pol.getField().getSize() << std::endl;
+
                 auto aux2 = splitFactorsDD(elem.first, elem.second);
                 for (auto &factor: aux2) {
                     if (factor != 1) {
