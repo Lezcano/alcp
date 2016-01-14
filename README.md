@@ -32,7 +32,7 @@
 
 ## Misc:
 
-[✓] Addition and multiplication of 63-bit numbers using at most 64-bit registers - Russian peasant algorithm
+[✓] Addition and multiplication of 63-bit numbers using 64-bit registers - Russian peasant algorithm
 
 [✓] Irreducibility criterion for GF(p)[X]
 
