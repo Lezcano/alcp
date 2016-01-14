@@ -30,20 +30,53 @@ namespace alcp {
             }
         }
 
-        PolynomialRing(const PolynomialRing &other) = default;
-        PolynomialRing(PolynomialRing &&other) = default;
-        explicit operator std::vector<Felem>() const { return _v; }
+        PolynomialRing(const PolynomialRing &) = default;
+        PolynomialRing(PolynomialRing &&) = default;
 
+        // Copy assignment
         PolynomialRing &operator=(const PolynomialRing &rhs) {
             if (&rhs != this && rhs.initialized()) {
                 if (this->initialized() && !compatible(this->lc(), rhs.lc()))
                     throw ENotCompatible(
-                            "Asignation failed. The vectors " + to_string(static_cast<Fxelem &>(*this)) + " and " +
-                            to_string(static_cast<const Fxelem &>(rhs)) + " are not in the same ring.");
+                            "Asignation failed. The vectors " +
+                                to_string(static_cast<Fxelem &>(*this)) +
+                                " and " +
+                                to_string(static_cast<const Fxelem &>(rhs)) +
+                                " are not in the same ring.");
                 _v = rhs._v;
             }
             return *this;
         }
+
+        // Move assignment
+        PolynomialRing &operator=(PolynomialRing &&rhs) {
+            if (&rhs != this && rhs.initialized()) {
+                if (this->initialized() && !compatible(this->lc(), rhs.lc()))
+                    throw ENotCompatible(
+                            "Asignation failed. The vectors " +
+                                to_string(static_cast<Fxelem &>(*this)) +
+                                " and " +
+                                to_string(static_cast<Fxelem &&>(rhs)) +
+                                " are not in the same ring.");
+                _v = std::move(rhs._v);
+            }
+            return *this;
+        }
+
+        // Copy assignment from base ring
+        Fxelem &operator=(const Felem &rhs) {
+            if (this->initialized() && !compatible(this->lc(), rhs))
+                throw ENotCompatible(
+                        "Asignation failed. The vector " +
+                            to_string(static_cast<Fxelem &>(*this)) +
+                            " and the element " +
+                            to_string(static_cast<const Fxelem &>(rhs)) +
+                            " are not in the same ring.");
+            _v = std::vector<Felem>(rhs);
+            return static_cast<Fxelem&>(*this);
+        }
+
+        explicit operator std::vector<Felem>() const { return _v; }
 
         friend inline bool operator==(const Fxelem &lhs, const Fxelem &rhs) {
             return lhs._v == rhs._v;

@@ -119,7 +119,7 @@ namespace alcp{
 		try{
 			std::vector<big_int> v;
 			big_int p;
-			big_int exp;
+			std::size_t exp;
 			char c;
 			if (!isVector(args, v) || !comma(args) || !(args >> p) || !(args >> c))
 				throw 1; //throw new ParseError();
@@ -181,7 +181,7 @@ namespace alcp{
 		try{
 			std::vector<big_int> v;
 			big_int p;
-			big_int exp;
+			std::size_t exp;
 			char c;
 			if (!isVector(args, v) || !comma(args) || !(args >> p) || !(args >> c))
 				throw 1; //throw new ParseError();

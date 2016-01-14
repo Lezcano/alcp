@@ -20,17 +20,9 @@ namespace alcp {
 
         QuotientRing() = default;
 
-        QuotientRing(const QuotientRing &other) = default;
+        QuotientRing(const QuotientRing &) = default;
 
         QuotientRing(QuotientRing &&) = default;
-
-        // Generalized copy constructor
-        template<class Int2, class = typename std::enable_if<std::is_integral<Int2>::value>::type>
-        QuotientRing(const QuotientRing<FelemBase, Quotient, Int2> &other) :
-                _num(other._num),
-                _mod(other._mod),
-                _init(other._init)
-        { }
 
         // Copy assignment
         QuotientRing &operator=(const QuotientRing &rhs) {
@@ -41,25 +33,11 @@ namespace alcp {
                 _mod = rhs._mod;
                 _num = rhs._num;
             }
-            return static_cast<Felem &>(*this);
+            return *this;
         }
 
-        // Generalized copy assignment
-        template<class Int2, class = typename std::enable_if<std::is_integral<Int2>::value>::type>
-        QuotientRing &operator=(const QuotientRing<FelemBase, Quotient, Int2> &rhs) {
-            if (&rhs != this && rhs._init) {
-                if (this->_init)
-                    checkInSameField(rhs, "The elements are not in the same ring.");
-                _init = true;
-                _mod = rhs._mod;
-                _num = rhs._num;
-            }
-            return static_cast<Felem &>(*this);
-        }
-
-        // Generalized move assignment
-        template<class Int2, class = typename std::enable_if<std::is_integral<Int2>::value>::type>
-        QuotientRing &operator=(QuotientRing<FelemBase, Quotient, Int2> &&rhs) {
+        // Move assignment
+        QuotientRing &operator=(QuotientRing &&rhs) {
             if (&rhs != this && rhs._init) {
                 if (this->_init)
                     checkInSameField(rhs, "The elements are not in the same ring.");
@@ -67,10 +45,11 @@ namespace alcp {
                 _mod = std::move(rhs._mod);
                 _num = std::move(rhs._num);
             }
-            return static_cast<Felem &>(*this);
+            return *this;
         }
 
-        template<class Int2, class = typename std::enable_if<std::is_integral<Int2>::value>::type>
+        // TODO This is not ok, Int2 should be Quotient
+        template<class Int2, class = typename std::enable_if<is_integral<Int2>::value>::type>
         Felem &operator=(Int2 rhs) {
             if (!this->_init)
                 throw std::runtime_error("Assignment to a non initialized QuotientRing elem.");
@@ -225,11 +204,15 @@ namespace alcp {
             if (!compatible(static_cast<const Felem &>(*this),
                             static_cast<const Felem &>(rhs)))
                 throw EOperationUnsupported(
-                error + "\nThe values that caused it were " +
-                to_string(_num) + " in " +
-                to_string(static_cast<const Felem*>(this)->getField()) +
-                " and " + to_string(rhs._num) + " in F" +
-                to_string(static_cast<const Felem &>(rhs).getField()));
+                        error +
+                        "\nThe values that caused it were " +
+                        to_string(_num) +
+                        " in " +
+                        to_string(static_cast<const Felem*>(this)->getField()) +
+                        " and " +
+                        to_string(rhs._num) +
+                        " in " +
+                        to_string(static_cast<const Felem &>(rhs).getField()));
         }
 
         bool _init{false};

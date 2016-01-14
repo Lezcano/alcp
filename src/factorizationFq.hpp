@@ -512,9 +512,6 @@ namespace alcp {
         for (auto &pair: aux) {
             auto polAndDegree = partialFactorDD(pair.first);
             for (auto &elem: polAndDegree) {
-            	std::cout << "El n es: " << elem.second << std::endl;
-            	std::cout << "El p es: " << pol.getField().getSize() << std::endl;
-
                 auto aux2 = splitFactorsDD(elem.first, elem.second);
                 for (auto &factor: aux2) {
                     if (factor != 1) {

@@ -241,7 +241,7 @@ int main () {
     //testModularGCD();
     //pollardoFactorTest(false);
     //pollardoLogarithm(false);
-    pruebasHenselSqFree(true);
+    pruebasHenselSqFree(false);
     //pruebasHenselNoSeparable();
     //testGoodOldGCD();
     //symForm();

@@ -41,8 +41,8 @@ namespace alcp {
         std::size_t getM() const { return 1; }
 
         std::vector<Fpelem<Integer>> getElems() const {
-            std::vector<Fpelem<Integer>> ret(_p);
-            for (Integer i = 0; i < _p; ++i)
+            std::vector<Fpelem<Integer>> ret(static_cast<std::size_t>(_p));
+            for (std::size_t i = 0; i < _p; ++i)
                 ret[i] = this->get(i);
             return ret;
         }
@@ -72,9 +72,9 @@ namespace alcp {
         using FBase = QuotientRing<Fpelem, Integer, Integer>;
 
     public:
+        using F = Fp<Integer>;
         using FBase::QuotientRing;
         using FBase::operator=;
-        using F = Fp<Integer>;
 
         F getField() const{ return F(this->_mod, true); }
 

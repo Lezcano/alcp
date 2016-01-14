@@ -11,7 +11,7 @@
 #include "types.hpp"
 
 namespace alcp {
-    const bool verbose = true;
+    const bool verbose = false;
 
     HenselSubsets::HenselSubsets(const Zxelem_b &poly) :
             semiSumOfDeg(poly.deg() / 2),

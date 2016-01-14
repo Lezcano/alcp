@@ -73,9 +73,10 @@ namespace alcp {
             y = zero;
             return normalForm(a);
         }
+        T ua =unit(a), ub = unit(b);
+
         a = normalForm(a);
         b = normalForm(b);
-        T ua =unit(a), ub = unit(b);
 
         x = one;
         y = zero;

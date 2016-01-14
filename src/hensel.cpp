@@ -15,7 +15,7 @@
 #include "modularGCD.hpp"
 
 namespace alcp {
-	const bool verbose = true;
+	const bool verbose = false;
 
 	std::vector<std::pair<Zxelem_b, unsigned int> > squareFreeFactChar0(const Zxelem_b &pol) {
 		std::vector<std::pair<Zxelem_b, unsigned int> > result;
@@ -63,19 +63,12 @@ namespace alcp {
 		w1 *= (lc * w1.lc().inv());
 
 		Fpxelem_b s, t;
-		if (eea(u1, w1, s, t) != 1)//This must always be 1. Test it!!
-			std::cout << "error, error, gcd is not 1 " << std::endl;
-		if(s*u1 +t*w1 != 1){
-			std::cout << "error, error, bad eea " << std::endl;
-		}
+		eea(u1, w1, s, t); //This must always be 1. Test it!!
 		u = Zxelem_b(u1);
 		u[u.deg()] = leadCoef;
-		std::cout << "u: " << u << std::endl;
 		w = Zxelem_b(w1);
 		w[w.deg()] = leadCoef;
-		std::cout << "w: " << w << std::endl;
 		Zxelem_b err = pol - u * w;
-		std::cout << "err: " << err << std::endl;
 		big_int modulus = p;
 		bound = 2 * bound * leadCoef;
 
@@ -85,12 +78,6 @@ namespace alcp {
 			u += Zxelem_b(t * c + qr.first * u1) * modulus;
 			w += Zxelem_b(qr.second) * modulus;
 			err = pol - u * w;
-			if (qr.second*u1 + (t*c+qr.first*u1)*w1 != c){
-				std::cout << "error, error, is not c " << std::endl;
-			}
-			std::cout << "u: " << u << std::endl;
-			std::cout << "w: " << w << std::endl;
-			std::cout << "err: " << err << std::endl;
 
 			modulus *= p;
 		}

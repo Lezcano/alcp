@@ -60,9 +60,9 @@ namespace alcp {
 
 
         std::vector<Fqelem<Integer>> getElems() const {
-            std::vector<Fqelem<Integer>> ret(this->getSize());
+            std::vector<Fqelem<Integer>> ret(static_cast<std::size_t>(this->getSize()));
             std::vector<Fpelem<Integer>> act(_m, _base.get(0));
-            Integer i = 0;
+            std::size_t i = 0;
 
             do {
                 ret[i++] = this->get(Fpxelem<Integer>(act));
