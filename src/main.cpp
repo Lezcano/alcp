@@ -234,14 +234,14 @@ void pruebasHenselNoSeparable(){
 }
 
 int main () {
-	//UserInterface::instance().run();
+	UserInterface::instance().run();
 
 
     //testCRA();
     //testModularGCD();
     //pollardoFactorTest(false);
     //pollardoLogarithm(false);
-    pruebasHenselSqFree(false);
+    //pruebasHenselSqFree(false);
     //pruebasHenselNoSeparable();
     //testGoodOldGCD();
     //symForm();
