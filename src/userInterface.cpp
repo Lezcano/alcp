@@ -107,7 +107,9 @@ namespace alcp {
 
     void UserInterface::CommandHelp::parseAndRun(std::istringstream &args) {
         std::string s;
-		std::istringstream args2(args.str());
+        args.sync();
+  		std::istringstream args2(args.str().substr(args.tellg()));
+  		std::cout << "args: " << args2.str();
         if (alcpScan(args, "(s)$", &s)) {
             if (UserInterface::instance().isCommand(s))
                 throw 1;
@@ -133,7 +135,7 @@ namespace alcp {
             std::vector<big_int> v;
             std::vector< std::vector<big_int> > f;
             big_int p;
-			std::istringstream args2(args.str());
+			std::istringstream args2(args.str().substr(args.tellg()));
 
 			if (alcpScan(args, "(f,v,p)$", &f, &v, &p)){
                 Fq_b f(p, v.size() - 1);//v.size()-1 is the degree of the polynomial, thus it is the exponent of the size of the field
@@ -194,7 +196,7 @@ namespace alcp {
             std::vector<big_int> v;
             std::vector< std::vector<big_int> > f;
             big_int p;
-			std::istringstream args2(args.str());
+			std::istringstream args2(args.str().substr(args.tellg()));
 
 			if (alcpScan(args, "(f,p,v)$", &f, &p, &v)){
                 Fq_b f(p, v.size() - 1);//v.size()-1 is the degree of the polynomial, thus it is the exponent of the size of the field
