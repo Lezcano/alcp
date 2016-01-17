@@ -1,25 +1,25 @@
-#include "userInterface.hpp"
-
-#include <map>
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <vector>
-#include <memory>
-#include <cstdarg>
-
-
-#include "types.hpp"
-#include "fpelem.hpp"
-#include "fpxelem.hpp"
-#include "fqelem.hpp"
-#include "zxelem.hpp"
-#include "exceptions.hpp"
-#include "factorizationFq.hpp"
-#include "integerCRA.hpp"
-#include "hensel.hpp"
-#include "modularGCD.hpp"
-#include "generalPurpose.hpp"
+//#include "userInterface.hpp"
+//
+//#include <map>
+//#include <string>
+//#include <sstream>
+//#include <iostream>
+//#include <vector>
+//#include <memory>
+//#include <cstdarg>
+//
+//
+//#include "types.hpp"
+//#include "fpelem.hpp"
+//#include "fpxelem.hpp"
+//#include "fqelem.hpp"
+//#include "zxelem.hpp"
+//#include "exceptions.hpp"
+//#include "factorizationFq.hpp"
+//#include "integerCRA.hpp"
+//#include "hensel.hpp"
+//#include "modularGCD.hpp"
+//#include "generalPurpose.hpp"
 
 namespace alcp {
     class Command;
@@ -50,6 +50,10 @@ namespace alcp {
         return cmds.find(s) != cmds.end();
     }
 
+	void unrecognizedOp(){
+		std::cout << "Unrecognized option" << std::endl;
+		std::cout << "Write \"help\" for help" << std::endl;
+	}
     void UserInterface::run() {
         std::string cmdline;
         std::cout << "Computer algebra system by Mario Lezcano and David Martinez" << std::endl;
@@ -57,22 +61,20 @@ namespace alcp {
         while (true) {
             std::cout << ">> ";
             getline(std::cin, cmdline);
-            std::istringstream ss(cmdline);
-            getline(ss, cmdline, '(');
-
             if (cmdline == "quit")
                 break;
 
+            std::istringstream ss(cmdline);
+			string cmd;
+			if (!alcpScan(ss, "s(", &cmd))
+				unrecognizedOp();	
+
             auto it = cmds.find(cmdline);
 
-            if (it == cmds.end()) {
-                std::cout << "Unrecognized option" << std::endl;
-                std::cout << "Write \"help\" for help" << std::endl;
-                //this->help();
-            }
-            else {
+            if (it == cmds.end())
+				unrecognizedOp();	
+            else
                 (it->second)->parseAndRun(ss);
-            }
         }
     }
 
@@ -101,15 +103,14 @@ namespace alcp {
 
     void UserInterface::CommandHelp::parseAndRun(std::istringstream &args) {
         std::string s;
-        char c;
-        if ((args >> c) && c == '(') {
-            getline(args, s, ')');
-            if (!end(args) || !UserInterface::instance().isCommand(s))
+		std::istringstream args2(args);
+        if (!alcpScan(args, "s)\n", &s)) {
+            if (UserInterface::instance().isCommand(s))
                 throw 1;
             UserInterface::instance().callHelp(s);
         }
         else {
-            if (!end(args))
+            if (!alcpScan(args, "\n"))
                 throw 1;
             UserInterface::instance().help();
         }
@@ -127,15 +128,12 @@ namespace alcp {
     void UserInterface::CommandBerlekamp::parseAndRun(std::istringstream &args) {
         try {
             std::vector<big_int> v;
+            std::vector< std::vector<big_int> > f;
             big_int p;
-            std::size_t exp;
-            char c;
-            if (!isVector(args, v) || !comma(args) || !(args >> p) || !(args >> c))
-                throw 1; //throw new ParseError();
-            if (c == ',') {
-                if (!(args >> exp) || !closedParen(args))
-                    throw 1; //throw new ParseError();
-                Fq_b f(p, exp);
+			std::istringstream args2(args);
+
+			if (alcpScan(args, "f,v,p)\n", &f, &v, &p){
+                Fq_b f(p, v.size() - 1);//v.size()-1 is the degree of the polynomial, thus it is the exponent of the size of the field
                 std::vector<Fqelem_b> vf;
                 for (unsigned int i = 0; i < v.size(); i++) {
                     vf.push_back(f.get(v[i]));
@@ -152,10 +150,7 @@ namespace alcp {
                     std::cout << std::endl;
                 }
             }
-            else {
-                if (c != ')' || !end(args)) {
-                    throw 1; //throw new ParseError();
-                }
+			else if (alcpScan(args2, "v,p)\n", &v, &p){
                 Fp_b f(p);
 
                 std::vector<Fpelem_b> vf;
@@ -175,6 +170,8 @@ namespace alcp {
                     std::cout << std::endl;
                 }
             }
+			else
+				throw 1;
 
         } catch (...) {
             std::cout << "Parse error" << std::endl;
@@ -193,14 +190,11 @@ namespace alcp {
     void UserInterface::CommandCantorZassenhaus::parseAndRun(std::istringstream &args) {
         try {
             std::vector<big_int> v;
+            std::vector< std::vector<big_int> > f;
             big_int p;
-            std::size_t exp;
-            char c;
-            if (!isVector(args, v) || !comma(args) || !(args >> p) || !(args >> c))
-                throw 1; //throw new ParseError();
-            if (c == ',') {
-                if (!(args >> exp) || !closedParen(args))
-                    throw 1; //throw new ParseError();
+			std::istringstream args2(args);
+
+			if (alcpScan(args, "f,p,v)\n", &f, &p, &v){
                 Fq_b f(p, exp);
                 std::vector<Fqelem_b> vf;
                 for (unsigned int i = 0; i < v.size(); i++) {
@@ -219,7 +213,7 @@ namespace alcp {
                     std::cout << std::endl;
                 }
             }
-            else {
+			else if (alcpScan(args2, "v,p)\n", &v, &p){
                 if (c != ')' || !end(args))
                     throw 1; //throw new ParseError();
                 Fp_b f(p);
@@ -239,6 +233,8 @@ namespace alcp {
                     std::cout << std::endl;
                 }
             }
+			else
+				throw 1;
         } catch (...) {
             std::cout << "Parse error" << std::endl;
         }
@@ -259,8 +255,8 @@ namespace alcp {
     void UserInterface::CommandHensel::parseAndRun(std::istringstream &args) {
         try {
             std::vector<big_int> v;
-            if (!isVector(args, v) || !closedParen(args))
-                throw 1; //throw new ParseError();
+			if (!alcpScan(args, "v)\n", &v))
+				throw 1;
             Zxelem_b pol(v);
             auto factors = factorizationHensel(pol);
             std::cout << "Factors:" << std::endl;
@@ -286,8 +282,7 @@ namespace alcp {
     void UserInterface::CommandModularGCD::parseAndRun(std::istringstream &args) {
         try {
             std::vector<big_int> v1, v2;
-            if (!isVector(args, v1) || !comma(args) ||
-                !isVector(args, v2) || closedParen(args))
+			if (!alcpScan(args, "v,v)\n", &v1, &v2)
                 throw 1; //throw new ParseError();
             Zxelem_b pol1(v1), pol2(v2);
             std::cout << modularGCD(pol1, pol2) << std::endl;
@@ -305,22 +300,21 @@ namespace alcp {
 
     void UserInterface::CommandCRA::parseAndRun(std::istringstream &args) {
         try {
-            big_int aux;
+            big_int aux, aux2;
             std::vector<big_int> m, u;
-            if (!(args >> aux) || !comma(args))
+			if (!alcp(args, "n,n"), &aux, &aux2)
                 throw 1;
             m.push_back(aux);
-            if (!(args >> aux))
-                throw 1;
-            u.push_back(aux);
-            while (comma(args) && args >> aux) {
-                m.push_back(aux);
-                if (!comma(args) || !(args >> aux))
-                    throw 1; //throw new ParseError();
-                u.push_back(aux);
-            }
-            if (!closedParen(args))
-                throw 1;
+            u.push_back(aux2);
+			char c;
+			while(alcpScan(args, "c", &c) && c ==','){
+				if (!alcpScan(args, "n,n", &aux, &aux2))
+					throw 1;
+				m.push_back(aux);
+           		u.push_back(aux2);
+			}
+			if (c != ')' || !alcpScan(args, "\n"))
+				throw 1;
             std::cout << integerCRA(m, u) << std::endl;
         } catch (...) {
             std::cout << "Parse error" << std::endl;
@@ -377,7 +371,7 @@ namespace alcp {
     void UserInterface::CommandMillerRabin::parseAndRun(std::istringstream &args) {
         try {
             big_int num;
-            if (!(args >> num) || !closedParen(args))
+            if (!alcpScan(args, "n)\n", &num))
                 throw 1; //throw new ParseError();
             std::cout << num << " is ";
             if (!millerRabin(num))
@@ -400,7 +394,7 @@ namespace alcp {
         try {
             std::vector<big_int> v;
             big_int p;
-            if (!isVector(args, v) || !comma(args) || !(args >> p) || !closedParen(args))
+            if (alcpScan(args, "v,n\n", &v, &p))
                 throw 1; //throw new ParseError();
             Fp_b f(p);
             std::vector<Fpelem_b> vf;
