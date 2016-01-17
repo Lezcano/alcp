@@ -350,10 +350,12 @@ int main () {
     getline(cin, aux);
     istringstream ss(aux);
     cout << alcpScan(ss, "s", &s) << endl;
+    cout << s << endl;
+    aux.clear();
     getline(cin, aux);
     ss.str(aux);
-    cout << s << endl;
     cout << alcpScan(ss, "s$", &s) << endl;
+    cout << s << endl;
 
 
     //testCRA();

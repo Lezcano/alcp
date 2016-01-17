@@ -1,25 +1,25 @@
-//#include "userInterface.hpp"
-//
-//#include <map>
-//#include <string>
-//#include <sstream>
-//#include <iostream>
-//#include <vector>
-//#include <memory>
-//#include <cstdarg>
-//
-//
-//#include "types.hpp"
-//#include "fpelem.hpp"
-//#include "fpxelem.hpp"
-//#include "fqelem.hpp"
-//#include "zxelem.hpp"
-//#include "exceptions.hpp"
-//#include "factorizationFq.hpp"
-//#include "integerCRA.hpp"
-//#include "hensel.hpp"
-//#include "modularGCD.hpp"
-//#include "generalPurpose.hpp"
+#include "userInterface.hpp"
+
+#include <map>
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <vector>
+#include <memory>
+#include <cstdarg>
+
+
+#include "types.hpp"
+#include "fpelem.hpp"
+#include "fpxelem.hpp"
+#include "fqelem.hpp"
+#include "zxelem.hpp"
+#include "exceptions.hpp"
+#include "factorizationFq.hpp"
+#include "integerCRA.hpp"
+#include "hensel.hpp"
+#include "modularGCD.hpp"
+#include "generalPurpose.hpp"
 
 namespace alcp {
     class Command;
