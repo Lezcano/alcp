@@ -93,7 +93,6 @@ namespace alcp {
     /////////////////////////////////////////////////////////////////////////////
     // Commands
     /////////////////////////////////////////////////////////////////////////////
-    bool comma(std::istringstream &args);
 
     bool isVector(std::istringstream &args, std::vector<big_int> &v);
 
@@ -343,7 +342,7 @@ namespace alcp {
     void UserInterface::CommandPollardFactor::parseAndRun(std::istringstream &args) {
         try {
             big_int aux;
-            if (!(args >> aux) || !closedParen(args))
+            if (alcpScan(args, "n)\n", &aux))
                 throw 1; //throw new ParseError();
             //TODO	//std::cout << factorizationPollardRhoBrent(aux);
         } catch (...) {
@@ -394,7 +393,7 @@ namespace alcp {
         try {
             std::vector<big_int> v;
             big_int p;
-            if (alcpScan(args, "v,n\n", &v, &p))
+            if (alcpScan(args, "v,n)\n", &v, &p))
                 throw 1; //throw new ParseError();
             Fp_b f(p);
             std::vector<Fpelem_b> vf;
@@ -417,13 +416,6 @@ namespace alcp {
         std::endl;
         std::cout << "FORMAT" << std::endl;
         std::cout << "   " << name << "((a_0, a_1, ... a_n), p)" << std::endl;
-    }
-
-    bool comma(std::istringstream & args){
-        char c;
-        if (! (args >> c) || c != ',')
-            return false;
-        return true;
     }
 
     bool closedParen(std::istringstream & args){
