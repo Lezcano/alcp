@@ -1,25 +1,25 @@
-//#include "userInterface.hpp"
-//
-//#include <map>
-//#include <string>
-//#include <sstream>
-//#include <iostream>
-//#include <vector>
-//#include <memory>
-//#include <cstdarg>
-//
-//
-//#include "types.hpp"
-//#include "fpelem.hpp"
-//#include "fpxelem.hpp"
-//#include "fqelem.hpp"
-//#include "zxelem.hpp"
-//#include "exceptions.hpp"
-//#include "factorizationFq.hpp"
-//#include "integerCRA.hpp"
-//#include "hensel.hpp"
-//#include "modularGCD.hpp"
-//#include "generalPurpose.hpp"
+#include "userInterface.hpp"
+
+#include <map>
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <vector>
+#include <memory>
+#include <cstdarg>
+
+
+#include "types.hpp"
+#include "fpelem.hpp"
+#include "fpxelem.hpp"
+#include "fqelem.hpp"
+#include "zxelem.hpp"
+#include "exceptions.hpp"
+#include "factorizationFq.hpp"
+#include "integerCRA.hpp"
+#include "hensel.hpp"
+#include "modularGCD.hpp"
+#include "generalPurpose.hpp"
 
 namespace alcp {
     class Command;
@@ -54,6 +54,8 @@ namespace alcp {
 		std::cout << "Unrecognized option" << std::endl;
 		std::cout << "Write \"help\" for help" << std::endl;
 	}
+	bool alcpScan(std::istringstream &iss, const char *fmt, ...);
+
     void UserInterface::run() {
         std::string cmdline;
         std::cout << "Computer algebra system by Mario Lezcano and David Martinez" << std::endl;
@@ -65,14 +67,18 @@ namespace alcp {
                 break;
 
             std::istringstream ss(cmdline);
-			string cmd;
-			if (!alcpScan(ss, "s(", &cmd))
-				unrecognizedOp();	
+			std::string cmd;
+			if (!alcpScan(ss, "s(", &cmd)){
+				unrecognizedOp();
+				continue;
+			}
 
             auto it = cmds.find(cmdline);
 
-            if (it == cmds.end())
-				unrecognizedOp();	
+            if (it == cmds.end()){
+				unrecognizedOp();
+				continue;
+            }
             else
                 (it->second)->parseAndRun(ss);
         }
@@ -102,7 +108,7 @@ namespace alcp {
 
     void UserInterface::CommandHelp::parseAndRun(std::istringstream &args) {
         std::string s;
-		std::istringstream args2(args);
+		std::istringstream args2(args.str());
         if (!alcpScan(args, "s)$", &s)) {
             if (UserInterface::instance().isCommand(s))
                 throw 1;
@@ -128,9 +134,9 @@ namespace alcp {
             std::vector<big_int> v;
             std::vector< std::vector<big_int> > f;
             big_int p;
-			std::istringstream args2(args);
+			std::istringstream args2(args.str());
 
-			if (alcpScan(args, "f,v,p)$", &f, &v, &p){
+			if (alcpScan(args, "f,v,p)$", &f, &v, &p)){
                 Fq_b f(p, v.size() - 1);//v.size()-1 is the degree of the polynomial, thus it is the exponent of the size of the field
                 std::vector<Fqelem_b> vf;
                 for (unsigned int i = 0; i < v.size(); i++) {
@@ -148,7 +154,7 @@ namespace alcp {
                     std::cout << std::endl;
                 }
             }
-			else if (alcpScan(args2, "v,p)$", &v, &p){
+			else if (alcpScan(args2, "v,p)$", &v, &p)){
                 Fp_b f(p);
 
                 std::vector<Fpelem_b> vf;
@@ -189,10 +195,10 @@ namespace alcp {
             std::vector<big_int> v;
             std::vector< std::vector<big_int> > f;
             big_int p;
-			std::istringstream args2(args);
+			std::istringstream args2(args.str());
 
-			if (alcpScan(args, "f,p,v)$", &f, &p, &v){
-                Fq_b f(p, exp);
+			if (alcpScan(args, "f,p,v)$", &f, &p, &v)){
+                Fq_b f(p, v.size() - 1);//v.size()-1 is the degree of the polynomial, thus it is the exponent of the size of the field
                 std::vector<Fqelem_b> vf;
                 for (unsigned int i = 0; i < v.size(); i++) {
                     vf.push_back(f.get(v[i]));
@@ -210,9 +216,7 @@ namespace alcp {
                     std::cout << std::endl;
                 }
             }
-			else if (alcpScan(args2, "v,p)$", &v, &p){
-                if (c != ')' || !end(args))
-                    throw 1; //throw new ParseError();
+			else if (alcpScan(args2, "v,p)$", &v, &p)){
                 Fp_b f(p);
                 std::vector<Fpelem_b> vf;
                 for (unsigned int i = 0; i < v.size(); i++) {
@@ -277,7 +281,7 @@ namespace alcp {
     void UserInterface::CommandModularGCD::parseAndRun(std::istringstream &args) {
         try {
             std::vector<big_int> v1, v2;
-			if (!alcpScan(args, "v,v)$", &v1, &v2)
+			if (!alcpScan(args, "v,v)$", &v1, &v2))
                 throw 1; //throw new ParseError();
             Zxelem_b pol1(v1), pol2(v2);
             std::cout << modularGCD(pol1, pol2) << std::endl;
@@ -295,7 +299,7 @@ namespace alcp {
     void UserInterface::CommandCRA::parseAndRun(std::istringstream &args) {
         try {
             std::vector<big_int> m, u;
-			if (!alcp(args, "v,v)$", &m, &u) || m.size() != u.size())
+			if (!alcpScan(args, "v,v)$", &m, &u) || m.size() != u.size())
                 throw 1;
             std::cout << integerCRA(m, u) << std::endl;
         } catch (...) {
@@ -411,103 +415,113 @@ namespace alcp {
         return true;
     }
 
-    bool inline isNumber(std::istringstream &args, big_int &n) {
-        if (!(args >> n))
-            return false;
-        return true;
-    }
+	bool inline isNumber(std::istringstream &args, big_int &n) {
+		if (!(args >> n))
+			return false;
+		return true;
+	}
 
-    bool isVector(std::istringstream &args, std::vector<big_int> &v) {
-        std::string s;
-        if (args.get() != '(')
-            return false;
-        big_int num;
-        if (!isNumber(args, num))
-            return false;
-        v.push_back(num);
-        while (args.peek() != ')') {
-            if (args.get() != ',' || !isNumber(args, num))
-                return false;
-            v.push_back(num);
-        }
-        args.ignore();
-        return true;
-    }
+	bool isVector(std::istringstream &args, std::vector<big_int> &v) {
+		std::string s;
+		if (args.get() != '(')
+			return false;
+		big_int num;
+		if (!isNumber(args, num))
+			return false;
+		v.push_back(num);
+		while (args.peek() != ')') {
+			if (args.get() != ',' || !isNumber(args, num))
+				return false;
+			v.push_back(num);
+		}
+		args.ignore();
+		return true;
+	}
 
-    bool isVectorOfVectors(std::istringstream &args, std::vector<std::vector<big_int>> &vv) {
-        std::string s;
-        std::vector<big_int> v;
-        if (args.get() != '(')
-            return false;
-        if (!isVector(args, v))
-            return false;
-        vv.push_back(v);
-        while (args.peek() != ')') {
-            v.clear();
-            if (args.get() != ',' || !isVector(args, v))
-                return false;
-            vv.push_back(v);
-        }
-        args.ignore();
-        return true;
-    }
+	bool isVectorOfVectors(std::istringstream &args, std::vector<std::vector<big_int>> &vv) {
+		std::string s;
+		std::vector<big_int> v;
+		if (args.get() != '(')
+			return false;
+		if (!isVector(args, v))
+			return false;
+		vv.push_back(v);
+		while (args.peek() != ')') {
+			v.clear();
+			if (args.get() != ',' || !isVector(args, v))
+				return false;
+			vv.push_back(v);
+		}
+		args.ignore();
+		return true;
+	}
 
-    void isString(std::istringstream &iss, std::string & s){
-        // We  extract the remaining string in the iss
-        s = iss.str().substr(iss.tellg());
-        std::size_t lst = s.find_first_of("(),");
-        if (lst == std::string::npos) {
-            iss.str("");
-            return;
-        }
-        // Remove leading spaces
-        std::size_t fst = s.find_first_not_of(" ");
-        s = s.substr(fst, lst-fst);
-        s = s.substr(0, s.find_last_not_of(" ")+1);
-        iss.ignore(fst+lst-2);
-    }
+	void isString(std::istringstream &iss, std::string & s){
+		// We  extract the remaining string in the iss
+		s = iss.str().substr(iss.tellg());
+		std::size_t lst = s.find_first_of("(),");
+		if (lst == std::string::npos) {
+			iss.str("");
+			return;
+		}
+		// Remove leading spaces
+		std::size_t fst = s.find_first_not_of(" ");
+		s = s.substr(fst, lst-fst);
+		s = s.substr(0, s.find_last_not_of(" ")+1);
+		iss.ignore(fst+lst-2);
+	}
+	bool alcpScan(std::istringstream &iss, const char *fmt, ...) {
+		va_list args;
+		va_start(args, fmt);
+		big_int n;
+		std::vector<big_int> v;
+		std::vector<std::vector<big_int>> vv;
+		std::string s;
 
-    bool alcpScan(std::istringstream &iss, const char *fmt, ...) {
-        va_list args;
-        va_start(args, fmt);
-        big_int n;
-        std::vector<big_int> v;
-        std::vector<std::vector<big_int>> vv;
-        std::string s;
+		while (*fmt != '\0' && *fmt != '$') {
+			if (*fmt == 'n') {
+				if (!isNumber(iss, n))
+					return false;
+				auto *num = va_arg(args, big_int*);
+				*num = n;
+			}
+			else if (*fmt == 'v') {
+				if (!isVector(iss, v))
+					return false;
+				auto v2 = va_arg(args, std::vector<big_int>*);
+				*v2 = v;
+			}
+			else if (*fmt == 'f') {
+				if (!isVectorOfVectors(iss, vv))
+					return false;
+				auto vv2 = va_arg(args, std::vector<std::vector<big_int>>*);
+				*vv2 = vv;
+			}
+			else if(*fmt == 's') {
+				isString(iss, s);
+				auto s2 = va_arg(args, std::string*);
+				*s2 = s;
+			}
+			else {
+				char c;
+				iss.get(c);
+				if (c != ' ' && c != *fmt)
+					return false;
+			}
+			++fmt;
+		}
+		if(*fmt == '$' && *(fmt+1) == '\0'){
+			std::string aux = iss.str().substr(iss.tellg());
+			if(aux.find_first_not_of(" ") != std::string::npos)
+				return false;
+			return true;
+		}
+		else if(*fmt == '\0')
+			return true;
+		else {
+			std::cerr << "Debug: Bad format in alcpScan" << std::endl;
+			return false;
+		}
+	}
 
-        while (*fmt != '\0') {
-            if (*fmt == 'n') {
-                if (!isNumber(iss, n))
-                    return false;
-                auto *num = va_arg(args, big_int*);
-                *num = n;
-            }
-            else if (*fmt == 'v') {
-                if (!isVector(iss, v))
-                    return false;
-                auto v2 = va_arg(args, std::vector<big_int>*);
-                *v2 = v;
-            }
-            else if (*fmt == 'f') {
-                if (!isVectorOfVectors(iss, vv))
-                    return false;
-                auto vv2 = va_arg(args, std::vector<std::vector<big_int>>*);
-                *vv2 = vv;
-            }
-            else if(*fmt == 's'){
-                isString(iss, s);
-                auto s2 = va_arg(args, std::string*);
-                *s2 = s;
-            }
-            else {
-                char c;
-                iss.get(c);
-                if (c != ' ' && c != *fmt)
-                    return false;
-            }
-            ++fmt;
-        }
-        return true;
-    }
 }
-
