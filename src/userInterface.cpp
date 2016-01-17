@@ -68,13 +68,12 @@ namespace alcp {
 
             std::istringstream ss(cmdline);
 			std::string cmd;
-			if (!alcpScan(ss, "s(", &cmd)){
+			if (!alcpScan(ss, "s", &cmd)){
 				unrecognizedOp();
 				continue;
 			}
 
-            auto it = cmds.find(cmdline);
-
+            auto it = cmds.find(cmd);
             if (it == cmds.end()){
 				unrecognizedOp();
 				continue;
@@ -109,13 +108,13 @@ namespace alcp {
     void UserInterface::CommandHelp::parseAndRun(std::istringstream &args) {
         std::string s;
 		std::istringstream args2(args.str());
-        if (!alcpScan(args, "s)$", &s)) {
+        if (alcpScan(args, "(s)$", &s)) {
             if (UserInterface::instance().isCommand(s))
                 throw 1;
             UserInterface::instance().callHelp(s);
         }
         else {
-            if (!alcpScan(args, "$"))
+            if (!alcpScan(args2, "$"))
                 throw 1;
             UserInterface::instance().help();
         }
@@ -125,8 +124,8 @@ namespace alcp {
         std::cout <<
         "Outputs a list with help for all the commands of the system or help for a single command, if specified" <<
         std::endl;
-        std::cout << "   " << name;
-        std::cout << "   " << name << "(command)" << std::endl;
+        std::cout << "        " << name << std::endl;
+        std::cout << "        " << name << "(command)" << std::endl;
     }
 
     void UserInterface::CommandBerlekamp::parseAndRun(std::istringstream &args) {
@@ -136,7 +135,7 @@ namespace alcp {
             big_int p;
 			std::istringstream args2(args.str());
 
-			if (alcpScan(args, "f,v,p)$", &f, &v, &p)){
+			if (alcpScan(args, "(f,v,p)$", &f, &v, &p)){
                 Fq_b f(p, v.size() - 1);//v.size()-1 is the degree of the polynomial, thus it is the exponent of the size of the field
                 std::vector<Fqelem_b> vf;
                 for (unsigned int i = 0; i < v.size(); i++) {
@@ -154,7 +153,7 @@ namespace alcp {
                     std::cout << std::endl;
                 }
             }
-			else if (alcpScan(args2, "v,p)$", &v, &p)){
+			else if (alcpScan(args2, "(v,p)$", &v, &p)){
                 Fp_b f(p);
 
                 std::vector<Fpelem_b> vf;
@@ -186,8 +185,8 @@ namespace alcp {
         std::cout <<
         "Factorizes a polynomial in GF(p^m)[x] using Berlekamp algorithm, being GF(p^m) the finite field with p^m elements, with p prime and m a natural number." <<
         std::endl;
-        std::cout << "   " << name << "((a_0, a_1, ..., a_n), p)" << std::endl;
-        std::cout << "   " << name << "((a_0, a_1, ..., a_n), p, m)" << std::endl;
+        std::cout << "        " << name << "((a_0, a_1, ..., a_n), p)" << std::endl;
+        std::cout << "        " << name << "((a_0, a_1, ..., a_n), p, m)" << std::endl;
     }
 
     void UserInterface::CommandCantorZassenhaus::parseAndRun(std::istringstream &args) {
@@ -197,7 +196,7 @@ namespace alcp {
             big_int p;
 			std::istringstream args2(args.str());
 
-			if (alcpScan(args, "f,p,v)$", &f, &p, &v)){
+			if (alcpScan(args, "(f,p,v)$", &f, &p, &v)){
                 Fq_b f(p, v.size() - 1);//v.size()-1 is the degree of the polynomial, thus it is the exponent of the size of the field
                 std::vector<Fqelem_b> vf;
                 for (unsigned int i = 0; i < v.size(); i++) {
@@ -216,7 +215,7 @@ namespace alcp {
                     std::cout << std::endl;
                 }
             }
-			else if (alcpScan(args2, "v,p)$", &v, &p)){
+			else if (alcpScan(args2, "(v,p)$", &v, &p)){
                 Fp_b f(p);
                 std::vector<Fpelem_b> vf;
                 for (unsigned int i = 0; i < v.size(); i++) {
@@ -245,17 +244,17 @@ namespace alcp {
         std::cout <<
         "Factorizes a polynomial in GF(p^m)[x] using Cantor-Zassenhaus algorithm, being GF(p^m) the finite field with p^m elements, with p prime and m a natural number." <<
         std::endl;
-        std::cout << "   " << name << "((a_0, a_1, ..., a_n), p)" << std::endl;
+        std::cout << "        " << name << "((a_0, a_1, ..., a_n), p)" << std::endl;
         //TODO
-        std::cout << "   " << name << "(((a0_0, a_01, ...a0_n0), ..., (am_0, ..., ak_nk)), p, (b_0, ..., b_m))" <<
+        std::cout << "        " << name << "(((a0_0, a_01, ...a0_n0), ..., (am_0, ..., ak_nk)), p, (b_0, ..., b_m))" <<
         std::endl;
-        std::cout << "      " << "The first k+1 vectors will be polynomials the coefficients";
+        std::cout << "    " << "The first k+1 vectors will be polynomials the coefficients";
     }
 
     void UserInterface::CommandHensel::parseAndRun(std::istringstream &args) {
         try {
             std::vector<big_int> v;
-			if (!alcpScan(args, "v)$", &v))
+			if (!alcpScan(args, "(v)$", &v))
 				throw 1;
             Zxelem_b pol(v);
             auto factors = factorizationHensel(pol);
@@ -275,13 +274,13 @@ namespace alcp {
 
     void UserInterface::CommandHensel::help(const std::string &name) {
         std::cout << "Factorizes a polynomial in Z[x] using Hensel algorithm" << std::endl;
-        std::cout << "   " << name << "((a_0, a_1, ..., a_n))" << std::endl;
+        std::cout << "        " << name << "((a_0, a_1, ..., a_n))" << std::endl;
     }
 
     void UserInterface::CommandModularGCD::parseAndRun(std::istringstream &args) {
         try {
             std::vector<big_int> v1, v2;
-			if (!alcpScan(args, "v,v)$", &v1, &v2))
+			if (!alcpScan(args, "(v,v)$", &v1, &v2))
                 throw 1; //throw new ParseError();
             Zxelem_b pol1(v1), pol2(v2);
             std::cout << modularGCD(pol1, pol2) << std::endl;
@@ -293,13 +292,13 @@ namespace alcp {
     void UserInterface::CommandModularGCD::help(const std::string &name) {
         std::cout <<
         "Computes the greatest common divisor of two polynomials in Z[x] using the modular gcd algorithm." << std::endl;
-        std::cout << "   " << name << "((a_0, a_1, ..., a_n), (b_0, b_1, ..., b_m))" << std::endl;
+        std::cout << "        " << name << "((a_0, a_1, ..., a_n), (b_0, b_1, ..., b_m))" << std::endl;
     }
 
     void UserInterface::CommandCRA::parseAndRun(std::istringstream &args) {
         try {
             std::vector<big_int> m, u;
-			if (!alcpScan(args, "v,v)$", &m, &u) || m.size() != u.size())
+			if (!alcpScan(args, "(v,v)$", &m, &u) || m.size() != u.size())
                 throw 1;
             std::cout << integerCRA(m, u) << std::endl;
         } catch (...) {
@@ -311,7 +310,7 @@ namespace alcp {
         std::cout <<
         "Given positive moduli m_i in Z (0 <= i <= n) which are relatively prime and given corresponding residues u_i in Z_{m_i} t computes the unique integer u in Z_m (where m = \\prod m_i) such that u = u_i (mod m_i) i = 0,...,n. The behavior is not specified if m_i are not relatively prime." <<
         std::endl;
-        std::cout << "    " << name << "((m_0, m_1, ..., m_n), (u_0, u_1, ..., u_n)" << std::endl;
+        std::cout << "        " << name << "((m_0, m_1, ..., m_n), (u_0, u_1, ..., u_n)" << std::endl;
     }
 
     void UserInterface::CommandEEA_ED::parseAndRun(std::istringstream &args) {
@@ -328,7 +327,7 @@ namespace alcp {
     void UserInterface::CommandPollardFactor::parseAndRun(std::istringstream &args) {
         try {
             big_int aux;
-            if (alcpScan(args, "n)$", &aux))
+            if (alcpScan(args, "(n)$", &aux))
                 throw 1; //throw new ParseError();
             //TODO	//std::cout << factorizationPollardRhoBrent(aux);
         } catch (...) {
@@ -338,7 +337,7 @@ namespace alcp {
 
     void UserInterface::CommandPollardFactor::help(const std::string &name) {
         std::cout << "Given an integer, it returns its factors" << std::endl;
-        std::cout << "   " << name << "(a)" << std::endl;
+        std::cout << "        " << name << "(a)" << std::endl;
     }
 
     void UserInterface::CommandPollardLog::parseAndRun(std::istringstream &args) {
@@ -355,7 +354,7 @@ namespace alcp {
     void UserInterface::CommandMillerRabin::parseAndRun(std::istringstream &args) {
         try {
             big_int num;
-            if (!alcpScan(args, "n)$", &num))
+            if (!alcpScan(args, "(n)$", &num))
                 throw 1; //throw new ParseError();
             std::cout << num << " is ";
             if (!millerRabin(num))
@@ -370,14 +369,14 @@ namespace alcp {
         std::cout <<
         "Given an integer, the algorithm determines whether a number is prime. The output is correct with a very high probability." <<
         std::endl;
-        std::cout << "   " << name << "(a)" << std::endl;
+        std::cout << "        " << name << "(a)" << std::endl;
     }
 
     void UserInterface::CommandIrrGFp::parseAndRun(std::istringstream &args) {
         try {
             std::vector<big_int> v;
             big_int p;
-            if (alcpScan(args, "v,n)$", &v, &p))
+            if (alcpScan(args, "(v,n)$", &v, &p))
                 throw 1; //throw new ParseError();
             Fp_b f(p);
             std::vector<Fpelem_b> vf;
@@ -398,7 +397,7 @@ namespace alcp {
         std::cout <<
         "Given a polynomial in GF(p)[x], the algorithm determines whether  it is irreducible. GF(p) refers to the finite field with p elements where p is prime" <<
         std::endl;
-        std::cout << "   " << name << "((a_0, a_1, ... a_n), p)" << std::endl;
+        std::cout << "        " << name << "((a_0, a_1, ... a_n), p)" << std::endl;
     }
 
     bool closedParen(std::istringstream & args){
