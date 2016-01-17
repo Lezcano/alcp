@@ -109,9 +109,10 @@ namespace alcp {
         std::string s;
         args.sync();
   		std::istringstream args2(args.str().substr(args.tellg()));
-  		std::cout << "args: " << args2.str();
+  		std::cout << "args: " << args.str() << std::endl;
+  		std::cout << "args2: " << args2.str();
         if (alcpScan(args, "(s)$", &s)) {
-            if (UserInterface::instance().isCommand(s))
+            if (!UserInterface::instance().isCommand(s))
                 throw 1;
             UserInterface::instance().callHelp(s);
         }
