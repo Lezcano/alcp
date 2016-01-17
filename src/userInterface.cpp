@@ -465,7 +465,7 @@ namespace alcp {
                 return false;
             v.push_back(num);
         }
-        args.get();
+        args.ignore();
         return true;
     }
 
@@ -483,8 +483,23 @@ namespace alcp {
                 return false;
             vv.push_back(v);
         }
-        args.get();
+        args.ignore();
         return true;
+    }
+
+    void isString(std::istringstream &iss, std::string & s){
+        // We  extract the remaining string in the iss
+        s = iss.str().substr(iss.tellg());
+        std::size_t lst = s.find_first_of("(),");
+        if (lst == std::string::npos) {
+            iss.str("");
+            return;
+        }
+        // Remove leading spaces
+        std::size_t fst = s.find_first_not_of(" ");
+        s = s.substr(fst, lst-fst);
+        s = s.substr(0, s.find_last_not_of(" ")+1);
+        iss.ignore(fst+lst-2);
     }
 
     bool alcpScan(std::istringstream &iss, const char *fmt, ...) {
@@ -493,6 +508,7 @@ namespace alcp {
         big_int n;
         std::vector<big_int> v;
         std::vector<std::vector<big_int>> vv;
+        std::string s;
 
         while (*fmt != '\0') {
             if (*fmt == 'n') {
@@ -512,6 +528,11 @@ namespace alcp {
                     return false;
                 auto vv2 = va_arg(args, std::vector<std::vector<big_int>>*);
                 *vv2 = vv;
+            }
+            else if(*fmt == 's'){
+                isString(iss, s);
+                auto s2 = va_arg(args, std::string*);
+                *s2 = s;
             }
             else {
                 char c;

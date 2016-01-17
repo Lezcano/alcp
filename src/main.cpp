@@ -233,8 +233,127 @@ void pruebasHenselNoSeparable(){
 
 }
 
+bool inline isNumber(std::istringstream &args, big_int &n) {
+    if (!(args >> n))
+        return false;
+    return true;
+}
+
+bool isVector(std::istringstream &args, std::vector<big_int> &v) {
+    std::string s;
+    if (args.get() != '(')
+        return false;
+    big_int num;
+    if (!isNumber(args, num))
+        return false;
+    v.push_back(num);
+    while (args.peek() != ')') {
+        if (args.get() != ',' || !isNumber(args, num))
+            return false;
+        v.push_back(num);
+    }
+    args.ignore();
+    return true;
+}
+
+bool isVectorOfVectors(std::istringstream &args, std::vector<std::vector<big_int>> &vv) {
+    std::string s;
+    std::vector<big_int> v;
+    if (args.get() != '(')
+        return false;
+    if (!isVector(args, v))
+        return false;
+    vv.push_back(v);
+    while (args.peek() != ')') {
+        v.clear();
+        if (args.get() != ',' || !isVector(args, v))
+            return false;
+        vv.push_back(v);
+    }
+    args.ignore();
+    return true;
+}
+
+void isString(std::istringstream &iss, std::string & s){
+    // We  extract the remaining string in the iss
+    s = iss.str().substr(iss.tellg());
+    std::size_t lst = s.find_first_of("(),");
+    if (lst == std::string::npos) {
+        iss.str("");
+        return;
+    }
+    // Remove leading spaces
+    std::size_t fst = s.find_first_not_of(" ");
+    s = s.substr(fst, lst-fst);
+    s = s.substr(0, s.find_last_not_of(" ")+1);
+    iss.ignore(fst+lst-2);
+}
+
+#include <cstdarg>
+bool alcpScan(std::istringstream &iss, const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    big_int n;
+    std::vector<big_int> v;
+    std::vector<std::vector<big_int>> vv;
+    std::string s;
+
+    while (*fmt != '\0' && *fmt != '$') {
+        if (*fmt == 'n') {
+            if (!isNumber(iss, n))
+                return false;
+            auto *num = va_arg(args, big_int*);
+            *num = n;
+        }
+        else if (*fmt == 'v') {
+            if (!isVector(iss, v))
+                return false;
+            auto v2 = va_arg(args, std::vector<big_int>*);
+            *v2 = v;
+        }
+        else if (*fmt == 'f') {
+            if (!isVectorOfVectors(iss, vv))
+                return false;
+            auto vv2 = va_arg(args, std::vector<std::vector<big_int>>*);
+            *vv2 = vv;
+        }
+        else if(*fmt == 's') {
+            isString(iss, s);
+            auto s2 = va_arg(args, std::string*);
+            *s2 = s;
+        }
+        else {
+            char c;
+            iss.get(c);
+            if (c != ' ' && c != *fmt)
+                return false;
+        }
+        ++fmt;
+    }
+    if(*fmt == '$' && *(fmt+1) == '\0'){
+        std::string aux = iss.str().substr(iss.tellg());
+        if(aux.find_first_not_of(" ") != std::string::npos)
+            return false;
+        return true;
+    }
+    else if(*fmt == '\0')
+        return true;
+    else {
+        std::cerr << "Debug: Bad format in alcpScan" << endl;
+        return false;
+    }
+}
+
 int main () {
-	UserInterface::instance().run();
+	//UserInterface::instance().run();
+    string s, aux;
+    getline(cin, aux);
+    istringstream ss(aux);
+    cout << alcpScan(ss, "s", &s) << endl;
+    getline(cin, aux);
+    ss.str(aux);
+    cout << s << endl;
+    cout << alcpScan(ss, "s$", &s) << endl;
 
 
     //testCRA();
