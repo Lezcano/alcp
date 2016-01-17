@@ -110,7 +110,7 @@ namespace alcp {
         args.sync();
   		std::istringstream args2(args.str().substr(args.tellg()));
         if (alcpScan(args, "(s)$", &s)) {
-            if (UserInterface::instance().isCommand(s))
+            if (!UserInterface::instance().isCommand(s))
                 throw 1;
             UserInterface::instance().callHelp(s);
         }
