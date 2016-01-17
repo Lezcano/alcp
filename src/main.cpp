@@ -235,17 +235,6 @@ void pruebasHenselNoSeparable(){
 
 int main () {
 	UserInterface::instance().run();
-	string s, aux;
-    getline(cin, aux);
-    istringstream ss(aux);
-    cout << alcpScan(ss, "s", &s) << endl;
-    cout << s << endl;
-    aux.clear();
-    getline(cin, aux);
-    ss.str(aux);
-    cout << alcpScan(ss, "s$", &s) << endl;
-    cout << s << endl;
-
 
     //testCRA();
     //testModularGCD();

@@ -109,7 +109,6 @@ namespace alcp {
         std::string s;
         args.sync();
   		std::istringstream args2(args.str().substr(args.tellg()));
-  		std::cout << "args: " << args2.str();
         if (alcpScan(args, "(s)$", &s)) {
             if (UserInterface::instance().isCommand(s))
                 throw 1;
@@ -469,7 +468,7 @@ namespace alcp {
 		std::size_t fst = s.find_first_not_of(" ");
 		s = s.substr(fst, lst-fst);
 		s = s.substr(0, s.find_last_not_of(" ")+1);
-		iss.ignore(fst+lst-2);
+		iss.ignore(lst);
 	}
 	bool alcpScan(std::istringstream &iss, const char *fmt, ...) {
 		va_list args;
