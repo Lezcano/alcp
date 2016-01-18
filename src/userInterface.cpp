@@ -462,45 +462,45 @@ namespace alcp {
 	void isString(std::istringstream &iss, std::string & s){
 		// We  extract the remaining string in the iss
 		s = iss.str().substr(iss.tellg());
-		std::size_t lst = s.find_first_of("(),");
+		std::size_t lst = s.find_first_of("(), \t");
 		if (lst == std::string::npos) {
 			iss.str("");
 			return;
 		}
-		// Remove leading spaces
-		std::size_t fst = s.find_first_not_of(" ");
-		s = s.substr(fst, lst-fst);
-		s = s.substr(0, s.find_last_not_of(" ")+1);
+		s = s.substr(0, lst);
 		iss.ignore(lst);
 	}
 	bool alcpScan(std::istringstream &iss, const char *fmt, ...) {
 		va_list args;
 		va_start(args, fmt);
-		big_int n;
-		std::vector<big_int> v;
-		std::vector<std::vector<big_int>> vv;
-		std::string s;
+        std::size_t fst;
 
 		while (*fmt != '\0' && *fmt != '$') {
+            fst = iss.str().substr(iss.tellg()).find_first_not_of(" \t");
+            iss.ignore(fst);
 			if (*fmt == 'n') {
+                big_int n;
 				if (!isNumber(iss, n))
 					return false;
 				auto *num = va_arg(args, big_int*);
 				*num = n;
 			}
 			else if (*fmt == 'v') {
+                std::vector<big_int> v;
 				if (!isVector(iss, v))
 					return false;
 				auto v2 = va_arg(args, std::vector<big_int>*);
 				*v2 = v;
 			}
 			else if (*fmt == 'f') {
+                std::vector<std::vector<big_int>> vv;
 				if (!isVectorOfVectors(iss, vv))
 					return false;
 				auto vv2 = va_arg(args, std::vector<std::vector<big_int>>*);
 				*vv2 = vv;
 			}
 			else if(*fmt == 's') {
+                std::string s;
 				isString(iss, s);
 				auto s2 = va_arg(args, std::string*);
 				*s2 = s;
@@ -511,6 +511,8 @@ namespace alcp {
 				if (c != ' ' && c != *fmt)
 					return false;
 			}
+            fst = iss.str().substr(iss.tellg()).find_first_not_of(" \t");
+            iss.ignore(fst);
 			++fmt;
 		}
 		if(*fmt == '$' && *(fmt+1) == '\0'){
