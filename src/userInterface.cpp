@@ -135,8 +135,7 @@ namespace alcp {
             std::vector< std::vector<big_int> > f;
             big_int p;
 			std::istringstream args2(args.str().substr(args.tellg()));
-
-			if (alcpScan(args, "(f,v,p)$", &f, &v, &p)){
+			if (alcpScan(args, "(f,v,n)$", &f, &v, &p)){
                 Fq_b f(p, v.size() - 1);//v.size()-1 is the degree of the polynomial, thus it is the exponent of the size of the field
                 std::vector<Fqelem_b> vf;
                 for (unsigned int i = 0; i < v.size(); i++) {
@@ -144,17 +143,19 @@ namespace alcp {
                 }
                 Fqxelem_b pol(vf);
                 auto factors = factorizationBerlekamp(pol);
-                std::cout << "Factors:" << std::endl;
+                std::cout << "The factors of the polynomial:" << std::endl << "    " << pol << std::endl;
+                std::cout << "are the following:" << std::endl;
                 for (auto &pair: factors) {
                     if (pair.second != 1)
                         std::cout << "( ";
                     std::cout << pair.first;
                     if (pair.second != 1)
-                        std::cout << ")^" << pair.second;
+                        std::cout << " )^" << pair.second;
                     std::cout << std::endl;
                 }
             }
-			else if (alcpScan(args2, "(v,p)$", &v, &p)){
+			else
+				if (alcpScan(args2, "(v,n)$", &v, &p)){
                 Fp_b f(p);
 
                 std::vector<Fpelem_b> vf;
@@ -197,7 +198,7 @@ namespace alcp {
             big_int p;
 			std::istringstream args2(args.str().substr(args.tellg()));
 
-			if (alcpScan(args, "(f,p,v)$", &f, &p, &v)){
+			if (alcpScan(args, "(f,n,v)$", &f, &p, &v)){
                 Fq_b f(p, v.size() - 1);//v.size()-1 is the degree of the polynomial, thus it is the exponent of the size of the field
                 std::vector<Fqelem_b> vf;
                 for (unsigned int i = 0; i < v.size(); i++) {
@@ -216,7 +217,7 @@ namespace alcp {
                     std::cout << std::endl;
                 }
             }
-			else if (alcpScan(args2, "(v,p)$", &v, &p)){
+			else if (alcpScan(args2, "(v,n)$", &v, &p)){
                 Fp_b f(p);
                 std::vector<Fpelem_b> vf;
                 for (unsigned int i = 0; i < v.size(); i++) {
@@ -224,7 +225,8 @@ namespace alcp {
                 }
                 Fpxelem_b pol(vf);
                 auto factors = factorizationCantorZassenhaus(pol);
-                std::cout << "Factors:" << std::endl;
+                std::cout << "The factors of the polynomial:" << std::endl << "    " << pol << std::endl;
+                std::cout << "are the following:" << std::endl;
                 for (auto &pair: factors) {
                     if (pair.second != 1)
                         std::cout << "( ";
@@ -284,6 +286,7 @@ namespace alcp {
 			if (!alcpScan(args, "(v,v)$", &v1, &v2))
                 throw 1; //throw new ParseError();
             Zxelem_b pol1(v1), pol2(v2);
+            std::cout << "gcd( " << pol1 << " ,  " << pol2 << " ) = " << std::endl;
             std::cout << modularGCD(pol1, pol2) << std::endl;
         } catch (...) {
             std::cout << "Parse error" << std::endl;
@@ -328,7 +331,7 @@ namespace alcp {
     void UserInterface::CommandPollardFactor::parseAndRun(std::istringstream &args) {
         try {
             big_int aux;
-            if (alcpScan(args, "(n)$", &aux))
+            if (!alcpScan(args, "(n)$", &aux))
                 throw 1; //throw new ParseError();
             //TODO	//std::cout << factorizationPollardRhoBrent(aux);
         } catch (...) {
