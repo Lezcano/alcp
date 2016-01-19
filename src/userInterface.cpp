@@ -324,20 +324,42 @@ namespace alcp {
     void UserInterface::CommandEEA_ED::parseAndRun(std::istringstream &args) {
         try {
             big_int a, b, p;
-            std::vector<big_int> v1, v2;
-            std::vector<big_int> i;
+            std::vector<big_int> v1, v2, i;
             std::vector<std::vector<big_int>> vv1, vv2;
-            std::string s(args.str().substr(args.tellg()));
 
-            // MALLLLL no deberia ser std::istringstream && args??
-            // TODO a medias
-            //if(alcpScan(args2, "(n,n)$", &a, &b)){ }
-            //if(alcpScan(std::istringstream(s), "(n,n)$", &a, &b)){ }
-            //else if(alcpScan(args2, "(n,n,n)$", &a, &b, &p)){}
-            //else if(alcpScan(args2, "(v,v,n)$", &v1, &v2, &p)){}
-            //else if(alcpScan(args2, "(v,v,v)$", &v1, &v2, &i)){}
-            //else if(alcpScan(args2, "(f,f,n,v)$", &vv1, &vv2, &p, &i)){}
-            //else throw 1;
+            if(alcpScan(args, "(n,n)$", &a, &b)){
+                big_int x,y;
+                auto g = eea(a,b,x,y);
+                std::cout << a << "*" << x << "+" << b << "*" << y <<
+                        "=" << g << " = gcd(" << a << ", " << b << ")" << std::endl;
+            }
+            else if(alcpScan(args, "(n,n,n)$", &a, &b, &p)){
+                //Fp_b f(p);
+                //Fpelem_b a1(f.get(b)), b1(f.get(b)), x, y;
+                //auto g = eea<Fpelem_b>(a1,b1,x,y);
+                //std::cout << a << "*" << x << "+" << b << "*" << y <<
+                //    "=" << g << " (mod  " << p << ") = gcd(" << a << ", " << b << ")" << std::endl;
+            }
+            else if(alcpScan(args, "(v,v,n)$", &v1, &v2, &p)){
+                //Fpxelem_b a1(Zxelem_b(v1), p), b1(Zxelem_b(v2), p), x, y;
+                //auto g = eea(a1,b1,x,y);
+                //std::cout << a << "*" << x << "+" << b << "*" << y <<
+                //"=" << g << " (mod  " << p << ") = gcd(" << a << ", " << b << ")" << std::endl;
+            }
+            else if(alcpScan(args, "(v,v,p,v)$", &v1, &v2, &p, &i)){
+                //Fq_b f(p, Fpxelem_b(Zxelem_b(i), p));
+                //Fqelem_b a1(Zxelem_b(v1), p), b1(Zxelem_b(v2), p), x, y;
+                //auto g = eea(a1,b1,x,y);
+                //std::cout << a1 << "*" << x << "+" << b1 << "*" << y <<
+                //"=" << g << " (mod  " << p << ") = gcd(" << a << ", " << b << ")" << std::endl;
+            }
+            else if(alcpScan(args, "(f,f,n,v)$", &vv1, &vv2, &p, &i)){
+
+                //auto g = eea(a1,b1,x,y);
+                //std::cout << a << "*" << x << "+" << b << "*" << y <<
+                //"=" << g << " (mod  " << p << ") = gcd(" << a << ", " << b << ")" << std::endl;
+            }
+            else throw 1;
         } catch (...) {
             std::cout << "Parse error" << std::endl;
         }
@@ -359,8 +381,23 @@ namespace alcp {
             if (!alcpScan(args, "(n)$", &aux))
                 throw 1; //throw new ParseError();
             std::cout << "WARNING: This algorithm is probabilistic. Some integers might not fully factorize." << std::endl;
-            std::cout << "The number " << aux << " factorizes as:" << std::endl;
-            //std::cout << factorizationPollardRhoBrent(aux);
+            std::cout << aux << " = ";
+            auto map = factorInteger(aux);
+
+            auto it = map.begin();
+
+            std::cout << it->first;
+            if(it->second != 1)
+                std::cout << "^" << it->second;
+
+            it++;
+            for(; it != map.end(); ++it){
+                std::cout << " * ";
+                std::cout << it->first;
+                if(it->second != 1)
+                    std::cout << "^" << it->second;
+            }
+            std::cout << std::endl;
         } catch (...) {
             std::cout << "Parse error" << std::endl;
         }
@@ -502,6 +539,8 @@ namespace alcp {
 	bool alcpScan(std::istringstream &iss, const char *fmt, ...) {
 		va_list args;
 		va_start(args, fmt);
+        // Get the position of the string to restore it later if there has been any parsing error
+        int pos = iss.tellg();
         std::size_t fst;
 
 		while (*fmt != '\0' && *fmt != '$') {
@@ -509,22 +548,28 @@ namespace alcp {
             iss.ignore(fst);
 			if (*fmt == 'n') {
                 big_int n;
-				if (!isNumber(iss, n))
-					return false;
+				if (!isNumber(iss, n)) {
+                    iss.seekg(pos);
+                    return false;
+                }
 				auto *num = va_arg(args, big_int*);
 				*num = n;
 			}
 			else if (*fmt == 'v') {
                 std::vector<big_int> v;
-				if (!isVector(iss, v))
-					return false;
+				if (!isVector(iss, v)) {
+                    iss.seekg(pos);
+                    return false;
+                }
 				auto v2 = va_arg(args, std::vector<big_int>*);
 				*v2 = v;
 			}
 			else if (*fmt == 'f') {
                 std::vector<std::vector<big_int>> vv;
-				if (!isVectorOfVectors(iss, vv))
-					return false;
+				if (!isVectorOfVectors(iss, vv)) {
+                    iss.seekg(pos);
+                    return false;
+                }
 				auto vv2 = va_arg(args, std::vector<std::vector<big_int>>*);
 				*vv2 = vv;
 			}
@@ -537,8 +582,10 @@ namespace alcp {
 			else {
 				char c;
 				iss.get(c);
-				if (c != ' ' && c != *fmt)
-					return false;
+				if (c != ' ' && c != *fmt) {
+                    iss.seekg(pos);
+                    return false;
+                }
 			}
             fst = iss.str().substr(iss.tellg()).find_first_not_of(" \t");
             iss.ignore(fst);
@@ -546,14 +593,17 @@ namespace alcp {
 		}
 		if(*fmt == '$' && *(fmt+1) == '\0'){
 			std::string aux = iss.str().substr(iss.tellg());
-			if(aux.find_first_not_of(" ") != std::string::npos)
-				return false;
+			if(aux.find_first_not_of(" ") != std::string::npos) {
+                iss.seekg(pos);
+                return false;
+            }
 			return true;
 		}
 		else if(*fmt == '\0')
 			return true;
 		else {
 			std::cerr << "Debug: Bad format in alcpScan" << std::endl;
+            iss.seekg(pos);
 			return false;
 		}
 	}

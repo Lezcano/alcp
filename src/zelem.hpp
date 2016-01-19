@@ -33,28 +33,33 @@ namespace alcp {
         return "+" + to_string(e);
     }
 
-    template<typename T, class = typename std::enable_if<is_integral<T>::value>::type>
-    bool compatible(T, T) {
+    template<class Int>
+    typename std::enable_if<is_integral<Int>::value, Int>::type
+    compatible(Int, Int) {
         return true;
     }
 
-    template<typename T, class = typename std::enable_if<is_integral<T>::value>::type>
-    T unit(T e) {
+    template<class Int>
+    typename std::enable_if<is_integral<Int>::value, Int>::type
+    unit(Int e) {
         return e >= 0 ? 1 : -1;
     }
 
-    template<typename T, class = typename std::enable_if<is_integral<T>::value>::type>
-    T normalForm(T e) {
-        return e / unit<T>(e);
+    template<class Int>
+    typename std::enable_if<is_integral<Int>::value, Int>::type
+    normalForm(Int e) {
+        return e / unit<Int>(e);
     }
 
-    template<typename T, class = typename std::enable_if<is_integral<T>::value>::type>
-    T getZero(T) {
+    template<class Int>
+    typename std::enable_if<is_integral<Int>::value, Int>::type
+    getZero(Int) {
         return 0;
     }
 
-    template<typename T, class = typename std::enable_if<is_integral<T>::value>::type>
-    T getOne(T) {
+    template<class Int>
+    typename std::enable_if<is_integral<Int>::value, Int>::type
+    getOne(Int) {
         return 1;
     }
 

@@ -118,7 +118,7 @@ namespace alcp {
             return Felem(static_cast<const Felem &>(*this)) /= rhs;
         }
 
-        Integer getSize() const { return static_cast<Felem*>(this)->getField().getSize(); }
+        Integer getSize() const { return static_cast<const Felem*>(this)->getField().getSize(); }
 
 
         friend std::ostream &operator<<(std::ostream &os, const Felem &e) {

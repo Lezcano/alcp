@@ -1,6 +1,8 @@
 #ifndef __GENERAL_PURPOSE_H
 #define __GENERAL_PURPOSE_H
 
+#include <map>
+
 #include "types.hpp"
 // idk why this can't be on the .cpp
 #include "zelem.hpp"
@@ -141,5 +143,7 @@ namespace alcp {
     long long pollardRhoBrent(long long n, long long limit = 1000);
 
     bool pollardRhoLogarithm(long long g, long long h, long long n, long long &log);
+
+    std::map<long long, short> factorInteger(long long a);
 }
 #endif // __GENERAL_PURPOSE_H

@@ -14,6 +14,9 @@ namespace alcp {
     template<typename Fxelem, typename Felem>
     class PolynomialRing {
     public:
+
+        const static char var = 'x';
+
         PolynomialRing() = default;
 
         // Immersion from the base ring
@@ -252,7 +255,7 @@ namespace alcp {
         // Normal form of the polynomial. It ensures the unicity of gdc for example
         friend inline Fxelem normalForm(const Fxelem &e) { return e / unit(e); }
 
-        friend std::string to_string(const Fxelem &f) {
+        friend std::string to_string(const Fxelem &f, char var = PolynomialRing::var /* x */) {
             if(f.deg() == 0)
                 return to_string(f.lc());
 
@@ -266,7 +269,7 @@ namespace alcp {
                 aux = "-";
             std::string s(aux);
 
-            s += "x";
+            s += var;
             if(f.deg() != 1)
                 s += "^" + std::to_string(f.deg());
 
@@ -281,7 +284,7 @@ namespace alcp {
                 else
                     s += aux;
 
-                s += "x";
+                s += var;
                 if(i != 1)
                     s += "^" + std::to_string(i);
 

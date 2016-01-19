@@ -1,5 +1,7 @@
 #include "generalPurpose.hpp"
 
+#include <map>
+#include <cmath>
 
 namespace alcp {
 
@@ -146,5 +148,60 @@ namespace alcp {
         return true;
     }
 
+    //[ini, end)
+    bool findBase(long long a, short exp, long long& base){
+        long long ini=0, end = a;
+        long long candidate;
+        while (ini != end-1){
+            base = (ini+end)/2;
+            candidate = fastPow(base, exp);
+            if(candidate == a)
+                return true;
+            else if(candidate > a)
+                end = base;
+            else
+                ini = base;
+        }
+        return false;
+    }
+
+    void auxFactor(long long a, std::map<long long, short>& ret){
+        long long fact = pollardRhoBrent(a);
+        if(fact == 1 || fact == a){
+            long long base;
+            short exp;
+            bool found = false;
+            for(exp = 2; exp < std::log2(a) + 1; ++exp){
+                if(findBase(a, exp, base)){
+                    found = true;
+                    break;
+                }
+            }
+            if(found){
+                ret[base] += exp;
+            }
+            else
+                ret[std::max(fact, a)]++;
+        }
+        else {
+            auxFactor(fact, ret);
+            auxFactor(a / fact, ret);
+        }
+    }
+
+    std::map<long long, short> factorInteger(long long a){
+        if(a == 0)
+            return std::map<long long, short>{std::make_pair<long long, short>(0, 1)};
+        bool neg = false;
+        if(a < 0){
+            a = -a;
+            neg = true;
+        }
+        std::map<long long, short> ret;
+        if(neg)
+            ret[-1] = 1;
+        auxFactor(a, ret);
+        return ret;
+    }
 
 }
