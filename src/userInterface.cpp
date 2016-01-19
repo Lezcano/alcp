@@ -136,15 +136,16 @@ namespace alcp {
             big_int p;
 			std::istringstream args2(args.str().substr(args.tellg()));
 			if (alcpScan(args, "(f,v,n)$", &f, &v, &p)){
-                Fq_b f(p, v.size() - 1);//v.size()-1 is the degree of the polynomial, thus it is the exponent of the size of the field
+                Fpxelem_b m(v, p);
+                Fq_b field(m);
                 std::vector<Fqelem_b> vf;
                 for (unsigned int i = 0; i < v.size(); i++) {
-                    vf.push_back(f.get(v[i]));
+                    vf.push_back(field.get(f[i]));
                 }
-                Fqxelem_b pol(vf);
-                auto factors = factorizationBerlekamp(pol);
+                Fqxelem pol(vf);
                 std::cout << "The factors of the polynomial:" << std::endl << "    " << pol << std::endl;
                 std::cout << "are the following:" << std::endl;
+                auto factors = factorizationBerlekamp(pol);
                 for (auto &pair: factors) {
                     if (pair.second != 1)
                         std::cout << "( ";
@@ -413,15 +414,10 @@ namespace alcp {
         try {
             std::vector<big_int> v;
             big_int p;
-            if (alcpScan(args, "(v,n)$", &v, &p))
+            if (!alcpScan(args, "(v,n)$", &v, &p))
                 throw 1; //throw new ParseError();
-            Fp_b f(p);
-            std::vector<Fpelem_b> vf;
-            for (unsigned int i = 0; i < vf.size(); i++) {
-                vf.push_back(f.get(v[i]));
-            }
-            std::cout << "The polynomial is ";
-            Fpxelem_b pol(vf);
+            Fpxelem_b pol(v,p);
+            std::cout << "The polynomial " << pol << " is ";
             if (!pol.irreducible())
                 std::cout << "not ";
             std::cout << "irreducible" << std::endl;
