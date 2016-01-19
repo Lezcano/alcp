@@ -185,8 +185,8 @@ namespace alcp {
 
     void UserInterface::CommandBerlekamp::help(const std::string &name) {
         std::cout <<
-        "Factorizes a polynomial in GF(p^m)[x] using Berlekamp algorithm, being GF(p^m) the finite field with p^m elements, with p prime and m a natural number." <<
-        std::endl;
+        "Factorizes a polynomial in GF(p^m)[x] using Berlekamp algorithm." << std::endl <<
+        "    GF(p^m) refers to the finite field of p^m elements, with p prime and m a postive integer." << std::endl;
         std::cout << "        " << name << "((a_0, a_1, ..., a_n), p)" << std::endl;
         std::cout << "        " << name << "((a_0, a_1, ..., a_n), p, m)" << std::endl;
     }
@@ -245,8 +245,8 @@ namespace alcp {
 
     void UserInterface::CommandCantorZassenhaus::help(const std::string &name) {
         std::cout <<
-        "Factorizes a polynomial in GF(p^m)[x] using Cantor-Zassenhaus algorithm, being GF(p^m) the finite field with p^m elements, with p prime and m a natural number." <<
-        std::endl;
+        "Factorizes a polynomial in GF(p^m)[x] using Cantor-Zassenhaus algorithm." << std::endl <<
+        "    GF(p^m) refers to the finite field of p^m elements, with p prime and m a postive integer." << std::endl;
         std::cout << "        " << name << "((a_0, a_1, ..., a_n), p)" << std::endl;
         //TODO
         std::cout << "        " << name << "(((a0_0, a_01, ...a0_n0), ..., (am_0, ..., ak_nk)), p, (b_0, ..., b_m))" <<
@@ -261,7 +261,8 @@ namespace alcp {
 				throw 1;
             Zxelem_b pol(v);
             auto factors = factorizationHensel(pol);
-            std::cout << "Factors:" << std::endl;
+            std::cout << "The factors of the polynomial:" << std::endl <<
+            			 "    " << pol << std::endl;
             for (auto &pair: factors) {
                 if (pair.second != 1)
                     std::cout << "( ";
@@ -312,8 +313,10 @@ namespace alcp {
 
     void UserInterface::CommandCRA::help(const std::string &name) {
         std::cout <<
-        "Given positive moduli m_i in Z (0 <= i <= n) which are relatively prime and given corresponding residues u_i in Z_{m_i} t computes the unique integer u in Z_m (where m = \\prod m_i) such that u = u_i (mod m_i) i = 0,...,n. The behavior is not specified if m_i are not relatively prime." <<
-        std::endl;
+        "Given positive moduli m_i in Z (0 <= i <= n) which are relatively prime and " << std::endl <<
+        " given corresponding residues u_i in Z_{m_i} it computes the unique integer u in Z_m " << std::endl <<
+        " (where m = \\prod m_i) such that u = u_i (mod m_i) i = 0,...,n. " << std::endl <<
+        "The behavior is not specified if m_i are not relatively prime." <<  std::endl;
         std::cout << "        " << name << "((m_0, m_1, ..., m_n), (u_0, u_1, ..., u_n)" << std::endl;
     }
 
@@ -371,8 +374,8 @@ namespace alcp {
 
     void UserInterface::CommandMillerRabin::help(const std::string &name) {
         std::cout <<
-        "Given an integer, the algorithm determines whether a number is prime. The output is correct with a very high probability." <<
-        std::endl;
+        "Given an integer, the algorithm determines whether it is prime. " << std::endl <<
+        "The output is correct with a very high probability." << std::endl;
         std::cout << "        " << name << "(a)" << std::endl;
     }
 
@@ -399,8 +402,8 @@ namespace alcp {
 
     void UserInterface::CommandIrrGFp::help(const std::string &name) {
         std::cout <<
-        "Given a polynomial in GF(p)[x], the algorithm determines whether  it is irreducible. GF(p) refers to the finite field with p elements where p is prime" <<
-        std::endl;
+        "Given a polynomial in GF(p)[x], the algorithm determines whether it is irreducible." << std::endl <<
+		"    GF(p) refers to the finite field of p elements, with p prime." << std::endl;
         std::cout << "        " << name << "((a_0, a_1, ... a_n), p)" << std::endl;
     }
 
@@ -429,11 +432,11 @@ namespace alcp {
 		if (args.get() != '(')
 			return false;
 		big_int num;
-		if (!isNumber(args, num))
+		if (!alcpScan(args, "n", &num))
 			return false;
 		v.push_back(num);
 		while (args.peek() != ')') {
-			if (args.get() != ',' || !isNumber(args, num))
+			if (!alcpScan(args, ",n", &num))
 				return false;
 			v.push_back(num);
 		}
@@ -446,12 +449,12 @@ namespace alcp {
 		std::vector<big_int> v;
 		if (args.get() != '(')
 			return false;
-		if (!isVector(args, v))
+		if (!alcpScan(args, "v", &v))
 			return false;
 		vv.push_back(v);
 		while (args.peek() != ')') {
 			v.clear();
-			if (args.get() != ',' || !isVector(args, v))
+			if (!alcpScan(args, ",v", &v))
 				return false;
 			vv.push_back(v);
 		}
