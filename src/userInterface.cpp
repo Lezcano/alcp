@@ -319,13 +319,34 @@ namespace alcp {
 
     void UserInterface::CommandEEA_ED::parseAndRun(std::istringstream &args) {
         try {
-            //TODO
+            big_int a, b, p;
+            std::vector<big_int> v1, v2;
+            std::vector<big_int> i;
+            std::vector<std::vector<big_int>> vv1, vv2;
+            std::string s(args.str().substr(args.tellg()));
+
+            // MALLLLL no deberia ser std::istringstream && args??
+            // TODO a medias
+            //if(alcpScan(args2, "(n,n)$", &a, &b)){ }
+            //if(alcpScan(std::istringstream(s), "(n,n)$", &a, &b)){ }
+            //else if(alcpScan(args2, "(n,n,n)$", &a, &b, &p)){}
+            //else if(alcpScan(args2, "(v,v,n)$", &v1, &v2, &p)){}
+            //else if(alcpScan(args2, "(v,v,v)$", &v1, &v2, &i)){}
+            //else if(alcpScan(args2, "(f,f,n,v)$", &vv1, &vv2, &p, &i)){}
+            //else throw 1;
         } catch (...) {
             std::cout << "Parse error" << std::endl;
         }
     }
 
     void UserInterface::CommandEEA_ED::help(const std::string &name) {
+        std::cout << "Given two elements of an Euclidean Domain, it returns the coefficientes of the Bezout identity and their greatest common divisor." << std::endl;
+        std::cout << "Currently supported Euclidean Domains are: Z, GF(p), GF(p)[X]), GF(p^m), GF(p^m)[X]." << std::endl;
+        std::cout << "        " << name << "(a,b)" << std:: endl;
+        std::cout << "        " << name << "(a,b,p)" << std:: endl;
+        std::cout << "        " << name << "((a_0, ...,a_n), (b_0, ..., b_n), p)" << std:: endl;
+        std::cout << "        " << name << "((a_0, ...,a_n), (b_0, ..., b_n), (i_0, ..., i_{n+1}))" << std:: endl;
+        std::cout << "        " << name << "(((a0_0, a_01, ...a0_n0), ..., (am_0, ..., ak_nk)), ((b0_0, b_01, ...b0_n0), ..., (bm_0, ..., bk_nk)), p, (i_0, ..., i_m))" << std::endl;
     }
 
     void UserInterface::CommandPollardFactor::parseAndRun(std::istringstream &args) {
@@ -333,7 +354,9 @@ namespace alcp {
             big_int aux;
             if (!alcpScan(args, "(n)$", &aux))
                 throw 1; //throw new ParseError();
-            //TODO	//std::cout << factorizationPollardRhoBrent(aux);
+            std::cout << "WARNING: This algorithm is probabilistic. Some integers might not fully factorize." << std::endl;
+            std::cout << "The number " << aux << " factorizes as:" << std::endl;
+            //std::cout << factorizationPollardRhoBrent(aux);
         } catch (...) {
             std::cout << "Parse error" << std::endl;
         }
@@ -346,13 +369,20 @@ namespace alcp {
 
     void UserInterface::CommandPollardLog::parseAndRun(std::istringstream &args) {
         try {
-            //TODO
+            long long a, b, p, log;
+            if (!alcpScan(args, "(n,n,n)$", &a, &b, &p))
+                throw 1; //throw new ParseError();
+            pollardRhoLogarithm(2, 5, 1019, log);
+            std::cout << "log_" << a << "(" << b << ") = " << log << " (mod " << p << ")" << std::endl;
         } catch (...) {
             std::cout << "Parse error" << std::endl;
         }
     }
 
     void UserInterface::CommandPollardLog::help(const std::string &name) {
+        std::cout <<
+        "Given a prime number p and two positive integers a, b, with a being a generator of the cyclic multiplicative group of order p-1, it computes log_a(b) in F_p" << std::endl;
+        std::cout << "        " << name << "(a)" << std::endl;
     }
 
     void UserInterface::CommandMillerRabin::parseAndRun(std::istringstream &args) {
