@@ -63,7 +63,7 @@ namespace alcp {
 		w1 *= (lc * w1.lc().inv());
 
 		Fpxelem_b s, t;
-		eea(u1, w1, s, t);//This must always be 1. Test it!!
+		eea(u1, w1, s, t); //This must always be 1. Test it!!
 		u = Zxelem_b(u1);
 		u[u.deg()] = leadCoef;
 		w = Zxelem_b(w1);
@@ -78,6 +78,7 @@ namespace alcp {
 			u += Zxelem_b(t * c + qr.first * u1) * modulus;
 			w += Zxelem_b(qr.second) * modulus;
 			err = pol - u * w;
+
 			modulus *= p;
 		}
 
@@ -100,7 +101,7 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 		std::vector<Zxelem_b> result;
 		int asd = 0, primes[13] = {3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43};
 		while (hs.oneMorePrime()) {
-			/**/
+			/*/
              big_int prime = randomPrime();//TODO Coger el codigo del gcd modular y ponerlo con una cota más grande¿?
             /*/
 			if (verbose && asd >= 13) {
@@ -123,6 +124,11 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 			if (verbose) {
 				std::cout << "Intento elevar esto:" << std::endl;
 				std::cout << option.u << std::endl << option.w << std::endl;
+			}
+			if (gcd(option.u, option.w) != 1){
+				continue;
+				if (verbose)
+					std::cout << "u y w no eran coprimos" << std::endl;
 			}
 			if (HenselLifting(poli, option.u, option.w, u, w)) {
 				//The first factor is always irreducible because hs first iterates through the options in ascending order with respect to the degree of the first polynomial

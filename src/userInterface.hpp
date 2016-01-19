@@ -39,74 +39,74 @@ namespace alcp {
 ///////////////////////////////////////////////////////////////////////////////
 		class Command {
 			public:
-				virtual void parseAndRun(std::stringstream & args) = 0;
+				virtual void parseAndRun(std::istringstream & args) = 0;
 				virtual void help (const std::string & name) = 0;
 		};
 
 		class CommandHelp: public Command{
 			public:
 				CommandHelp() = default;
-				void parseAndRun(std::stringstream & args) override;
+				void parseAndRun(std::istringstream & args) override;
 				void help (const std::string & name) override;
 		};
 
 		class CommandBerlekamp: public Command{
 			public:
-				void parseAndRun(std::stringstream & args) override;
+				void parseAndRun(std::istringstream & args) override;
 				void help (const std::string & name) override;
 		};
 
 		class CommandCantorZassenhaus: public Command{
 			public:
-				void parseAndRun(std::stringstream & args) override;
+				void parseAndRun(std::istringstream & args) override;
 				void help (const std::string & name) override;
 		};
 
 		class CommandHensel: public Command{
 			public:
-				void parseAndRun(std::stringstream & args) override;
+				void parseAndRun(std::istringstream & args) override;
 				void help (const std::string & name) override;
 		};
 
 		class CommandModularGCD: public Command{
 			public:
-				void parseAndRun(std::stringstream & args) override;
+				void parseAndRun(std::istringstream & args) override;
 				void help (const std::string & name) override;
 		};
 
 		class CommandCRA: public Command{
 			public:
-				void parseAndRun(std::stringstream & args) override;
+				void parseAndRun(std::istringstream & args) override;
 				void help (const std::string & name) override;
 		};
 
 		class CommandEEA_ED: public Command{
 			public:
-				void parseAndRun(std::stringstream & args) override;
+				void parseAndRun(std::istringstream & args) override;
 				void help (const std::string & name) override;
 		};
 
 		class CommandPollardFactor: public Command{
 			public:
-				void parseAndRun(std::stringstream & args) override;
+				void parseAndRun(std::istringstream & args) override;
 				void help (const std::string & name) override;
 		};
 
 		class CommandPollardLog: public Command{
 			public:
-				void parseAndRun(std::stringstream & args) override;
+				void parseAndRun(std::istringstream & args) override;
 				void help (const std::string & name) override;
 		};
 
 		class CommandMillerRabin: public Command{
 			public:
-				void parseAndRun(std::stringstream & args) override;
+				void parseAndRun(std::istringstream & args) override;
 				void help (const std::string & name) override;
 		};
 
 		class CommandIrrGFp: public Command{
 			public:
-				void parseAndRun(std::stringstream & args) override;
+				void parseAndRun(std::istringstream & args) override;
 				void help (const std::string & name) override;
 		};
 	};

@@ -132,13 +132,18 @@ void pollardoFactorTest(bool verbose){
 void pollardoLogarithm(bool verbose){
     long long log;
 
-    // Compute log_2(5) in F_2019
+    // Compute log_2(5) in F_1019
     pollardRhoLogarithm(2, 5, 1019, log);
     if(verbose) {
         cout << "Log " << log << endl;
         cout << "Pow " << fastPowMod<big_int, big_int>(2, log, 1019) << endl;
     }
     if(fastPowMod<long long, long long>(2,log,1019) == 5)
+        cout << "Ok. Pollard rho discrete logarithm algorithm" << endl;
+    else
+        cout << "XX. Pollard rho fails to compute log_2(5) in F_2019" << endl;
+    pollardRhoLogarithm(2, 1, 5, log);
+    if(fastPowMod<long long, long long>(2,log,5) == 1)
         cout << "Ok. Pollard rho discrete logarithm algorithm" << endl;
     else
         cout << "XX. Pollard rho fails to compute log_2(5) in F_2019" << endl;
@@ -173,8 +178,13 @@ void pruebasHenselSqFree(bool verbose){
 	//std::vector<big_int> v = {0, 4, 6, 4, 1};
 	//std::vector<big_int> v = {-24, -46, -78, -109, -115, -99, -75, -42, -11, -5, 3, 1};//(x-3) (x+4) (x^2+2) (x+1) (x^2+1) (x^4+x^3+x^2+x+1)
 	//std::vector<big_int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 11, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};//Ciclotomicos de 13 y 11
+	//std::vector<big_int> v = {35, -36, 10, 12}; //(2x+5)*(6*x^2-10*x+7)
+	//std::vector<big_int> v = {1, 1, 1, 1, 1, 1, 1};
 	std::vector<big_int> v = {0, 1, 6 , 20 , 49 , 99 , 175 , 280 , 414 , 574 , 755 , 951 , 1155 , 1359 , 1554 , 1730 , 1876 , 1981 , 2036 , 2036 , 1981 , 1876 , 1730 , 1554 , 1359 , 1155 , 951 , 755 , 574 , 414 , 280 , 175 , 99 , 49 , 20 , 6 , 1};//(x^12+x^11+x^10+x^9+x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+1)*(x^10+x^9+x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+1)*(x^6+x^5+x^4+x^3+x^2+x+1)*(x^4+x^3+x^2+x+1)*(x^2+x+1)*(x+1)*x
 
+	for (auto & ve:v){
+		ve*=12;
+	}
 	Zxelem_b pol(v);
     if(verbose)
         cout << pol << endl << endl;
@@ -240,12 +250,11 @@ void factorIntegers(){
 int main () {
 	UserInterface::instance().run();
 
-
     //testCRA();
     //testModularGCD();
     //pollardoFactorTest(false);
     //pollardoLogarithm(false);
-    //pruebasHenselSqFree(true);
+    //pruebasHenselSqFree(false);
     //pruebasHenselNoSeparable();
     //testGoodOldGCD();
     //symForm();
