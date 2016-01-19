@@ -19,11 +19,12 @@ namespace alcp {
     template<class Integer = big_int>
     class Fq {
     public:
-        Fq(Integer p, std::size_t m) : _p(p), _m(m), _base(p) {
-            std::vector<Fpelem<Integer>> v(_m + 1, _base.get(0));
+        Fq(Integer p, std::size_t m){
+            Fp_b f (p);
+            std::vector<Fpelem<Integer>> v(m + 1, f.get(0));
 
-            v.back() = _base.get(1);
-            v[0] = _base.get(1);
+            v.back() = f.get(1);
+            v[0] = f.get(1);
             while (!Fpxelem<Integer>(v).irreducible()) {
                 this->increment(v);
                 // It's divisible by the polynomial x
@@ -33,7 +34,7 @@ namespace alcp {
             _mod = Fpxelem<Integer>(v);
         }
 
-        Fq(Integer p, std::size_t m, Fpxelem<Integer> mod) : _p(p), _m(m), _base(p), _mod(mod){
+        Fq(Integer p, Fpxelem<Integer> mod) :_mod(mod){
             if(!mod.irreducible())
                 throw std::runtime_error("The polinomial provided to Fq was not irreducible.");
         }
@@ -42,7 +43,7 @@ namespace alcp {
         Fq(const Fq<Integer> &f) = default;
 
         Fqelem<Integer> get(Integer n) const {
-            return Fqelem<Integer>(Fpxelem<Integer>(_base.get(n)), _mod);
+            return Fqelem<Integer>(Fpxelem<Integer>(this->_mod.getField().get(n)), _mod);
         }
 
         Fqelem<Integer> get(Fpxelem<Integer> f) const {
@@ -52,16 +53,16 @@ namespace alcp {
 
         Fpxelem<Integer> mod() const { return _mod; }
 
-        Integer getSize() const { return fastPow(_p, _m); }
+        Integer getSize() const { return fastPow(this->getP(), this->getM()); }
 
-        Integer getP() const { return _p; }
+        Integer getP() const { return _mod.lc().getSize(); }
 
-        std::size_t getM() const { return _m; }
+        std::size_t getM() const { return _mod.deg(); }
 
 
         std::vector<Fqelem<Integer>> getElems() const {
             std::vector<Fqelem<Integer>> ret(static_cast<std::size_t>(this->getSize()));
-            std::vector<Fpelem<Integer>> act(_m, _base.get(0));
+            std::vector<Fpelem<Integer>> act(this->getM(), getZero(_mod.lc()));
             std::size_t i = 0;
 
             do {
@@ -71,9 +72,9 @@ namespace alcp {
             return ret;
         }
 
-        bool operator==(const Fq &rhs) const { return _p == rhs._p && _m == rhs._m; }
+        bool operator==(const Fq &rhs) const { this->_mod == rhs._mod; }
 
-        bool operator!=(const Fq &rhs) const { return _p != rhs._p && _m != rhs._m; }
+        bool operator!=(const Fq &rhs) const { return !(*this == rhs); }
 
         friend std::string to_string(const Fq<Integer> &e) {
             return "F" + to_string(e.getP()) + "^" + to_string(e.getM());
@@ -91,13 +92,10 @@ namespace alcp {
         }
 
         friend class Fqelem<Integer>;
-        // The same not-so-cool trick
-        Fq(Integer p, std::size_t m, const Fpxelem<Integer>& mod, bool) :
-                _p(p), _m(m), _base(_mod[0].getField()), _mod(mod) { }
 
-        Integer _p;
-        std::size_t _m;
-        Fp<Integer> _base;
+        // The same not-so-cool trick
+        Fq(const Fpxelem<Integer>& mod, bool) : _mod(mod) { }
+
         Fpxelem<Integer> _mod;
     };
 
@@ -112,20 +110,15 @@ namespace alcp {
         using FBase::operator=;
         using F = Fq<Integer>;
 
-        F getField() const{ return F(p(), m(), this->_mod, true); }
+        F getField() const{ return F(this->_mod, true); }
 
         friend std::string to_string_coef(const Fqelem& e){
-            std::string s(to_string(e));
-            // Not-so-nifty hack for the sake of readablity
-            if(s.find('x') == std::string::npos)
+            if(e._num.deg() == 1)
                 return "+" + to_string(e._num.lc());
-            return "+(" + s + ")" ;
+            return "+(" + to_string(e._num, 't') + ")" ;
         }
 
     private:
-        Integer p() const{ return this->_mod.getSize(); }
-        std::size_t m() const{ return this->_mod.deg(); }
-
         friend class Fq<Integer>;
     };
 
