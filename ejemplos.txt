@@ -10,7 +10,7 @@ isIrreducibleGFp((2, 0, 1), 5)
 
 x^9-x igual, el polinomio irreducible de grado dos que se puede usar es también x^2+2. Es decir, hacer:
 
-factorBerlekamp((0, 0),(0, -1),(0, 0),(0, 0),(0, 0),(0, 0),(0, 0),(0, 0),(0, 0),(0, 1)), (2, 0, 1), 3 )
+factorBerlekamp(((0, 0),(0, -1),(0, 0),(0, 0),(0, 0),(0, 0),(0, 0),(0, 0),(0, 0),(0, 1)), (1, 0, 1), 3 )
 y ver si salen 9 polinomios de grado uno todos distintos
 
 lo mismo para  x^25-x
