@@ -250,6 +250,15 @@ void factorIntegers(){
 int main () {
 	UserInterface::instance().run();
 
+    /*
+    std::vector<std::vector<big_int>> f {{0, 0},{0, -1},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 1}};
+    std::vector<big_int> v{1, 0, 1};
+    big_int p = 3;
+    Fqxelem_b pol(f, Fq_b(Fpxelem_b(v, p)));
+    cout << pol << endl;
+    Fqxelem_b b = pol.derivative();
+    cout << b << endl;
+     */
     //testCRA();
     //testModularGCD();
     //pollardoFactorTest(false);

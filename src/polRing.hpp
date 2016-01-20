@@ -142,6 +142,7 @@ namespace alcp {
                     ret[i + j] += _v[i] * rhs._v[j];
                 }
             _v = ret;
+            this->removeTrailingZeros();
             return static_cast<Fxelem &>(*this);
         }
 
