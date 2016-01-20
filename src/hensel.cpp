@@ -63,7 +63,7 @@ namespace alcp {
 		w1 *= (lc * w1.lc().inv());
 
 		Fpxelem_b s, t;
-		eea(u1, w1, s, t); //This must always be 1. Test it!!
+		eea<Fpxelem_b>(u1, w1, s, t); //This must always be 1. Test it!!
 		u = Zxelem_b(u1);
 		u[u.deg()] = leadCoef;
 		w = Zxelem_b(w1);

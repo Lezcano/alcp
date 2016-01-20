@@ -22,6 +22,30 @@ namespace alcp {
 
         Fqxelem() = default;
 
+        Fqxelem (const std::vector<std::vector<Integer>> & v, const Fq<Integer>& f) : FBase(
+                [](const std::vector<std::vector<Integer>>& v1, const Fq<Integer>& f1) -> Fqxelem {
+                    std::vector<Fqelem<Integer>> ret(v1.size());
+                    std::transform(v1.begin(),
+                                   v1.end(),
+                                   ret.begin(),
+                                   [&f1](const std::vector<Integer>& v2){
+                                       return f1.get(Fpxelem<Integer>(v2,f1.getP()));
+                                   });
+                    return ret;
+                }(v,f)){}
+
+        Fqxelem (std::vector<std::vector<Integer>> && v, Fq<Integer>&& f) : FBase(
+                [](std::vector<std::vector<Integer>>&& v1, Fq<Integer>&& f1) -> Fqxelem {
+                    std::vector<Fqelem<Integer>> ret(v1.size());
+                    std::transform(std::make_move_iterator(v1.begin()),
+                                   std::make_move_iterator(v1.end()),
+                                   ret.begin(),
+                                   [&f1](std::vector<Integer>&& v2){
+                                       return f1.get(Fpxelem<Integer>(std::move(v2),f1.getP()));
+                                   });
+                    return ret;
+                }(v,f)){}
+
         const F getField() const {
             return this->lc().getField();
         }

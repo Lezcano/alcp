@@ -6,6 +6,7 @@
 #include <memory>           // std::unique_ptr,  std::make_unique
 #include <string>           // std::to_string
 #include <type_traits>      // std::enable_if, std::is_integral
+#include <utility>          // std::move
 
 #include "generalPurpose.hpp" // ExtendedEuclideanAlgorithm (eea)
 #include "exceptions.hpp"
@@ -194,6 +195,7 @@ namespace alcp {
 
     protected:
         QuotientRing(const Quotient& num, const Quotient& mod) : _num(num), _mod(mod), _init(true){ }
+        QuotientRing(Quotient&& num, Quotient&& mod) : _num(std::move(num)), _mod(std::move(mod)), _init(true){ }
 
         Quotient _num;
         Quotient _mod;

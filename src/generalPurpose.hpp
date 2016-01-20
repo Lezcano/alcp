@@ -102,8 +102,8 @@ namespace alcp {
             yy = r2;
         }
         // TODO: IDK why it doesn't work without the casting
-        x /= unit(static_cast<T>(ua * unit(a)));
-        y /= unit(static_cast<T>(ub * unit(a)));
+        x /= unit(ua * unit(a));
+        y /= unit(ub * unit(a));
         return normalForm(a);
     }
 
