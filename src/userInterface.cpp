@@ -7,7 +7,8 @@
 #include <vector>
 #include <memory>
 #include <cstdarg>
-
+#include <algorithm>
+#include <utility>
 
 #include "types.hpp"
 #include "fpelem.hpp"
@@ -107,15 +108,13 @@ namespace alcp {
 
     void UserInterface::CommandHelp::parseAndRun(std::istringstream &args) {
         std::string s;
-        args.sync();
-  		std::istringstream args2(args.str().substr(args.tellg()));
         if (alcpScan(args, "(s)$", &s)) {
             if (!UserInterface::instance().isCommand(s))
                 throw 1;
             UserInterface::instance().callHelp(s);
         }
         else {
-            if (!alcpScan(args2, "$"))
+            if (!alcpScan(args, "$"))
                 throw 1;
             UserInterface::instance().help();
         }
@@ -134,7 +133,7 @@ namespace alcp {
             std::vector<big_int> v;
             std::vector< std::vector<big_int> > f;
             big_int p;
-			std::istringstream args2(args.str().substr(args.tellg()));
+
 			if (alcpScan(args, "(f,v,n)$", &f, &v, &p)){
                 Fq_b f(p, v.size() - 1);//v.size()-1 is the degree of the polynomial, thus it is the exponent of the size of the field
                 std::vector<Fqelem_b> vf;
@@ -154,8 +153,7 @@ namespace alcp {
                     std::cout << std::endl;
                 }
             }
-			else
-				if (alcpScan(args2, "(v,n)$", &v, &p)){
+			else if (alcpScan(args, "(v,n)$", &v, &p)){
                 Fp_b f(p);
 
                 std::vector<Fpelem_b> vf;
@@ -196,7 +194,6 @@ namespace alcp {
             std::vector<big_int> v;
             std::vector< std::vector<big_int> > f;
             big_int p;
-			std::istringstream args2(args.str().substr(args.tellg()));
 
 			if (alcpScan(args, "(f,n,v)$", &f, &p, &v)){
                 Fq_b f(p, v.size() - 1);//v.size()-1 is the degree of the polynomial, thus it is the exponent of the size of the field
@@ -217,7 +214,7 @@ namespace alcp {
                     std::cout << std::endl;
                 }
             }
-			else if (alcpScan(args2, "(v,n)$", &v, &p)){
+			else if (alcpScan(args, "(v,n)$", &v, &p)){
                 Fp_b f(p);
                 std::vector<Fpelem_b> vf;
                 for (unsigned int i = 0; i < v.size(); i++) {
@@ -313,50 +310,78 @@ namespace alcp {
 
     void UserInterface::CommandCRA::help(const std::string &name) {
         std::cout <<
-        "Given positive moduli m_i in Z (0 <= i <= n) which are relatively prime and " << std::endl <<
-        " given corresponding residues u_i in Z_{m_i} it computes the unique integer u in Z_m " << std::endl <<
-        " (where m = \\prod m_i) such that u = u_i (mod m_i) i = 0,...,n. " << std::endl <<
-        "The behavior is not specified if m_i are not relatively prime." <<  std::endl;
+        "Given positive moduli m_i in Z which are relatively prime and " <<
+        " given corresponding residues u_i in Z_{m_i} it computes the unique integer u in Z_m " <<
+        " (where m = \\prod m_i) such that u = u_i (mod m_i)" <<  std::endl <<
+        "    The behavior is not specified if m_i are not relatively prime." <<  std::endl;
         std::cout << "        " << name << "((m_0, m_1, ..., m_n), (u_0, u_1, ..., u_n)" << std::endl;
     }
 
-    void UserInterface::CommandEEA_ED::parseAndRun(std::istringstream &args) {
-        try {
-            big_int a, b, p;
-            std::vector<big_int> v1, v2, i;
-            std::vector<std::vector<big_int>> vv1, vv2;
+    Fqxelem_b vvToFqxelem(std::vector<std::vector<big_int>> && v, const Fq_b f){
+        std::vector<Fqelem_b> ret(v.size());
+        std::transform(std::make_move_iterator(v.begin()),
+                       std::make_move_iterator(v.end()),
+                       ret.begin(),
+                        [&f](std::vector<big_int>&& v){
+                            return f.get(Fpxelem_b(std::move(v),f.getP()));
+                        });
+        return ret;
+    }
 
-            if(alcpScan(args, "(n,n)$", &a, &b)){
+    void UserInterface::CommandEEA_ED::parseAndRun(std::istringstream &args) {
+        big_int a, b, p;
+        std::vector<big_int> v1, v2, i;
+        std::vector<std::vector<big_int>> vv1, vv2;
+
+        try {
+            if( alcpScan(args, "(n,n)$", &a, &b)){
                 big_int x,y;
                 auto g = eea(a,b,x,y);
-                std::cout << a << "*" << x << "+" << b << "*" << y <<
-                        "=" << g << " = gcd(" << a << ", " << b << ")" << std::endl;
-            }
-            else if(alcpScan(args, "(n,n,n)$", &a, &b, &p)){
-                //Fp_b f(p);
-                //Fpelem_b a1(f.get(b)), b1(f.get(b)), x, y;
-                //auto g = eea<Fpelem_b>(a1,b1,x,y);
-                //std::cout << a << "*" << x << "+" << b << "*" << y <<
-                //    "=" << g << " (mod  " << p << ") = gcd(" << a << ", " << b << ")" << std::endl;
+                std::cout << "gcd(" << a << "," << b << ")";
+                std::cout << " = "  << g << " = ";
+                std::cout << a << "*";
+                if(x < 0) std::cout << "(" << x << ")";
+                else std::cout << x;
+                std::cout << "+";
+
+                if(b < 0) std::cout << "(" << b << ")";
+                else std::cout << b;
+                std::cout << "*";
+
+                if(y < 0) std::cout << "(" << y << ")";
+                else std::cout << y;
+                std::cout << std::endl;
             }
             else if(alcpScan(args, "(v,v,n)$", &v1, &v2, &p)){
-                //Fpxelem_b a1(Zxelem_b(v1), p), b1(Zxelem_b(v2), p), x, y;
-                //auto g = eea(a1,b1,x,y);
-                //std::cout << a << "*" << x << "+" << b << "*" << y <<
-                //"=" << g << " (mod  " << p << ") = gcd(" << a << ", " << b << ")" << std::endl;
-            }
-            else if(alcpScan(args, "(v,v,p,v)$", &v1, &v2, &p, &i)){
-                //Fq_b f(p, Fpxelem_b(Zxelem_b(i), p));
-                //Fqelem_b a1(Zxelem_b(v1), p), b1(Zxelem_b(v2), p), x, y;
-                //auto g = eea(a1,b1,x,y);
-                //std::cout << a1 << "*" << x << "+" << b1 << "*" << y <<
-                //"=" << g << " (mod  " << p << ") = gcd(" << a << ", " << b << ")" << std::endl;
+                Fpxelem_b a1(v1, p), b1(v2, p), x, y;
+                auto g = eea(a1,b1,x,y);
+                std::cout << "gcd(" << a1 << ", " << b1 << ")" << std::endl <<
+                        " = " << g << " (mod  " << p << ") = ";
+
+                if(a1.deg() != 0)   std::cout << "(" << a1 << ")";
+                else std::cout << a1;
+                std::cout << "*";
+
+                if(x.deg() != 0)   std::cout << "(" << x << ")";
+                else std::cout << x;
+                std::cout << "+";
+
+                if(b1.deg() != 0)   std::cout << "(" << b1 << ")";
+                else std::cout << b1;
+                std::cout << "*";
+
+                if(y.deg() != 0)   std::cout << "(" << y << ")";
+                else std::cout << y;
+                std::cout << std::endl;
             }
             else if(alcpScan(args, "(f,f,n,v)$", &vv1, &vv2, &p, &i)){
+                Fpxelem_b mod(i,p);
+                Fq_b f(mod);
+                Fqxelem_b a1 = vvToFqxelem(std::move(vv1),f), b1 = vvToFqxelem(std::move(vv2),f), x, y;
 
-                //auto g = eea(a1,b1,x,y);
-                //std::cout << a << "*" << x << "+" << b << "*" << y <<
-                //"=" << g << " (mod  " << p << ") = gcd(" << a << ", " << b << ")" << std::endl;
+                auto g = eea(a1,b1,x,y);
+                std::cout << a1 << "*" << x << "+" << b1 << "*" << y <<
+                " = " << g << " (mod  " << mod << ") = gcd(" << a1 << ", " << b1 << ")" << std::endl;
             }
             else throw 1;
         } catch (...) {
@@ -366,11 +391,9 @@ namespace alcp {
 
     void UserInterface::CommandEEA_ED::help(const std::string &name) {
         std::cout << "Given two elements of an Euclidean Domain, it returns the coefficientes of the Bezout identity and their greatest common divisor." << std::endl;
-        std::cout << "Currently supported Euclidean Domains are: Z, GF(p), GF(p)[X]), GF(p^m), GF(p^m)[X]." << std::endl;
+        std::cout << "    Current supported Euclidean Domains are: Z, GF(p)[X], GF(p^m)[X]." << std::endl;
         std::cout << "        " << name << "(a,b)" << std:: endl;
-        std::cout << "        " << name << "(a,b,p)" << std:: endl;
         std::cout << "        " << name << "((a_0, ...,a_n), (b_0, ..., b_n), p)" << std:: endl;
-        std::cout << "        " << name << "((a_0, ...,a_n), (b_0, ..., b_n), (i_0, ..., i_{n+1}))" << std:: endl;
         std::cout << "        " << name << "(((a0_0, a_01, ...a0_n0), ..., (am_0, ..., ak_nk)), ((b0_0, b_01, ...b0_n0), ..., (bm_0, ..., bk_nk)), p, (i_0, ..., i_m))" << std::endl;
     }
 
@@ -442,7 +465,7 @@ namespace alcp {
     void UserInterface::CommandMillerRabin::help(const std::string &name) {
         std::cout <<
         "Given an integer, the algorithm determines whether it is prime. " << std::endl <<
-        "The output is correct with a very high probability." << std::endl;
+         "    The output is correct with a very high probability." << std::endl;
         std::cout << "        " << name << "(a)" << std::endl;
     }
 
@@ -540,6 +563,7 @@ namespace alcp {
 		s = s.substr(0, lst);
 		iss.ignore(lst);
 	}
+
 	bool alcpScan(std::istringstream &iss, const char *fmt, ...) {
 		va_list args;
 		va_start(args, fmt);
@@ -548,11 +572,13 @@ namespace alcp {
         std::size_t fst;
 
 		while (*fmt != '\0' && *fmt != '$') {
-            fst = iss.str().substr(iss.tellg()).find_first_not_of(" \t");
-            iss.ignore(fst);
-			if (*fmt == 'n') {
+            while(iss.peek() == ' ' || iss.peek() == '\t')
+                iss.ignore();
+
+			if (*fmt == 'n'){
                 big_int n;
 				if (!isNumber(iss, n)) {
+                    iss.clear();
                     iss.seekg(pos);
                     return false;
                 }
@@ -562,6 +588,7 @@ namespace alcp {
 			else if (*fmt == 'v') {
                 std::vector<big_int> v;
 				if (!isVector(iss, v)) {
+                    iss.clear();
                     iss.seekg(pos);
                     return false;
                 }
@@ -571,6 +598,7 @@ namespace alcp {
 			else if (*fmt == 'f') {
                 std::vector<std::vector<big_int>> vv;
 				if (!isVectorOfVectors(iss, vv)) {
+                    iss.clear();
                     iss.seekg(pos);
                     return false;
                 }
@@ -587,17 +615,22 @@ namespace alcp {
 				char c;
 				iss.get(c);
 				if (c != ' ' && c != *fmt) {
+                    iss.clear();
                     iss.seekg(pos);
                     return false;
                 }
 			}
-            fst = iss.str().substr(iss.tellg()).find_first_not_of(" \t");
-            iss.ignore(fst);
+
+            while(iss.peek() == ' ' || iss.peek() == '\t')
+                iss.ignore();
+
 			++fmt;
 		}
+
 		if(*fmt == '$' && *(fmt+1) == '\0'){
-			std::string aux = iss.str().substr(iss.tellg());
-			if(aux.find_first_not_of(" ") != std::string::npos) {
+            // Check if the iss is empty
+			if(iss.rdbuf()->in_avail() != 0) {
+                iss.clear();
                 iss.seekg(pos);
                 return false;
             }
@@ -607,6 +640,7 @@ namespace alcp {
 			return true;
 		else {
 			std::cerr << "Debug: Bad format in alcpScan" << std::endl;
+            iss.clear();
             iss.seekg(pos);
 			return false;
 		}

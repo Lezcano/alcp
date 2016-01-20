@@ -34,7 +34,7 @@ namespace alcp {
             _mod = Fpxelem<Integer>(v);
         }
 
-        Fq(Integer p, Fpxelem<Integer> mod) :_mod(mod){
+        Fq(Fpxelem<Integer> mod) :_mod(mod){
             if(!mod.irreducible())
                 throw std::runtime_error("The polinomial provided to Fq was not irreducible.");
         }
@@ -46,9 +46,13 @@ namespace alcp {
             return Fqelem<Integer>(Fpxelem<Integer>(this->_mod.getField().get(n)), _mod);
         }
 
-        Fqelem<Integer> get(Fpxelem<Integer> f) const {
+        Fqelem<Integer> get(const Fpxelem<Integer>& f) const {
+            return Fqelem<Integer>(f%_mod, _mod);
+        }
+
+        Fqelem<Integer> get(Fpxelem<Integer>&& f) const {
             f %= _mod;
-            return Fqelem<Integer>(f, _mod);
+            return Fqelem<Integer>(std::move(f), _mod);
         }
 
         Fpxelem<Integer> mod() const { return _mod; }
