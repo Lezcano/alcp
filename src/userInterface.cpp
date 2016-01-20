@@ -313,17 +313,6 @@ namespace alcp {
         std::cout << "        " << name << "((m_0, m_1, ..., m_n), (u_0, u_1, ..., u_n)" << std::endl;
     }
 
-    Fqxelem_b vvToFqxelem(std::vector<std::vector<big_int>> && v, const Fq_b f){
-        std::vector<Fqelem_b> ret(v.size());
-        std::transform(std::make_move_iterator(v.begin()),
-                       std::make_move_iterator(v.end()),
-                       ret.begin(),
-                        [&f](std::vector<big_int>&& v){
-                            return f.get(Fpxelem_b(std::move(v),f.getP()));
-                        });
-        return ret;
-    }
-
     void UserInterface::CommandEEA_ED::parseAndRun(std::istringstream &args) {
         big_int a, b, p;
         std::vector<big_int> v1, v2, i;
@@ -373,7 +362,7 @@ namespace alcp {
             else if(alcpScan(args, "(f,f,n,v)$", &vv1, &vv2, &p, &i)){
                 Fpxelem_b mod(i,p);
                 Fq_b f(mod);
-                Fqxelem_b a1 = vvToFqxelem(std::move(vv1),f), b1 = vvToFqxelem(std::move(vv2),f), x, y;
+                Fqxelem_b a1(vv1,f), b1(vv2,f), x, y;
 
                 auto g = eea(a1,b1,x,y);
                 std::cout << a1 << "*" << x << "+" << b1 << "*" << y <<
