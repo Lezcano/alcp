@@ -121,9 +121,7 @@ namespace alcp {
     }
 
     void UserInterface::CommandHelp::help(const std::string &name) {
-        std::cout <<
-        "Outputs a list with help for all the commands of the system or help for a single command, if specified" <<
-        std::endl;
+        std::cout << "Outputs a list with help for all the commands of the system or help for a single command, if specified" << std::endl;
         std::cout << "        " << name << std::endl;
         std::cout << "        " << name << "(command)" << std::endl;
     }
@@ -246,9 +244,8 @@ namespace alcp {
         "    GF(p^m) refers to the finite field of p^m elements, with p prime and m a postive integer." << std::endl;
         std::cout << "        " << name << "((a_0, a_1, ..., a_n), p)" << std::endl;
         //TODO
-        std::cout << "        " << name << "(((a0_0, a_01, ...a0_n0), ..., (am_0, ..., ak_nk)), p, (b_0, ..., b_m))" <<
-        std::endl;
-        std::cout << "    " << "The first k+1 vectors will be polynomials the coefficients";
+        std::cout << "        " << name << "(((a0_0, a_01, ...a0_n0), ..., (am_0, ..., ak_nk)), p, (b_0, ..., b_m))" << std::endl;
+        std::cout << "    " << "The first k+1 vectors will be polynomials the coefficients" << std::endl;
     }
 
     void UserInterface::CommandHensel::parseAndRun(std::istringstream &args) {
@@ -292,8 +289,7 @@ namespace alcp {
     }
 
     void UserInterface::CommandModularGCD::help(const std::string &name) {
-        std::cout <<
-        "Computes the greatest common divisor of two polynomials in Z[x] using the modular gcd algorithm." << std::endl;
+        std::cout << "Computes the greatest common divisor of two polynomials in Z[x] using the modular gcd algorithm." << std::endl;
         std::cout << "        " << name << "((a_0, a_1, ..., a_n), (b_0, b_1, ..., b_m))" << std::endl;
     }
 
