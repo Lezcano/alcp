@@ -11,6 +11,7 @@
 #include "fpxelem.hpp"
 #include "generalPurpose.hpp"
 #include "types.hpp"
+#include "exceptions.hpp"
 
 namespace alcp {
     template<class Integer>
@@ -36,7 +37,7 @@ namespace alcp {
 
         Fq(Fpxelem<Integer> mod) :_mod(mod){
             if(!mod.irreducible())
-                throw std::runtime_error("The polinomial provided to Fq was not irreducible.");
+                throw EFPXNotIrreducible("The polinomial provided to Fq was not irreducible.");
         }
 
 
@@ -76,7 +77,7 @@ namespace alcp {
             return ret;
         }
 
-        bool operator==(const Fq &rhs) const { this->_mod == rhs._mod; }
+        bool operator==(const Fq &rhs) const { return this->_mod == rhs._mod; }
 
         bool operator!=(const Fq &rhs) const { return !(*this == rhs); }
 
@@ -117,7 +118,7 @@ namespace alcp {
         F getField() const{ return F(this->_mod, true); }
 
         friend std::string to_string_coef(const Fqelem& e){
-            if(e._num.deg() == 1)
+            if(e._num.deg() == 0)
                 return "+" + to_string(e._num.lc());
             return "+(" + to_string(e._num, 't') + ")" ;
         }

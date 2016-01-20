@@ -62,6 +62,11 @@ Exception(const std::string &msg) : ExcepALCP(msg) {} \
      * Thrown when trying to create an element of F[X] with an empty vector
      */
     DECLARE_EXCEPTION(EEmptyVector);
+    DECLARE_EXCEPTION(EFPXNotIrreducible);
+    DECLARE_EXCEPTION(EDifferentSizeVectorsCRA);
+    DECLARE_EXCEPTION(ENotInitializedRing);
+ 
+ 
 }
 
 #endif // __EXCEPTIONS_HPP

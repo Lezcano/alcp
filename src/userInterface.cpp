@@ -133,7 +133,7 @@ namespace alcp {
             big_int p;
 
 			if (alcpScan(args, "(f,v,n)$", &f, &v, &p)){
-                Fqxelem pol(f, Fq_b(Fpxelem_b(v, p)));
+                Fqxelem_b pol(f, Fq_b(Fpxelem_b(v, p)));
                 std::cout << "The factors of the polynomial:" << std::endl << "    " << pol << std::endl;
                 std::cout << "are the following:" << std::endl;
                 auto factors = factorizationBerlekamp(pol);
@@ -162,7 +162,9 @@ namespace alcp {
             }
 			else
 				std::cout << "Parse error" << std::endl;
-        } catch (...) {
+        } catch (const ExcepALCP& e){
+			std::cout << e.msg() << std::endl;
+			throw e;
         }
     }
 
@@ -181,7 +183,7 @@ namespace alcp {
             big_int p;
 
 			if (alcpScan(args, "(f,n,v)$", &f, &p, &v)){
-                Fqxelem pol(f, Fq_b(Fpxelem_b(v, p)));
+                Fqxelem_b pol(f, Fq_b(Fpxelem_b(v, p)));
                 auto factors = factorizationCantorZassenhaus(pol);
                 std::cout << "The factors of the polynomial:" << std::endl << "    " << pol << std::endl;
                 std::cout << "are the following:" << std::endl;
@@ -210,7 +212,9 @@ namespace alcp {
             }
 			else
 				std::cout << "Parse error" << std::endl;
-        } catch (...) {
+        } catch (const ExcepALCP& e){
+			std::cout << e.msg() << std::endl;
+			throw e;
         }
     }
 
@@ -241,7 +245,9 @@ namespace alcp {
                     std::cout << " )^" << pair.second;
                 std::cout << std::endl;
             }
-        } catch (...) {
+        } catch (const ExcepALCP& e){
+			std::cout << e.msg() << std::endl;
+			throw e;
         }
     }
 
@@ -258,7 +264,9 @@ namespace alcp {
             Zxelem_b pol1(v1), pol2(v2);
             std::cout << "gcd( " << pol1 << " ,  " << pol2 << " ) = " << std::endl;
             std::cout << modularGCD(pol1, pol2) << std::endl;
-        } catch (...) {
+        } catch (const ExcepALCP& e){
+			std::cout << e.msg() << std::endl;
+			throw e;
         }
     }
 
@@ -273,7 +281,9 @@ namespace alcp {
 			if (!alcpScan(args, "(v,v)$", &m, &u) || m.size() != u.size())
                 std::cout << "Parse error" << std::endl;
             std::cout << integerCRA(m, u) << std::endl;
-        } catch (...) {
+        } catch (const ExcepALCP& e){
+			std::cout << e.msg() << std::endl;
+			throw e;
         }
     }
 
@@ -342,7 +352,9 @@ namespace alcp {
                 " = " << g << " (mod  " << mod << ") = gcd(" << a1 << ", " << b1 << ")" << std::endl;
             }
             else std::cout << "Parse error" << std::endl;
-        } catch (...) {
+        } catch (const ExcepALCP& e){
+			std::cout << e.msg() << std::endl;
+			throw e;
         }
     }
 
@@ -377,7 +389,9 @@ namespace alcp {
                     std::cout << "^" << it->second;
             }
             std::cout << std::endl;
-        } catch (...) {
+        } catch (const ExcepALCP& e){
+			std::cout << e.msg() << std::endl;
+			throw e;
         }
     }
 
@@ -393,7 +407,9 @@ namespace alcp {
                 std::cout << "Parse error" << std::endl; 
             pollardRhoLogarithm(2, 5, 1019, log);
             std::cout << "log_" << a << "(" << b << ") = " << log << " (mod " << p << ")" << std::endl;
-        } catch (...) {
+        } catch (const ExcepALCP& e){
+			std::cout << e.msg() << std::endl;
+			throw e;
         }
     }
 
@@ -412,7 +428,9 @@ namespace alcp {
             if (!millerRabin(num))
                 std::cout << "not ";
             std::cout << "prime" << std::endl;
-        } catch (...) {
+        } catch (const ExcepALCP& e){
+			std::cout << e.msg() << std::endl;
+			throw e;
         }
     }
 
@@ -434,7 +452,9 @@ namespace alcp {
             if (!pol.irreducible())
                 std::cout << "not ";
             std::cout << "irreducible" << std::endl;
-        } catch (...) {
+        } catch (const ExcepALCP& e){
+			std::cout << e.msg() << std::endl;
+			throw e;
         }
     }
 
@@ -517,7 +537,6 @@ namespace alcp {
 		va_start(args, fmt);
         // Get the position of the string to restore it later if there has been any parsing error
         int pos = iss.tellg();
-        std::size_t fst;
 
 		while (*fmt != '\0' && *fmt != '$') {
             while(iss.peek() == ' ' || iss.peek() == '\t')
@@ -562,7 +581,7 @@ namespace alcp {
 			else {
 				char c;
 				iss.get(c);
-				if (c != ' ' && c != *fmt) {
+				if (c != *fmt) {
                     iss.clear();
                     iss.seekg(pos);
                     return false;
@@ -586,12 +605,11 @@ namespace alcp {
 		}
 		else if(*fmt == '\0')
 			return true;
-		else {
-			std::cerr << "Debug: Bad format in alcpScan" << std::endl;
-            iss.clear();
-            iss.seekg(pos);
-			return false;
-		}
+
+		iss.clear();
+		iss.seekg(pos);
+		return false;
+
 	}
 
 }

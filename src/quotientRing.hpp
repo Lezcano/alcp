@@ -1,7 +1,6 @@
 #ifndef __FELEMBASE_HPP
 #define __FELEMBASE_HPP
 
-#include <stdexcept>        // std::runtime_error
 #include <iosfwd>           // std::ostream
 #include <memory>           // std::unique_ptr,  std::make_unique
 #include <string>           // std::to_string
@@ -53,7 +52,7 @@ namespace alcp {
         template<class Int2, class = typename std::enable_if<is_integral<Int2>::value>::type>
         Felem &operator=(Int2 rhs) {
             if (!this->_init)
-                throw std::runtime_error("Assignment to a non initialized QuotientRing elem.");
+                throw ENotInitializedRing("Assignment to a non initialized QuotientRing elem.");
             static_cast<Felem &>(*this) =
                 static_cast<const Felem*>(this)->getField().get(rhs);
             return static_cast<Felem &>(*this);

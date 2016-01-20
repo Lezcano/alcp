@@ -5,6 +5,7 @@
 #include "types.hpp"
 #include "zelem.hpp"
 #include "generalPurpose.hpp"
+#include "exceptions.hpp"
 
 namespace alcp {
     /* Auxiliary function. Finds x such that
@@ -44,7 +45,7 @@ namespace alcp {
 		big_int prod, aux;
 		std::vector<big_int> inv(n), v(n + 1);
 		if (m.size() != u.size())
-			throw std::runtime_error("The vectors in integerCRA have to be of the same size.");
+			throw EDifferentSizeVectorsCRA("The vectors in integerCRA have to be of the same size.");
 		for (int k = 1; k <= n; ++k) {
 			prod = m[0] % m[k];
 			for (int i = 1; i <= k - 1; ++i)
