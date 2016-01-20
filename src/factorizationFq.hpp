@@ -70,8 +70,6 @@ namespace alcp {
 
         Fxelem b = a.derivative();
         if (b != 0) {
-        	std::cout << a << std::endl;
-        	std::cout << b << std::endl;
             Fxelem c = gcd(a, b);
             Fxelem w = a / c;
             while (w != 1) {

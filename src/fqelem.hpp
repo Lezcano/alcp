@@ -52,8 +52,7 @@ namespace alcp {
         }
 
         Fqelem<Integer> get(Fpxelem<Integer>&& f) const {
-            f %= _mod;
-            return Fqelem<Integer>(std::move(f), _mod);
+            return Fqelem<Integer>(std::move(f % _mod), _mod);
         }
 
         Fpxelem<Integer> mod() const { return _mod; }

@@ -535,12 +535,18 @@ namespace alcp {
 	bool alcpScan(std::istringstream &iss, const char *fmt, ...) {
 		va_list args;
 		va_start(args, fmt);
+        // If The iss is empty, we return false
+        if(iss.rdbuf()->in_avail() == 0){
+            return false;
+        }
+
         // Get the position of the string to restore it later if there has been any parsing error
         int pos = iss.tellg();
 
 		while (*fmt != '\0' && *fmt != '$') {
             while(iss.peek() == ' ' || iss.peek() == '\t')
                 iss.ignore();
+
 
 			if (*fmt == 'n'){
                 big_int n;
