@@ -78,7 +78,7 @@ namespace alcp {
 
         bool operator==(const Fq &rhs) const { return this->_mod == rhs._mod; }
 
-        bool operator!=(const Fq &rhs) const { return !(*this == rhs); }
+        bool operator!=(const Fq &rhs) const { return this->_mod != rhs._mod; }
 
         friend std::string to_string(const Fq<Integer> &e) {
             return "F" + to_string(e.getP()) + "^" + to_string(e.getM());
@@ -110,9 +110,9 @@ namespace alcp {
         using FBase = QuotientRing<Fqelem, Fpxelem<Integer>, Integer>;
 
     public:
+        using F = Fq<Integer>;
         using FBase::QuotientRing;
         using FBase::operator=;
-        using F = Fq<Integer>;
 
         F getField() const{ return F(this->_mod, true); }
 

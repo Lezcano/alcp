@@ -58,6 +58,21 @@ namespace alcp {
     template<typename Fxelem>
     matrix<typename Fxelem::Felem> formMatrix(const Fxelem &pol);
 
+    template<class Integer>
+    Fpelem<Integer> randomFelem(Fp<Integer> f){
+        std::mt19937 generator(std::chrono::system_clock::now().time_since_epoch().count());
+        std::uniform_int_distribution<int> distr(0, static_cast<int>(f.getP()-1));
+        return f.get(distr(generator));
+    }
+
+    template<class Integer>
+    Fqelem<Integer> randomFelem(Fq<Integer> f){
+        std::vector<Fpelem<Integer>> ret (f.getM());
+        for(std::size_t s = 0; s < f.getM(); ++s)
+            ret[i] = randomFelem(f);
+        return f.get(ret);
+    }
+
 //Part I
 //Outputs a vector of pairs with the factors and multiplicities of the square free factorization (not necesarily sorted by multiplicity)
 /*
@@ -317,6 +332,7 @@ namespace alcp {
         }
         return result;
     }
+
 	template<typename Fxelem>
     matrix<typename Fxelem::Felem> formMatrixBigQ(const Fxelem &pol) {
 		int polDeg = pol.deg();
