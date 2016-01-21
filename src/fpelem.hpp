@@ -55,6 +55,11 @@ namespace alcp {
             return "F" + to_string(f._p);
         }
 
+        friend std::ostream &operator<<(std::ostream &os, Fp<Integer> e) {
+            os << to_string(e);
+            return os;
+        }
+
     private:
         Integer _p;
 

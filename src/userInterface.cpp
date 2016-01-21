@@ -451,7 +451,7 @@ namespace alcp {
             std::cout << "The polynomial " << pol << " is ";
             if (!pol.irreducible())
                 std::cout << "not ";
-            std::cout << "irreducible" << std::endl;
+            std::cout << "irreducible in " << pol.getField() << std::endl;
         } catch (const ExcepALCP& e){
 			std::cout << e.msg() << std::endl;
 			throw e;
@@ -537,7 +537,7 @@ namespace alcp {
 		va_start(args, fmt);
         // If The iss is empty, we return false
         if(iss.rdbuf()->in_avail() == 0){
-            return false;
+            return (fmt == "$" || fmt == "");
         }
 
         // Get the position of the string to restore it later if there has been any parsing error

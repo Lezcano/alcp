@@ -248,7 +248,7 @@ void factorIntegers(){
 }
 
 int main () {
-	//UserInterface::instance().run();
+	UserInterface::instance().run();
 
     //std::vector<std::vector<big_int>> f {{0, 0},{0, -1},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 1}};
     //std::vector<std::vector<big_int>> f {{1},{1,1}};
@@ -260,11 +260,11 @@ int main () {
     std::vector<std::vector<big_int>> f2{{0,2},{1,2}};
     Fqxelem_b pol2(f2, Fq_b(Fpxelem_b(v, p)));
     cout << pol2 << endl;
-    cout << pol2*pol2*pol2 << endl;
     auto aux = pol2*pol2*pol2;
+    cout << aux << endl;
 
     //auto factors = factorizationCantorZassenhaus(pol);
-    auto factors = factorizationBerlekamp(pol2*pol2*pol2);
+    auto factors =  factorizationCantorZassenhaus(aux);
     std::cout << "The factors of the polynomial:" << std::endl <<
     "    " << aux << std::endl;
     for (auto &pair: factors) {

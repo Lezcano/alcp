@@ -86,6 +86,11 @@ namespace alcp {
             return "F" + to_string(e.getP()) + "^" + to_string(e.getM());
         }
 
+        friend std::ostream &operator<<(std::ostream &os, const Fq<Integer>& e) {
+            os << to_string(e);
+            return os;
+        }
+
     private:
         // Auxiliary functions
         bool increment(std::vector<Fpelem<Integer>> &act) const {
