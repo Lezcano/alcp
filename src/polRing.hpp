@@ -26,10 +26,6 @@ namespace alcp {
             if (v.size() != 0) {
                 // Remove trailing zeros
                 this->removeTrailingZeros();
-                for (auto i: _v){
-                	std::cout << i << " ";
-                }
-                std::cout <<std::endl;
                 Felem aux = this->lc();
                 for (auto &e : v)
                     if (!compatible(aux, e))

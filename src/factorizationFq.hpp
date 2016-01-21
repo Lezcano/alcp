@@ -235,7 +235,6 @@ namespace alcp {
  * */
     template<typename Fxelem>
     std::vector<Fxelem> splitFactorsDD(Fxelem pol, int n) {
-    	//std::cout << "Factorizo esto: " << pol << std::endl;
         int polDeg = pol.deg();
         if (polDeg <= n) {
             std::vector<Fxelem> factors;
@@ -279,7 +278,6 @@ namespace alcp {
             }
             Fxelem g = gcd(pol, v);
             if (g != 1 && g != pol) {
-            	//std::cout << "Se divide en: " << g << "   y   " << pol/g<< std::endl;
                 std::vector<Fxelem> factors = splitFactorsDD(g, n);
                 std::vector<Fxelem> factors2 = splitFactorsDD(pol / g, n);
                 factors.insert(
@@ -346,7 +344,6 @@ namespace alcp {
             pwrsX.push_back(Fxelem(r));
             r[i] = 0;
         }
-
        Fxelem xq = Fxelem({getZero(pol.lc()), getOne(pol.lc())});
        fastPowModPol<Fxelem>(xq, pol.getField().getSize(), pwrsX, polDeg);
        Fxelem aux = xq;
