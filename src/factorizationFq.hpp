@@ -218,22 +218,23 @@ namespace alcp {
     template<class Integer>
     Fpxelem<Integer> randomPol(const Fp<Integer> & field, std::size_t degree){
     	//TODO esto genera números aleatorios de 64, parece suficiente, pero si q es mayor que 2^63 en realidad no lo es...
-		std::vector<Fpelem<Integer> > r;
+		std::vector<Fpelem<Integer> > r(degree+1);
 		std::mt19937_64 generator(std::chrono::system_clock::now().time_since_epoch().count());
-		for (int i = 0; i <= degree; ++i) {
-			r.push_back(field.get(generator()));
+        std::uniform_int_distribution<int> distr(0, field.getP()-1);
+		for (std::size_t i = 0; i <= degree; ++i) {
+			r[i]=(field.get(generator()));
 		}
-		return Fpxelem<Integer>(r);
+		return r;
     }
 
     template<class Integer>
     Fqxelem<Integer> randomPol(const Fq<Integer> & field, std::size_t degree){
-		std::vector<Fqelem<Integer>> r;
+		std::vector<Fqelem<Integer>> r(degree+1);
 		std::size_t d = field.getM()-1;
 		for (int i = 0; i <= degree; ++i) {
-			r.push_back(randomPol(field.getBaseField(), d));
+			r[i]=field.get(randomPol(field.getBaseField(), d));
 		}
-		return Fqxelem<Integer>(r);
+		return r;
     }
 
 //Part III
@@ -266,7 +267,7 @@ namespace alcp {
         }
 
         while (true) {
-            Fxelem v = randomPol<Fxelem>(pol.getField(), 2 * n - 1);
+            Fxelem v = randomPol(pol.getField(), 2 * n - 1);
             if (pol.getField().getSize() % 2 == 0) {//size %2 == 0 iff p %2 == 0
                 Fxelem aux = v;
                 for (int i = 1; i <= n * m - 1; ++i) {
