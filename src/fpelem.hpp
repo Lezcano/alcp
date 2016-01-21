@@ -78,6 +78,10 @@ namespace alcp {
 
         F getField() const{ return F(this->_mod, true); }
 
+        friend std::string to_string(const Fpelem &e) {
+            return to_string(e._num);
+        }
+
         friend std::string to_string_coef(const Fpelem& e){
             return "+" + to_string(e);
         }

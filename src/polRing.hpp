@@ -253,6 +253,14 @@ namespace alcp {
         // Degree of the polynomial
         size_t deg() const { return _v.size() - 1; }
 
+        std::size_t nonZeroCoefs() const{
+            std::size_t ret = 0;
+            for(const auto& elem : _v)
+                if(elem != 0)
+                    ++ret;
+            return ret;
+        }
+
         // Normal form of the polynomial. It ensures the unicity of gdc for example
         friend inline Fxelem normalForm(const Fxelem &e) { return e / unit(e); }
 
