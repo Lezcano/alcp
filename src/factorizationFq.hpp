@@ -389,31 +389,30 @@ namespace alcp {
         int i, j;
         std::vector<std::vector<typename Fxelem::Felem> > result;
 
-        for (auto &asd: mat){
-			for (auto &asdf: asd)
-				std::cout << asdf << " ";
-			std::cout << std::endl;
-		}
         for (int k = 0; k < n; ++k) {
             //Search for pivot element
-            for (i = 0; i < n && mat[(size_t) k][i] == 0; ++i);
+        	bool sw=true;
+            for (i = k; i < n && mat[(size_t) k][i] == 0; ++i);
 
-            if (i < n) {
+            if (i == n){
+            	for (i = 0; i < k && !(mat[(size_t) k][i] != 0 && mat[i][i] == 0); ++i);
+            	if (i==k) sw = false;
+            }
+
+            if (sw) {
                 //Normalize column i
                 typename Fxelem::Felem inv = mat[k][i].inv();
                 for (j = 0; j < n; ++j) {
                     if (j == k) mat[j][i] = 1; //This is the pivot
                     else if (mat[j][i] != 0) mat[j][i] *= inv;
                 }
-                for (auto &asd: mat){
-					for (auto &asdf: asd)
-						std::cout << asdf << " ";
-					std::cout << std::endl;
-				}
                 //Interchange column i with column k
                 if (i != k) {
                     for (j = 0; j < n; ++j) {
-                        std::swap(mat[j][k], mat[j][i]);
+                        auto aux = mat[j][k];
+                        mat[j][k] = mat[j][i];
+                        mat[j][i] = aux;
+                    	//std::swap(mat[j][k], mat[j][i]);
                     }
                 }
 
@@ -483,12 +482,8 @@ namespace alcp {
         while (factors.size() < k) {
             for (int i = 0; i < factors.size(); ++i) {
                 Fxelem v(base[(size_t) r]);
-                std::cout << v << std::endl;
                 for (auto &s : pol.getField().getElems()) {
                     Fxelem g = gcd(v - s, factors[i]);
-                    std::cout << "v-s" << v-s << std::endl;
-                    std::cout << "fac:" << factors[i] << std::endl;
-                    std::cout << "g: " << g << std::endl;
                     if (g != 1 && g != factors[i]) {
                         factors[i] /= g; //We continue in the loop with the new factors[i] because it is a divisor of the old factors[i] so it is not necessary to check the previous s and r.
                         factors.push_back(g);
@@ -513,7 +508,6 @@ namespace alcp {
     		result.push_back(std::make_pair(Fxelem(lc), 1));
     	auto aux = squareFreeFF(pol/lc);
         for (auto &pair: aux) {
-        	std::cout << pair.first <<" " << pair.second<< std::endl;
             auto aux2 = berlekamp_simple(pair.first);
             for (auto &factor: aux2) {
                 result.push_back(std::make_pair(factor, pair.second));
