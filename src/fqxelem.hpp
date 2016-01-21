@@ -56,7 +56,7 @@ namespace alcp {
 
         friend Fqxelem<Integer> getZero(const Fqxelem<Integer> &e) { return Fqxelem<Integer>(e.getField().get(0)); }
 
-        friend Fqxelem<Integer> getOne(const Fqxelem<Integer> &e) { return Fqxelem<Integer>(e.getField().get(0)); }
+        friend Fqxelem<Integer> getOne(const Fqxelem<Integer> &e) { return Fqxelem<Integer>(e.getField().get(1)); }
 
         friend Fqxelem<Integer> unit(const Fqxelem<Integer> &e) { return e.lc(); }
 

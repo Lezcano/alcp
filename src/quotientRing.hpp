@@ -187,11 +187,6 @@ namespace alcp {
 
         friend Felem getOne(const Felem &e) { return e.getField().get(1); }
 
-        friend std::string to_string(const Felem &e) {
-            return to_string(e._num);
-        }
-
-
     protected:
         QuotientRing(const Quotient& num, const Quotient& mod) : _num(num), _mod(mod), _init(true){ }
         QuotientRing(Quotient&& num, Quotient&& mod) : _num(std::move(num)), _mod(std::move(mod)), _init(true){ }

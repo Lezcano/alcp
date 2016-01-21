@@ -250,15 +250,30 @@ void factorIntegers(){
 int main () {
 	UserInterface::instance().run();
 
-    /*
-    std::vector<std::vector<big_int>> f {{0, 0},{0, -1},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 1}};
-    std::vector<big_int> v{1, 0, 1};
-    big_int p = 3;
-    Fqxelem_b pol(f, Fq_b(Fpxelem_b(v, p)));
-    cout << pol << endl;
-    Fqxelem_b b = pol.derivative();
-    cout << b << endl;
-     */
+    //std::vector<std::vector<big_int>> f {{0, 0},{0, -1},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 1}};
+    //std::vector<std::vector<big_int>> f {{1},{1,1}};
+    //std::vector<big_int> v{1, 0, 1};
+    //big_int p = 3;
+    //Fqxelem_b pol(f, Fq_b(Fpxelem_b(v, p)));
+    //Fqxelem_b aux = pol*pol*pol;
+    //cout << pol << endl;
+    //std::vector<std::vector<big_int>> f2{{0,2},{1,2}};
+    //Fqxelem_b pol2(f2, Fq_b(Fpxelem_b(v, p)));
+    //cout << pol2 << endl;
+    //cout << pol2*pol2*pol2 << endl;
+
+    ////auto factors = factorizationCantorZassenhaus(pol);
+    //auto factors = factorizationBerlekamp(aux);
+    //std::cout << "The factors of the polynomial:" << std::endl <<
+    //"    " << aux << std::endl;
+    //for (auto &pair: factors) {
+    //    if (pair.second != 1)
+    //        std::cout << "( ";
+    //    std::cout << pair.first;
+    //    if (pair.second != 1)
+    //        std::cout << " )^" << pair.second;
+    //    std::cout << std::endl;
+    }
     //testCRA();
     //testModularGCD();
     //pollardoFactorTest(false);

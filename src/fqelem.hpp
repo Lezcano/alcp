@@ -116,9 +116,15 @@ namespace alcp {
 
         F getField() const{ return F(this->_mod, true); }
 
+        friend std::string to_string(const Fqelem &e) {
+            return to_string(e._num, 't');
+        }
+
         friend std::string to_string_coef(const Fqelem& e){
             if(e._num.deg() == 0)
                 return "+" + to_string(e._num.lc());
+            else if(e._num.nonZeroCoefs() == 1)
+                return "+" + to_string(e._num, 't');
             return "+(" + to_string(e._num, 't') + ")" ;
         }
 
