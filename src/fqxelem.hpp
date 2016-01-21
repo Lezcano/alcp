@@ -46,7 +46,7 @@ namespace alcp {
                     return ret;
                 }(v,f)){}
 
-        const F getField() const {
+        const Fq<Integer> getField() const {
             return this->lc().getField();
         }
 

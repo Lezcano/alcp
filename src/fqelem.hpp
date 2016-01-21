@@ -57,7 +57,7 @@ namespace alcp {
 
         Fpxelem<Integer> mod() const { return _mod; }
 
-		Fp<Integer> getBaseField(){ return  _mod.lc().getField(); }
+		Fp<Integer> getBaseField() const { return  _mod.lc().getField(); }
 
         Integer getSize() const { return fastPow(this->getP(), this->getM()); }
 
