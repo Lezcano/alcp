@@ -48,13 +48,14 @@ namespace alcp {
             return *this;
         }
 
-        // TODO This is not ok, Int2 should be Quotient
+        // Implying that Z is inmersible into the ring...
         template<class Int2, class = typename std::enable_if<is_integral<Int2>::value>::type>
         Felem &operator=(Int2 rhs) {
             if (!this->_init)
                 throw ENotInitializedRing("Assignment to a non initialized QuotientRing elem.");
             static_cast<Felem &>(*this) =
                 static_cast<const Felem*>(this)->getField().get(rhs);
+            _init = true;
             return static_cast<Felem &>(*this);
         }
 
