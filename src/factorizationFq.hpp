@@ -215,7 +215,6 @@ namespace alcp {
         }
     }
 
-
     template<class Integer>
     Fpxelem<Integer> randomPol(const Fp<Integer> & field, std::size_t degree){
     	//TODO esto genera números aleatorios de 64, parece suficiente, pero si q es mayor que 2^63 en realidad no lo es...
@@ -298,7 +297,6 @@ namespace alcp {
             }
         }
     }
-
 
 /**
  * Input: a polynomial pol over a field of size q
