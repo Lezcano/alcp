@@ -155,7 +155,6 @@ namespace alcp {
         unsigned int i = 1;
         r[1] -= 1;
         result.push_back(std::make_pair(gcd(Fxelem(r), pol), i));
-
         r[1] += 1;
         if (result.back().first != 1)
             pol /= result.back().first;
@@ -227,7 +226,6 @@ namespace alcp {
         }
         return Fxelem(r);
     }
-
 
 //Part III
 /*
@@ -486,6 +484,8 @@ namespace alcp {
 			return result;
 		}
     	auto lc = pol.lc();
+    	if (lc != 1)
+    		result.push_back(Fxelem(lc), 1);
     	auto aux = squareFreeFF(pol/lc);
         for (auto &pair: aux) {
             auto aux2 = berlekamp_simple(pair.first);

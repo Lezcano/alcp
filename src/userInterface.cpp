@@ -182,7 +182,7 @@ namespace alcp {
             std::vector< std::vector<big_int> > f;
             big_int p;
 
-			if (alcpScan(args, "(f,n,v)$", &f, &p, &v)){
+			if (alcpScan(args, "(f,v,n)$", &f, &v, &p)){
                 Fqxelem_b pol(f, Fq_b(Fpxelem_b(v, p)));
                 auto factors = factorizationCantorZassenhaus(pol);
                 std::cout << "The factors of the polynomial:" << std::endl << "    " << pol << std::endl;
