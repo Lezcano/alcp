@@ -58,21 +58,6 @@ namespace alcp {
     template<typename Fxelem>
     matrix<typename Fxelem::Felem> formMatrix(const Fxelem &pol);
 
-    template<class Integer>
-    Fpelem<Integer> randomFelem(Fp<Integer> f){
-        std::mt19937 generator(std::chrono::system_clock::now().time_since_epoch().count());
-        std::uniform_int_distribution<int> distr(0, static_cast<int>(f.getP()-1));
-        return f.get(distr(generator));
-    }
-
-    template<class Integer>
-    Fqelem<Integer> randomFelem(Fq<Integer> f){
-        std::vector<Fpelem<Integer>> ret (f.getM());
-        for(std::size_t s = 0; s < f.getM(); ++s)
-            ret[i] = randomFelem(f);
-        return f.get(ret);
-    }
-
 //Part I
 //Outputs a vector of pairs with the factors and multiplicities of the square free factorization (not necesarily sorted by multiplicity)
 /*
@@ -231,15 +216,25 @@ namespace alcp {
     }
 
 
-    template<typename Fxelem>
-    Fxelem randomPol(const typename Fxelem::F &field, int degree) {
-        //TODO esto genera números aleatorios de 64, parece suficiente, pero si q es mayor que 2^63 en realidad no lo es...
-        std::vector<typename Fxelem::Felem> r;
-        std::mt19937_64 generator(std::chrono::system_clock::now().time_since_epoch().count());
-        for (int i = 0; i <= degree; ++i) {
-            r.push_back(field.get(generator()));
-        }
-        return Fxelem(r);
+    template<class Integer>
+    Fpxelem<Integer> randomPol(const Fp<Integer> & field, std::size_t degree){
+    	//TODO esto genera números aleatorios de 64, parece suficiente, pero si q es mayor que 2^63 en realidad no lo es...
+		std::vector<Fpelem<Integer> > r;
+		std::mt19937_64 generator(std::chrono::system_clock::now().time_since_epoch().count());
+		for (int i = 0; i <= degree; ++i) {
+			r.push_back(field.get(generator()));
+		}
+		return Fpxelem<Integer>(r);
+    }
+
+    template<class Integer>
+    Fqxelem<Integer> randomPol(const Fq<Integer> & field, std::size_t degree){
+		std::vector<Fqelem<Integer>> r;
+		std::size_t d = field.getM()-1;
+		for (int i = 0; i <= degree; ++i) {
+			r.push_back(randomPol(field.getBaseField(), d));
+		}
+		return Fqxelem<Integer>(r);
     }
 
 //Part III
@@ -247,8 +242,8 @@ namespace alcp {
  *
  * */
     template<typename Fxelem>
-    std::vector<Fxelem> splitFactorsDD(Fxelem pol, int n) {
-        int polDeg = pol.deg();
+    std::vector<Fxelem> splitFactorsDD(Fxelem pol, std::size_t n) {
+        std::size_t polDeg = pol.deg();
         if (polDeg <= n) {
             std::vector<Fxelem> factors;
             factors.push_back(pol);
@@ -501,7 +496,7 @@ namespace alcp {
 		}
     	auto lc = pol.lc();
     	if (lc != 1)
-    		result.push_back(Fxelem(lc), 1);
+    		result.push_back(std::make_pair(Fxelem(lc), 1));
     	auto aux = squareFreeFF(pol/lc);
         for (auto &pair: aux) {
             auto aux2 = berlekamp_simple(pair.first);
@@ -509,7 +504,6 @@ namespace alcp {
                 result.push_back(std::make_pair(factor, pair.second));
             }
         }
-        result[0].first *= lc;
         return result;
     }
 
@@ -521,6 +515,8 @@ namespace alcp {
     		return result;
     	}
     	auto lc = pol.lc();
+			if (lc != 1)
+				result.push_back(std::make_pair(Fxelem(lc), 1));
     	auto aux = squareFreeFF(pol/lc);
         for (auto &pair: aux) {
             auto polAndDegree = partialFactorDD(pair.first);
@@ -533,7 +529,6 @@ namespace alcp {
                 }
             }
         }
-        result[0].first *= lc;
         return result;
     }
 }

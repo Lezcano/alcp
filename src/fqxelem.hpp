@@ -54,9 +54,9 @@ namespace alcp {
             return this->getField().getSize();
         }
 
-        friend Fqxelem<Integer> getZero(const Fqxelem<Integer> &e) { return Fqxelem<Integer>(getZero(e.lc()); }
+        friend Fqxelem<Integer> getZero(const Fqxelem<Integer> &e) { return Fqxelem<Integer>(getZero(e.lc())); }
 
-        friend Fqxelem<Integer> getOne(const Fqxelem<Integer> &e) { return Fqxelem<Integer>(getOne(e.lc()); }
+        friend Fqxelem<Integer> getOne(const Fqxelem<Integer> &e) { return Fqxelem<Integer>(getOne(e.lc())); }
 
         friend Fqxelem<Integer> unit(const Fqxelem<Integer> &e) { return e.lc(); }
 

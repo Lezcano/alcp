@@ -138,7 +138,7 @@ namespace alcp {
                 std::cout << "are the following:" << std::endl;
                 auto factors = factorizationBerlekamp(pol);
                 for (auto &pair: factors) {
-                    if (pair.second != 1)
+                	if (pair.second != 1)
                         std::cout << "( ";
                     std::cout << pair.first;
                     if (pair.second != 1)
