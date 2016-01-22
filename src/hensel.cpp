@@ -114,8 +114,8 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 			if (poli.lc() % prime == 0 || gcd(aux, Fpxelem_b(poli.derivative(), prime)) != 1)
 				continue;
 
-			auto factorsModP = factorizationBerlekamp(aux);
-			//auto factorsModP = factorizationCantorZassenhaus(aux);
+			//auto factorsModP = factorizationBerlekamp(aux);
+			auto factorsModP = factorizationCantorZassenhaus(aux);
 			hs.insert(factorsModP, aux);
 		}
 
