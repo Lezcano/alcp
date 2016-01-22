@@ -114,6 +114,7 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 			if (poli.lc() % prime == 0 || gcd(aux, Fpxelem_b(poli.derivative(), prime)) != 1)
 				continue;
 
+			//auto factorsModP = factorizationBerlekamp(aux);
 			auto factorsModP = factorizationCantorZassenhaus(aux);
 			hs.insert(factorsModP, aux);
 		}
@@ -163,7 +164,11 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 			result.push_back(std::make_pair(pol, 1));
 			return result;
 		}
-		auto aux = squareFreeFactChar0(pol);
+		big_int icontent = content(pol);
+		if (icontent != 1){
+			result.push_back(std::make_pair(icontent, 1));
+		}
+		auto aux = squareFreeFactChar0(pol/Zxelem_b(icontent));
 		for (auto &pair: aux) {
 			auto factors = factorizationHenselSquareFree(pair.first);
 			for (auto &elem : factors) {

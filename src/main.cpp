@@ -172,7 +172,7 @@ void pruebasCoutFpxelem(int opt){
 
 void pruebasHenselSqFree(bool verbose){
 	//std::vector<big_int> v = {1, 1, 1};
-	//std::vector<big_int> v = {0, 4, 22, -44, 3, 20, -2, -4, 1};
+	//std::vector<big_int> v = {34, 4, 22, -44, 3, 20, -2, -4, 1};
 	//std::vector<big_int> v = {121, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
 	//std::vector<big_int> v = {576, 0, -960, 0, 352, 0, -40, 0, 1};
 	//std::vector<big_int> v = {0, 4, 6, 4, 1};
@@ -182,8 +182,8 @@ void pruebasHenselSqFree(bool verbose){
 	//std::vector<big_int> v = {1, 1, 1, 1, 1, 1, 1};
 	std::vector<big_int> v = {0, 1, 6 , 20 , 49 , 99 , 175 , 280 , 414 , 574 , 755 , 951 , 1155 , 1359 , 1554 , 1730 , 1876 , 1981 , 2036 , 2036 , 1981 , 1876 , 1730 , 1554 , 1359 , 1155 , 951 , 755 , 574 , 414 , 280 , 175 , 99 , 49 , 20 , 6 , 1};//(x^12+x^11+x^10+x^9+x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+1)*(x^10+x^9+x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+1)*(x^6+x^5+x^4+x^3+x^2+x+1)*(x^4+x^3+x^2+x+1)*(x^2+x+1)*(x+1)*x
 
-	for (auto & ve:v){
-		ve*=12;
+	for (auto &e: v){
+		e*=12;
 	}
 	Zxelem_b pol(v);
     if(verbose)
@@ -248,13 +248,13 @@ void factorIntegers(){
 }
 
 int main () {
-	//UserInterface::instance().run();
+	UserInterface::instance().run();
 
     //testCRA();
     //testModularGCD();
     //pollardoFactorTest(false);
     //pollardoLogarithm(false);
-    //pruebasHenselSqFree(false);
+    //pruebasHenselSqFree(true);
     //pruebasHenselNoSeparable();
     //testGoodOldGCD();
     //symForm();
