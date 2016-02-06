@@ -220,7 +220,7 @@ namespace alcp {
     	//TODO esto genera números aleatorios de 64, parece suficiente, pero si q es mayor que 2^63 en realidad no lo es...
 		std::vector<Fpelem<Integer> > r(degree+1);
 		std::mt19937_64 generator(std::chrono::system_clock::now().time_since_epoch().count());
-        std::uniform_int_distribution<int> distr(0, field.getP()-1);
+        std::uniform_int_distribution<int> distr(0, static_cast<int>(field.getP())-1);
 		for (std::size_t i = 0; i <= degree; ++i) {
 			r[i]=(field.get(generator()));
 		}

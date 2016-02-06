@@ -373,7 +373,7 @@ namespace alcp {
                 std::cout << "Parse error" << std::endl; 
             std::cout << "WARNING: This algorithm is probabilistic. Some integers might not fully factorize." << std::endl;
             std::cout << aux << " = ";
-            auto map = factorInteger(aux);
+            auto map = factorInteger(static_cast<long long>(aux));
 
             auto it = map.begin();
 
