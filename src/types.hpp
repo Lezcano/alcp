@@ -6,8 +6,9 @@
 
 namespace alcp {
     //using big_int = long long int;
+    using big_int = boost::multiprecision::number<boost::multiprecision::cpp_int::backend_type, boost::multiprecision::et_off>;
     //using big_int = boost::multiprecision::cpp_int;
-    using big_int =  boost::multiprecision::int256_t;
+    //using big_int =  boost::multiprecision::int256_t;
 
 
 

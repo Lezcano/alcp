@@ -101,7 +101,6 @@ namespace alcp {
             xx = r1;
             yy = r2;
         }
-        // TODO: IDK why it doesn't work without the casting
         x /= unit(ua * unit(a));
         y /= unit(ub * unit(a));
         return normalForm(a);
