@@ -17,6 +17,7 @@ namespace alcp {
             std::is_integral<T>::value ||
             std::is_same<typename std::decay<T>::type, big_int>::value
         >{};
+
 }
 
 #endif // __TYPES_HPP

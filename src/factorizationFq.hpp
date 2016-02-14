@@ -352,7 +352,7 @@ namespace alcp {
             pwrsX.push_back(Fxelem(r));
             r[i] = 0;
         }
-       Fxelem xq = Fxelem({getZero(pol.lc()), getOne(pol.lc())});
+       Fxelem xq = Fxelem(std::vector<typename Fxelem::Felem>({getZero(pol.lc()), getOne(pol.lc())}));
        fastPowModPol<Fxelem>(xq, pol.getField().getSize(), pwrsX, polDeg);
        Fxelem aux = xq;
        auto aux2 = static_cast<std::vector<typename Fxelem::Felem> >(xq);

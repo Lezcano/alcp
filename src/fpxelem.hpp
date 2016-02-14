@@ -15,9 +15,9 @@ namespace alcp {
     class Zxelem;
 
     template<class Integer>
-    class Fpxelem : public PolynomialRing<Fpxelem<Integer>, Fpelem<Integer>> {
+    class Fpxelem : public PolynomialRing<Fpxelem, Fpelem<Integer>, Integer> {
     private:
-        using FBase = PolynomialRing<Fpxelem<Integer>, Fpelem<Integer>>;
+        using FBase = PolynomialRing<Fpxelem, Fpelem<Integer>, Integer>;
 
     public:
         // Base field
@@ -32,7 +32,7 @@ namespace alcp {
         Fpxelem(const Zxelem<Integer> &e, Integer p) : FBase(toFpxelem(e, p)) { }
 
         bool irreducible() const {
-            Fpxelem x({this->getField().get(0), this->getField().get(1)});
+            Fpxelem x(std::vector<Fpelem<Integer>>{getZero(this->lc()), getOne(this->lc())});
             Fpxelem xpk = x; // x^(p^k)
 
             for (unsigned int i = 0; i < this->deg() / 2; ++i) {
@@ -99,6 +99,8 @@ namespace alcp {
     };
 
     using Fpxelem_b = Fpxelem<big_int>;
+
+    //template class Fpxelem<big_int>;
 }
 
 #endif

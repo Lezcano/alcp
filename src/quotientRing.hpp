@@ -11,18 +11,28 @@
 #include "exceptions.hpp"
 
 namespace alcp {
-    template<template<class> class FelemBase,
-            class Quotient, class Integer>
+    template<template <class> class FelemBase, class Quotient, class Integer>
     class QuotientRing {
+    static_assert(is_integral<Integer>::value, "Type is not a supported integer.");
     public:
-        // Base field
         using Felem = FelemBase<Integer>;
-
+        using Int = Integer;
         QuotientRing() = default;
 
         QuotientRing(const QuotientRing &) = default;
 
+        // Necesario Integer porque si hacemos class Felem, en vez de class template,
+        //  no podemos hacer const QuotientRing<Felem,Quot> con Quot un template dado que
+        //  los templates serian diferentes
+        template<class Int, class Quot,
+                class = std::enable_if_t<is_integral<Int>::value>>
+        QuotientRing(const QuotientRing<FelemBase, Quot, Int> &rhs) : _init(true), _mod(rhs._mod), _num(rhs._num){ }
+
         QuotientRing(QuotientRing &&) = default;
+
+        template<class Int, class Quot,
+                class = std::enable_if_t<is_integral<Int>::value>>
+        QuotientRing(QuotientRing<FelemBase, Quot, Int> &&rhs) : _init(true), _mod(std::move(rhs._mod)), _num(std::move(rhs._num)){ }
 
         // Copy assignment
         QuotientRing &operator=(const QuotientRing &rhs) {
@@ -36,8 +46,35 @@ namespace alcp {
             return *this;
         }
 
+        // Duplicated code for generalized copy... :/
+        template<class Int, class Quot,
+                class = std::enable_if_t<is_integral<Int>::value>>
+        QuotientRing &operator=(const QuotientRing<FelemBase, Quot, Int> &rhs){
+            if (&rhs != this && rhs._init) {
+                if (this->_init)
+                    checkInSameField(rhs, "The elements are not in the same ring.");
+                _init = true;
+                _mod = rhs._mod;
+                _num = rhs._num;
+            }
+            return *this;
+        }
         // Move assignment
         QuotientRing &operator=(QuotientRing &&rhs) {
+            if (&rhs != this && rhs._init) {
+                if (this->_init)
+                    checkInSameField(rhs, "The elements are not in the same ring.");
+                _init = true;
+                _mod = std::move(rhs._mod);
+                _num = std::move(rhs._num);
+            }
+            return *this;
+        }
+
+        // Duplicated code for generalized move... :/
+        template<class Int, class Quot,
+                class = std::enable_if_t<is_integral<Int>::value>>
+        QuotientRing &operator=(QuotientRing<FelemBase, Quot, Int> &&rhs){
             if (&rhs != this && rhs._init) {
                 if (this->_init)
                     checkInSameField(rhs, "The elements are not in the same ring.");
@@ -119,7 +156,7 @@ namespace alcp {
             return Felem(static_cast<const Felem &>(*this)) /= rhs;
         }
 
-        Integer getSize() const { return static_cast<const Felem*>(this)->getField().getSize(); }
+        auto getSize() const { return static_cast<const Felem*>(this)->getField().getSize(); }
 
 
         friend std::ostream &operator<<(std::ostream &os, const Felem &e) {
@@ -127,56 +164,69 @@ namespace alcp {
             return os;
         }
 
-        friend bool operator==(const Felem &lhs, Integer rhs) {
+        template<class Int, class = std::enable_if_t<is_integral<Int>::value>>
+        friend bool operator==(const Felem &lhs, Int rhs) {
             return lhs == lhs.getField().get(rhs);
         }
 
-        friend bool operator==(Integer lhs, const Felem &rhs) {
+        template<class Int, class = std::enable_if_t<is_integral<Int>::value>>
+        friend bool operator==(Int lhs, const Felem &rhs) {
             return rhs == lhs;
         }
 
-        friend bool operator!=(const Felem &lhs, Integer rhs) {
+        template<class Int, class = std::enable_if_t<is_integral<Int>::value>>
+        friend bool operator!=(const Felem &lhs, Int rhs) {
             return !(lhs == rhs);
         }
 
-        friend bool operator!=(Integer lhs, const Felem &rhs) {
+        template<class Int, class = std::enable_if_t<is_integral<Int>::value>>
+        friend bool operator!=(Int lhs, const Felem &rhs) {
             return !(lhs == rhs);
         }
 
 
-        friend Felem &operator+=(Felem &lhs, Integer rhs) {
+        template<class Int, class = std::enable_if_t<is_integral<Int>::value>>
+        friend Felem &operator+=(Felem &lhs, Int rhs) {
             return lhs += lhs.getField().get(rhs);
         }
 
-        friend Felem operator+(const Felem &lhs, Integer rhs) {
+        template<class Int, class = std::enable_if_t<is_integral<Int>::value>>
+        friend Felem operator+(const Felem &lhs, Int rhs) {
             return lhs + lhs.getField().get(rhs);
         }
 
-        friend Felem operator+(Integer lhs, const Felem &rhs) {
+        template<class Int, class = std::enable_if_t<is_integral<Int>::value>>
+        friend Felem operator+(Int lhs, const Felem &rhs) {
             return rhs.getField().get(lhs) + rhs;
         }
 
-        friend Felem &operator-=(Felem &lhs, Integer rhs) {
+        template<class Int, class = std::enable_if_t<is_integral<Int>::value>>
+        friend Felem &operator-=(Felem &lhs, Int rhs) {
             return lhs -= lhs.getField().get(rhs);
         }
 
-        friend Felem operator-(const Felem &lhs, Integer rhs) {
+        template<class Int, class = std::enable_if_t<is_integral<Int>::value>>
+        friend Felem operator-(const Felem &lhs, Int rhs) {
             return lhs - lhs.getField().get(rhs);
         }
 
-        friend Felem operator-(Integer lhs, const Felem &rhs) {
+        template<class Int, class = std::enable_if_t<is_integral<Int>::value>>
+        friend Felem operator-(Int lhs, const Felem &rhs) {
             return rhs.getField().get(lhs) - rhs;
         }
 
-        friend Felem &operator*=(Felem &lhs, Integer rhs) {
+        template<class Int, class = std::enable_if_t<is_integral<Int>::value>>
+        friend Felem &operator*=(Felem &lhs, Int rhs) {
             return lhs *= lhs.getField().get(rhs);
         }
 
-        friend Felem operator*(const Felem &lhs, Integer rhs) {
+        template<class Int, class = std::enable_if_t<is_integral<Int>::value>>
+        friend Felem operator*(const Felem &lhs, Int rhs) {
             return lhs * lhs.getField().get(rhs);
         }
 
-        friend Felem operator*(Integer lhs, const Felem &rhs) {
+        template<class Int, class = std::enable_if_t<is_integral<Int>::value>>
+        friend Felem operator*(Int lhs, const Felem &rhs) {
             return rhs.getField().get(lhs) * rhs;
         }
 
@@ -194,7 +244,10 @@ namespace alcp {
 
         Quotient _num;
         Quotient _mod;
+        bool _init{false};
 
+        template <template <class> class, class, class>
+            friend class QuotientRing;
     private:
 
         void checkInSameField(const QuotientRing &rhs, std::string &&error) const {
@@ -211,8 +264,6 @@ namespace alcp {
                         " in " +
                         to_string(static_cast<const Felem &>(rhs).getField()));
         }
-
-        bool _init{false};
     };
 }
 

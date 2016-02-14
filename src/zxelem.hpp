@@ -19,9 +19,9 @@ namespace alcp {
     class Fp;
 
     template<class Integer>
-    class Zxelem : public PolynomialRing<Zxelem<Integer>, Integer> {
+    class Zxelem : public PolynomialRing<Zxelem, Integer, Integer> {
     private:
-        using RBase = PolynomialRing<Zxelem<Integer>, Integer>;
+        using RBase = PolynomialRing<Zxelem, Integer, Integer>;
 
     public:
         // Inherit ctors
@@ -72,5 +72,6 @@ namespace alcp {
 
     using Zxelem_b = Zxelem<big_int>;
 
+    //template class Zxelem<big_int>;
 }
 #endif

@@ -11,18 +11,29 @@
 #include "exceptions.hpp"
 
 namespace alcp {
-    template<typename Fxelem, typename Felem>
+    template<template <class> class FxelemBase , class Felem, class Integer>
     class PolynomialRing {
+    static_assert(is_integral<Integer>::value, "Type is not a supported integer.");
+    private:
+        using Fxelem = FxelemBase<Integer>;
     public:
-
+        using Int = Integer;
         const static char var = 'x';
 
         PolynomialRing() = default;
 
         // Immersion from the base ring
-        PolynomialRing(const Felem &e) : _v(std::vector<Felem>({e})) { }
+        template<class Felem_t,
+                class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>>
+        PolynomialRing(const Felem_t &e) : _v(std::vector<Felem>({e})) { }
 
-        PolynomialRing(const std::vector<Felem> &v) : _v(v) {
+        // Move immersion from base ring
+        template<class Felem_t,
+                class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>>
+        PolynomialRing(Felem_t &&e) : _v(std::vector<Felem>({std::move(e)})) { }
+
+        template<class Felem_t, class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>>
+        PolynomialRing(const std::vector<Felem_t> &v) : _v(v) {
             if (v.size() != 0) {
                 // Remove trailing zeros
                 this->removeTrailingZeros();
@@ -34,7 +45,23 @@ namespace alcp {
         }
 
         PolynomialRing(const PolynomialRing &) = default;
+
+        template<class Felem_t, class Int,
+                class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>,
+                class = std::enable_if_t<is_integral<Int>::value>>
+        PolynomialRing(const PolynomialRing<FxelemBase, Felem_t, Int> & e)
+            : _v(e._v.begin(), e._v.end()){};
+
         PolynomialRing(PolynomialRing &&) = default;
+
+        template<class Felem_t, class Int,
+                class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>,
+                class = std::enable_if_t<is_integral<Int>::value>>
+        PolynomialRing(PolynomialRing<FxelemBase, Felem_t, Int> && e)
+            : _v(
+                std::make_move_iterator(e._v.begin()),
+                std::make_move_iterator(e._v.end())
+                ){};
 
         // Copy assignment
         PolynomialRing &operator=(const PolynomialRing &rhs) {
@@ -49,6 +76,15 @@ namespace alcp {
                 _v = rhs._v;
             }
             return *this;
+        }
+
+
+        // Generalized copy assignment duplicated code...
+        template<class Felem_t, class Int,
+                class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>,
+                class = std::enable_if_t<is_integral<Int>::value>>
+        PolynomialRing &operator=(const PolynomialRing<FxelemBase, Felem_t, Int> &rhs) {
+            return *this = PolynomialRing(rhs);
         }
 
         // Move assignment
@@ -66,8 +102,18 @@ namespace alcp {
             return *this;
         }
 
+        // Generalized move assignment
+        template<class Felem_t, class Int,
+                class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>,
+                class = std::enable_if_t<is_integral<Int>::value>>
+        PolynomialRing &operator=(PolynomialRing<FxelemBase, Felem_t, Int> &&rhs) {
+            return *this = PolynomialRing(std::move(rhs));
+        }
+
         // Copy assignment from base ring
-        Fxelem &operator=(const Felem &rhs) {
+        template<class Felem_t,
+                class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>>
+        Fxelem &operator=(const Felem_t &rhs) {
             if (this->initialized() && !compatible(this->lc(), rhs))
                 throw ENotCompatible(
                         "Asignation failed. The vector " +
@@ -76,6 +122,22 @@ namespace alcp {
                             to_string(static_cast<const Fxelem &>(rhs)) +
                             " are not in the same ring.");
             _v = std::vector<Felem>(rhs);
+            return static_cast<Fxelem&>(*this);
+        }
+
+
+        // Move assignment from base ring
+        template<class Felem_t,
+                class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>>
+        Fxelem &operator=(Felem_t &&rhs) {
+            if (this->initialized() && !compatible(this->lc(), rhs))
+                throw ENotCompatible(
+                        "Asignation failed. The vector " +
+                        to_string(static_cast<Fxelem &>(*this)) +
+                        " and the element " +
+                        to_string(static_cast<const Fxelem &>(rhs)) +
+                        " are not in the same ring.");
+            _v = std::vector<Felem>(std::move(rhs));
             return static_cast<Fxelem&>(*this);
         }
 
@@ -207,28 +269,27 @@ namespace alcp {
             return Fxelem(static_cast<const Fxelem &>(*this)) %= rhs;
         }
 
+        //friend inline Fxelem operator+(const Fxelem &lhs, const Felem &rhs){ return lhs + Fxelem(rhs); }
+        //friend inline Fxelem operator-(const Fxelem &lhs, const Felem &rhs){ return lhs - Fxelem(rhs); }
+        //friend inline Fxelem operator*(const Fxelem &lhs, const Felem &rhs){ return lhs * Fxelem(rhs); }
+        //friend inline Fxelem operator/(const Fxelem &lhs, const Felem &rhs){ return lhs / Fxelem(rhs); }
+        //friend inline Fxelem operator%(const Fxelem &lhs, const Felem &rhs){ return lhs % Fxelem(rhs); }
+        //friend inline bool operator==(const Fxelem &lhs, const Felem &rhs){ return lhs == Fxelem(rhs); }
+        //friend inline bool operator!=(const Fxelem &lhs, const Felem &rhs){ return lhs != Fxelem(rhs); }
 
-        friend inline Fxelem operator+(const Fxelem &lhs, const Felem &rhs){ return lhs + Fxelem(rhs); }
-        friend inline Fxelem operator-(const Fxelem &lhs, const Felem &rhs){ return lhs - Fxelem(rhs); }
-        friend inline Fxelem operator*(const Fxelem &lhs, const Felem &rhs){ return lhs * Fxelem(rhs); }
-        friend inline Fxelem operator/(const Fxelem &lhs, const Felem &rhs){ return lhs / Fxelem(rhs); }
-        friend inline Fxelem operator%(const Fxelem &lhs, const Felem &rhs){ return lhs % Fxelem(rhs); }
-        friend inline bool operator==(const Fxelem &lhs, const Felem &rhs){ return lhs == Fxelem(rhs); }
-        friend inline bool operator!=(const Fxelem &lhs, const Felem &rhs){ return lhs != Fxelem(rhs); }
+        //friend inline Fxelem &operator+=(Fxelem &lhs, const Felem &rhs){return lhs += Fxelem(rhs); }
+        //friend inline Fxelem &operator-=(Fxelem &lhs, const Felem &rhs){ return lhs -= Fxelem(rhs); }
+        //friend inline Fxelem &operator*=(Fxelem &lhs, const Felem &rhs){ return lhs *= Fxelem(rhs); }
+        //friend inline Fxelem &operator/=(Fxelem &lhs, const Felem &rhs){ return lhs /= Fxelem(rhs); }
+        //friend inline Fxelem &operator%=(Fxelem &lhs, const Felem &rhs){ return lhs %= Fxelem(rhs); }
 
-        friend inline Fxelem &operator+=(Fxelem &lhs, const Felem &rhs){return lhs += Fxelem(rhs); }
-        friend inline Fxelem &operator-=(Fxelem &lhs, const Felem &rhs){ return lhs -= Fxelem(rhs); }
-        friend inline Fxelem &operator*=(Fxelem &lhs, const Felem &rhs){ return lhs *= Fxelem(rhs); }
-        friend inline Fxelem &operator/=(Fxelem &lhs, const Felem &rhs){ return lhs /= Fxelem(rhs); }
-        friend inline Fxelem &operator%=(Fxelem &lhs, const Felem &rhs){ return lhs %= Fxelem(rhs); }
-
-        friend inline Fxelem operator+(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) + rhs; }
-        friend inline Fxelem operator-(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) - rhs; }
-        friend inline Fxelem operator*(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) * rhs; }
-        friend inline Fxelem operator/(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) / rhs; }
-        friend inline Fxelem operator%(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) % rhs; }
-        friend inline bool operator==(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) == rhs; }
-        friend inline bool operator!=(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) != rhs; }
+        //friend inline Fxelem operator+(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) + rhs; }
+        //friend inline Fxelem operator-(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) - rhs; }
+        //friend inline Fxelem operator*(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) * rhs; }
+        //friend inline Fxelem operator/(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) / rhs; }
+        //friend inline Fxelem operator%(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) % rhs; }
+        //friend inline bool operator==(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) == rhs; }
+        //friend inline bool operator!=(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) != rhs; }
 
         const Felem &operator[](size_t i) const { return _v[i]; }
 
@@ -311,6 +372,10 @@ namespace alcp {
         std::vector<Felem> _v;
 
     private:
+
+        template <template <class> class, class, class>
+        friend class PolynomialRing;
+
         void removeTrailingZeros() {
             Felem zero = getZero(this->lc());
             _v.erase(

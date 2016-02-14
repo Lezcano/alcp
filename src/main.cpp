@@ -27,7 +27,7 @@ void symForm(){
         v.push_back(f.get(7*i+3));
     Fpxelem_b aux (v);
     Zxelem_b zx (aux);
-    Zxelem_b test({3,-7,0, 7, -3, 4, -6, 1, 8});
+    Zxelem_b test(vector<big_int>({3,-7,0, 7, -3, 4, -6, 1, 8}));
     if (test != zx)
         throw runtime_error("XX. Falla el paso a forma simetrica!");
     else
@@ -37,13 +37,13 @@ void symForm(){
 void testModularGCD(){
     const int n = 3;
     int i;
-    Zxelem_b a[n] = {Zxelem_b({-360, -171, 145, 25, 1}),
-                     Zxelem_b({-5,2,8,-3,-3,0,1,0,1}),
+    Zxelem_b a[n] = {Zxelem_b(vector<big_int>({-360, -171, 145, 25, 1})),
+                     Zxelem_b(vector<big_int>({-5,2,8,-3,-3,0,1,0,1})),
                      Zxelem_b(vector<big_int>({2,2}))};
-    Zxelem_b b[n] = {Zxelem_b({-15,-14,-1,15,14,1}),
-                     Zxelem_b({21,-9,-4,0,5,0,3}),
-                     Zxelem_b({1,2,1})};
-    Zxelem_b res[n] = {Zxelem_b({15,14,1}),
+    Zxelem_b b[n] = {Zxelem_b(vector<big_int>({-15,-14,-1,15,14,1})),
+                     Zxelem_b(vector<big_int>({21,-9,-4,0,5,0,3})),
+                     Zxelem_b(vector<big_int>({1,2,1}))};
+    Zxelem_b res[n] = {Zxelem_b(vector<big_int>({15,14,1})),
                        Zxelem_b(vector<big_int>({1})),
                        Zxelem_b(vector<big_int>({1,1}))};
     for(i=0;i<n;++i)

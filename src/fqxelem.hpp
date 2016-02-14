@@ -9,9 +9,9 @@
 
 namespace alcp {
     template<class Integer>
-    class Fqxelem : public PolynomialRing<Fqxelem<Integer>, Fqelem<Integer>> {
+    class Fqxelem : public PolynomialRing<Fqxelem, Fqelem<Integer>, Integer> {
     private:
-        using FBase = PolynomialRing<Fqxelem<Integer>, Fqelem<Integer>>;
+        using FBase = PolynomialRing<Fqxelem, Fqelem<Integer>, Integer>;
     public:
         // Base field
         using F = Fq<Integer>;
@@ -44,7 +44,7 @@ namespace alcp {
                                        return f1.get(Fpxelem<Integer>(std::move(v2),f1.getP()));
                                    });
                     return ret;
-                }(v,f)){}
+                }(std::move(v),std::move(f))){}
 
         const Fq<Integer> getField() const {
             return this->lc().getField();
@@ -76,6 +76,8 @@ namespace alcp {
     };
 
     using Fqxelem_b = Fqxelem<big_int>;
+
+    //template class Fqxelem<big_int>;
 }
 
 #endif

@@ -9,6 +9,7 @@
 #include <cstdarg>
 #include <algorithm>
 #include <utility>
+#include <cstring>
 
 #include "types.hpp"
 #include "fpelem.hpp"
@@ -537,7 +538,7 @@ namespace alcp {
 		va_start(args, fmt);
         // If The iss is empty, we return false
         if(iss.rdbuf()->in_avail() == 0){
-            return (fmt == "$" || fmt == "");
+            return (!std::strcmp(fmt, "$") || !std::strcmp(fmt, ""));
         }
 
         // Get the position of the string to restore it later if there has been any parsing error

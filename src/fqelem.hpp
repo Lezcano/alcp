@@ -19,6 +19,7 @@ namespace alcp {
 
     template<class Integer = big_int>
     class Fq {
+    static_assert(is_integral<Integer>::value, "Type is not a supported integer.");
     public:
         Fq(Integer p, std::size_t m){
             Fp_b f (p);
@@ -141,5 +142,8 @@ namespace alcp {
 
     using Fqelem_b = Fqelem<big_int>;
     using Fq_b = Fq<big_int>;
+
+    //template class Fqelem<big_int>;
+    //template class Fq<big_int>;
 }
 #endif // __FQELEM_HPP

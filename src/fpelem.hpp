@@ -17,6 +17,8 @@ namespace alcp {
 
     template<class Integer = big_int>
     class Fp {
+    static_assert(is_integral<Integer>::value, "Type is not a supported integer.");
+
     public:
         Fp(Integer p) : _p(p) {
             if (_p <= 0 || !millerRabin(_p))
@@ -81,6 +83,12 @@ namespace alcp {
         using FBase::QuotientRing;
         using FBase::operator=;
 
+        Fpelem() = default;
+        Fpelem(const Fpelem & e)  = default;
+        Fpelem(Fpelem && e)  = default;
+        Fpelem & operator=(const Fpelem & e)  = default;
+        Fpelem & operator=(Fpelem && e)  = default;
+
         F getField() const{ return F(this->_mod, true); }
 
         friend std::string to_string(const Fpelem &e) {
@@ -92,11 +100,15 @@ namespace alcp {
         }
 
     private:
-        friend class Fp<Integer>;
+        template <class>
+            friend class Fp;
     };
 
     using Fpelem_b = Fpelem<big_int>;
     using Fp_b = Fp<big_int>;
+
+    //template class Fpelem<big_int>;
+    //template class Fp<big_int>;
 }
 
 #endif // __FPELEM_HPP
