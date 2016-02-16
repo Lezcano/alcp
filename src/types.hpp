@@ -6,8 +6,8 @@
 
 namespace alcp {
     namespace bmp   = boost::multiprecision;
-    using big_int   = bmp::number<bmp::cpp_int::backend_type, bmp::et_off>;
-    //using big_int = long long int;
+    //using big_int   = bmp::number<bmp::cpp_int::backend_type, bmp::et_off>;
+    using big_int = long long int;
     //using big_int = bmp::int256_t;
 
 

@@ -110,7 +110,7 @@ namespace alcp {
             big_int exponent = fastPow(p, a.getField().getM() - 1);
             //This for computes a = a^{1/p}
             std::vector<typename Fxelem::Felem> rootPOfA;
-            for (int j = 0; j <= a.deg(); j += static_cast<unsigned int>(p))
+            for (unsigned int j = 0; j <= a.deg(); j += static_cast<unsigned int>(p))
                 if (a[j] != 0)
                     rootPOfA.push_back(fastPow(a[j], exponent));
                 else {
@@ -231,7 +231,7 @@ namespace alcp {
     Fqxelem<Integer> randomPol(const Fq<Integer> & field, std::size_t degree){
 		std::vector<Fqelem<Integer>> r(degree+1);
 		std::size_t d = field.getM()-1;
-		for (int i = 0; i <= degree; ++i) {
+		for (unsigned int i = 0; i <= degree; ++i) {
 			r[i]=field.get(randomPol(field.getBaseField(), d));
 		}
 		return r;
@@ -254,7 +254,7 @@ namespace alcp {
         std::vector<Fxelem> pwrsX;
         std::vector<typename Fxelem::Felem> r(2 * polDeg - 1, getZero(pol.lc()));
         r[polDeg - 1] = 1; //r == (0, 0, ..., 1)
-        for (int i = polDeg; i <= 2 * polDeg - 2; ++i) {
+        for (unsigned int i = polDeg; i <= 2 * polDeg - 2; ++i) {
             // r = (-r_{n-1}*pol_0, r_0 -r_{n-1}*pol_1,..., r_{n-2}-r_{n-1}*pol_{n-1})
             auto aux = r[polDeg - 1];
             for (std::size_t j = polDeg - 1; j >= 1; --j) {
@@ -270,10 +270,10 @@ namespace alcp {
             Fxelem v = randomPol(pol.getField(), 2 * n - 1);
             if (pol.getField().getSize() % 2 == 0) {//size %2 == 0 iff p %2 == 0
                 Fxelem aux = v;
-                for (int i = 1; i <= n * m - 1; ++i) {
+                for (unsigned int i = 1; i <= n * m - 1; ++i) {
                     aux *= aux;
                     //This loop performs the operation (mod pol)
-                    for (int i = polDeg; i <= aux.deg(); ++i) {//aux.deg is always <= 2*polDeg-2
+                    for (unsigned int i = polDeg; i <= aux.deg(); ++i) {//aux.deg is always <= 2*polDeg-2
                         if (aux[i] != 0)
                             aux += Fxelem(aux[i]) * pwrsX[i - polDeg];
                     }
@@ -478,9 +478,9 @@ namespace alcp {
         for (int i = 0; i < n; ++i)
             mat[i][i] -= 1;
         auto base = kernelBasis<Fxelem>(mat);
-        int k = base.size() + 1;//we haven't computed the first element of the base, so have to add 1 to k
+        unsigned int k = base.size() + 1;//we haven't computed the first element of the base, so have to add 1 to k
         while (factors.size() < k) {
-            for (int i = 0; i < factors.size(); ++i) {
+            for (unsigned int i = 0; i < factors.size(); ++i) {
                 Fxelem v(base[(size_t) r]);
                 for (auto &s : pol.getField().getElems()) {
                     Fxelem g = gcd(v - s, factors[i]);
