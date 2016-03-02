@@ -2,11 +2,11 @@
 
 ## Basic data structures:
 
-[✓] Quotient of an ED by a principal ideal: R / <a>
+[✓] Quotient of an ED by a principal ideal: R / \<a\>
   
-- [✓] Finite field GF(p) = Z / <p> 
+- [✓] Finite field GF(p) = Z / \<p\> 
 
-- [✓] Finite field GF(q) = GF(p)[X] / <f>
+- [✓] Finite field GF(q) = GF(p)[X] / \<f\>
 
 [✓] Polynomial ring of an ED: R[X]
 
