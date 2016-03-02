@@ -32,6 +32,17 @@ namespace alcp {
                 class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>>
         PolynomialRing(Felem_t &&e) : _v(std::vector<Felem>({std::move(e)})) { }
 
+        PolynomialRing(const std::vector<Felem> &v) : _v(v) {
+            if (v.size() != 0) {
+                // Remove trailing zeros
+                this->removeTrailingZeros();
+                Felem aux = this->lc();
+                for (auto &e : v)
+                    if (!compatible(aux, e))
+                        throw ENotCompatible("Not all the elements in the array are in the same ring.");
+            }
+        }
+
         template<class Felem_t, class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>>
         PolynomialRing(const std::vector<Felem_t> &v) : _v(v) {
             if (v.size() != 0) {
