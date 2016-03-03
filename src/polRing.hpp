@@ -37,9 +37,11 @@ namespace alcp {
                 // Remove trailing zeros
                 this->removeTrailingZeros();
                 Felem aux = this->lc();
+#ifndef ALCP_NO_CHECKS
                 for (auto &e : v)
                     if (!compatible(aux, e))
                         throw ENotCompatible("Not all the elements in the array are in the same ring.");
+#endif
             }
         }
 
@@ -76,21 +78,19 @@ namespace alcp {
 
         // Copy assignment
         PolynomialRing &operator=(const PolynomialRing &rhs) {
-            if (&rhs != this && rhs.initialized()) {
-                if (this->initialized() && !compatible(this->lc(), rhs.lc()))
-                    throw ENotCompatible(
-                            "Asignation failed. The vectors " +
-                                to_string(static_cast<Fxelem &>(*this)) +
-                                " and " +
-                                to_string(static_cast<const Fxelem &>(rhs)) +
-                                " are not in the same ring.");
+            if (&rhs != this
+#ifndef ALCP_NO_CHECKS
+                    && rhs.init()) {
+                if (this->init())
+                    checkInSameField(rhs, "Assignation failed. The elements are not in the same ring.");
+#else
+                ){
+#endif
                 _v = rhs._v;
             }
             return *this;
         }
 
-
-        // Generalized copy assignment duplicated code...
         template<class Felem_t, class Int,
                 class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>,
                 class = std::enable_if_t<is_integral<Int>::value>>
@@ -100,14 +100,14 @@ namespace alcp {
 
         // Move assignment
         PolynomialRing &operator=(PolynomialRing &&rhs) {
-            if (&rhs != this && rhs.initialized()) {
-                if (this->initialized() && !compatible(this->lc(), rhs.lc()))
-                    throw ENotCompatible(
-                            "Asignation failed. The vectors " +
-                                to_string(static_cast<Fxelem &>(*this)) +
-                                " and " +
-                                to_string(static_cast<Fxelem &&>(rhs)) +
-                                " are not in the same ring.");
+            if (&rhs != this
+#ifndef ALCP_NO_CHECKS
+                    && rhs.init()) {
+                if (this->init())
+                    checkInSameField(rhs, "Assignation failed. The elements are not in the same ring.");
+#else
+                ){
+#endif
                 _v = std::move(rhs._v);
             }
             return *this;
@@ -125,29 +125,25 @@ namespace alcp {
         template<class Felem_t,
                 class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>>
         Fxelem &operator=(const Felem_t &rhs) {
-            if (this->initialized() && !compatible(this->lc(), rhs))
-                throw ENotCompatible(
-                        "Asignation failed. The vector " +
-                            to_string(static_cast<Fxelem &>(*this)) +
-                            " and the element " +
-                            to_string(static_cast<const Fxelem &>(rhs)) +
-                            " are not in the same ring.");
+#ifndef ALCP_NO_CHECKS
+            if (rhs.init() && this->init())
+                checkInSameField(PolynomialRing(rhs),
+                            "Assignation failed. The elements are not in the same ring.");
+#endif
+
             _v = std::vector<Felem>(rhs);
             return static_cast<Fxelem&>(*this);
         }
-
 
         // Move assignment from base ring
         template<class Felem_t,
                 class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>>
         Fxelem &operator=(Felem_t &&rhs) {
-            if (this->initialized() && !compatible(this->lc(), rhs))
-                throw ENotCompatible(
-                        "Asignation failed. The vector " +
-                        to_string(static_cast<Fxelem &>(*this)) +
-                        " and the element " +
-                        to_string(static_cast<const Fxelem &>(rhs)) +
-                        " are not in the same ring.");
+#ifndef ALCP_NO_CHECKS
+            if (rhs.init() && this->init())
+                checkInSameField(PolynomialRing(rhs),
+                            "Assignation failed. The elements are not in the same ring.");
+#endif
             _v = std::vector<Felem>(std::move(rhs));
             return static_cast<Fxelem&>(*this);
         }
@@ -163,10 +159,11 @@ namespace alcp {
         }
 
         Fxelem &operator+=(const Fxelem &rhs) {
-            if (!compatible(static_cast<Fxelem &>(*this), rhs))
-                throw EOperationUnsupported(
-                        "Polynomials not in the same ring. Error when adding the polynomials " +
-                        to_string(static_cast<Fxelem &>(*this)) + " and " + to_string(rhs) + ".");
+#ifndef ALCP_NO_CHECKS
+            checkInSameField(PolynomialRing(rhs),
+                        "Polynomials not in the same ring. Error when adding the polynomials.");
+#endif
+
             auto v1 = _v.begin();
             auto v2 = rhs._v.begin();
             while (v1 != _v.end() && v2 != rhs._v.end()) {
@@ -203,12 +200,10 @@ namespace alcp {
         }
 
         Fxelem &operator*=(const Fxelem &rhs) {
-            if (!compatible(static_cast<Fxelem &>(*this), rhs))
-                throw EOperationUnsupported(
-                        "Polynomials not in the same ring. Error when multiplying the polynomials " +
-                        to_string(static_cast<Fxelem &>(*this)) +
-                        " and " + to_string(rhs) + ".");
-
+#ifndef ALCP_NO_CHECKS
+            checkInSameField(PolynomialRing(rhs),
+                        "Polynomials not in the same ring. Error when multiplying the polynomials.");
+#endif
             std::vector<Felem> ret(rhs._v.size() + _v.size() - 1, getZero(this->lc()));
             for (size_t i = 0; i < _v.size(); ++i)
                 for (size_t j = 0; j < rhs._v.size(); ++j) {
@@ -226,13 +221,12 @@ namespace alcp {
         // Implements long polynomial division
         // Return quotient and reminder in first and second respectively
         std::pair<Fxelem, Fxelem> div2(const Fxelem &divisor) const {
-            if (!compatible(static_cast<const Fxelem &>(*this), divisor))
-                throw EOperationUnsupported(
-                        "Polynomials not in the same ring. Error when dividing the polynomials " +
-                        to_string(static_cast<const Fxelem &>(*this)) +
-                        " and " + to_string(divisor) + ".");
+#ifndef ALCP_NO_CHECKS
+            checkInSameField(PolynomialRing(divisor),
+                        "Polynomials not in the same ring. Error when dividing the polynomials.");
+#endif
 
-            if (divisor.deg() == 0 && divisor._v[0] == 0)
+            if (divisor == 0)
                 throw EOperationUnsupported("Error. Cannot divide by the polynomial 0");
             if (this->deg() < divisor.deg())
                 return std::make_pair(Fxelem(getZero(this->lc())), static_cast<const Fxelem &>(*this));
@@ -279,28 +273,6 @@ namespace alcp {
         Fxelem operator%(const Fxelem &rhs) const {
             return Fxelem(static_cast<const Fxelem &>(*this)) %= rhs;
         }
-
-        //friend inline Fxelem operator+(const Fxelem &lhs, const Felem &rhs){ return lhs + Fxelem(rhs); }
-        //friend inline Fxelem operator-(const Fxelem &lhs, const Felem &rhs){ return lhs - Fxelem(rhs); }
-        //friend inline Fxelem operator*(const Fxelem &lhs, const Felem &rhs){ return lhs * Fxelem(rhs); }
-        //friend inline Fxelem operator/(const Fxelem &lhs, const Felem &rhs){ return lhs / Fxelem(rhs); }
-        //friend inline Fxelem operator%(const Fxelem &lhs, const Felem &rhs){ return lhs % Fxelem(rhs); }
-        //friend inline bool operator==(const Fxelem &lhs, const Felem &rhs){ return lhs == Fxelem(rhs); }
-        //friend inline bool operator!=(const Fxelem &lhs, const Felem &rhs){ return lhs != Fxelem(rhs); }
-
-        //friend inline Fxelem &operator+=(Fxelem &lhs, const Felem &rhs){return lhs += Fxelem(rhs); }
-        //friend inline Fxelem &operator-=(Fxelem &lhs, const Felem &rhs){ return lhs -= Fxelem(rhs); }
-        //friend inline Fxelem &operator*=(Fxelem &lhs, const Felem &rhs){ return lhs *= Fxelem(rhs); }
-        //friend inline Fxelem &operator/=(Fxelem &lhs, const Felem &rhs){ return lhs /= Fxelem(rhs); }
-        //friend inline Fxelem &operator%=(Fxelem &lhs, const Felem &rhs){ return lhs %= Fxelem(rhs); }
-
-        //friend inline Fxelem operator+(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) + rhs; }
-        //friend inline Fxelem operator-(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) - rhs; }
-        //friend inline Fxelem operator*(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) * rhs; }
-        //friend inline Fxelem operator/(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) / rhs; }
-        //friend inline Fxelem operator%(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) % rhs; }
-        //friend inline bool operator==(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) == rhs; }
-        //friend inline bool operator!=(const Felem &lhs, const Fxelem &rhs){ return Fxelem(lhs) != rhs; }
 
         const Felem &operator[](size_t i) const { return _v[i]; }
 
@@ -400,7 +372,21 @@ namespace alcp {
                 _v.push_back(std::move(zero));
         }
 
-        bool initialized() const { return _v.size() != 0; }
+#ifndef ALCP_NO_CHECKS
+        // Relies in the fact that it is not possible to quotient by the ideal generated by 0
+        bool init() const { return _v.size() != 0; }
+
+        void checkInSameField(const PolynomialRing &rhs, std::string &&error) const {
+            if (!compatible(this->lc(), rhs.lc()))
+                throw EOperationUnsupported(
+                        error +
+                        "\nThe values that caused it were " +
+                        to_string(static_cast<const Fxelem &>(*this)) +
+                        " and " +
+                        to_string(static_cast<const Fxelem &>(rhs)) +
+                        " are not in the same ring.");
+        }
+#endif
 
     };
 }

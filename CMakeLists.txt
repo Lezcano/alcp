@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.3)
 project(alcp)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+std(GENERAL_FLAGS "-std=c++14 -Wall -Wextra");
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GENERAL_FLAGS}")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${GENERAL_FLAGS} -O3 -DALCP_NO_CHECKS")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${GENERAL_FLAGS}")
 
 set(SOURCE_FILES
     src/exceptions.hpp
