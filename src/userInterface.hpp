@@ -109,6 +109,11 @@ namespace alcp {
 				void parseAndRun(std::istringstream & args) override;
 				void help (const std::string & name) override;
 		};
+		class CommandBCH: public Command{
+			public:
+				void parseAndRun(std::istringstream & args) override;
+				void help (const std::string & name) override;
+		};
 	};
 }
 #endif // __USER_INTERFACE

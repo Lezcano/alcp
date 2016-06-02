@@ -34,6 +34,7 @@ namespace alcp {
             return Fpelem<Integer>(n, _p);
         }
 
+
         Integer mod() const { return _p; }
 
         Integer getSize() const { return _p; }
@@ -48,6 +49,8 @@ namespace alcp {
                 ret[i] = this->get(i);
             return ret;
         }
+
+
 
         bool operator==(const Fp &rhs) const { return _p == rhs._p; }
 

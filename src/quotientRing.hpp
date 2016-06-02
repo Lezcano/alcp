@@ -106,6 +106,22 @@ namespace alcp {
             return !(lhs == rhs);
         }
 
+        friend inline bool operator<(const Felem &lhs, const Felem &rhs){
+			return (lhs._num < rhs._num && lhs._mod == rhs._mod);
+		}
+
+        friend inline bool operator<=(const Felem &lhs, const Felem &rhs){
+			return (lhs._num <= rhs._num && lhs._mod == rhs._mod);
+		}
+
+        friend inline bool operator>(const Felem &lhs, const Felem &rhs){
+			return (lhs._num > rhs._num && lhs._mod == rhs._mod);
+		}
+
+		friend inline bool operator>=(const Felem &lhs, const Felem &rhs){
+			return (lhs._num >= rhs._num && lhs._mod == rhs._mod);
+		}
+
         Felem &operator+=(const Felem &rhs) {
             checkInSameField(rhs, "Addition or substraction error.");
             _num = (_num + rhs._num) % _mod;
