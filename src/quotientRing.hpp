@@ -26,20 +26,25 @@ namespace alcp {
         //  los templates serian diferentes
         template<class Int, class Quot,
                 class = std::enable_if_t<is_integral<Int>::value>>
-        QuotientRing(const QuotientRing<FelemBase, Quot, Int> &rhs) : _init(true), _mod(rhs._mod), _num(rhs._num){ }
+        QuotientRing(const QuotientRing<FelemBase, Quot, Int> &rhs) :_mod(rhs._mod), _num(rhs._num){ }
 
         QuotientRing(QuotientRing &&) = default;
 
         template<class Int, class Quot,
                 class = std::enable_if_t<is_integral<Int>::value>>
-        QuotientRing(QuotientRing<FelemBase, Quot, Int> &&rhs) : _init(true), _mod(std::move(rhs._mod)), _num(std::move(rhs._num)){ }
+        QuotientRing(QuotientRing<FelemBase, Quot, Int> &&rhs) : _mod(std::move(rhs._mod)), _num(std::move(rhs._num)){ }
 
         // Copy assignment
         QuotientRing &operator=(const QuotientRing &rhs) {
-            if (&rhs != this && rhs._init) {
-                if (this->_init)
+            if (&rhs != this
+
+#ifndef ALCP_NO_CHECKS
+                    && rhs.init()){
+                if (this->init())
                     checkInSameField(rhs, "The elements are not in the same ring.");
-                _init = true;
+#else
+                    ){
+#endif
                 _mod = rhs._mod;
                 _num = rhs._num;
             }
@@ -50,49 +55,39 @@ namespace alcp {
         template<class Int, class Quot,
                 class = std::enable_if_t<is_integral<Int>::value>>
         QuotientRing &operator=(const QuotientRing<FelemBase, Quot, Int> &rhs){
-            if (&rhs != this && rhs._init) {
-                if (this->_init)
-                    checkInSameField(rhs, "The elements are not in the same ring.");
-                _init = true;
-                _mod = rhs._mod;
-                _num = rhs._num;
-            }
-            return *this;
+            return *this = QuotientRing(rhs);
         }
+
         // Move assignment
         QuotientRing &operator=(QuotientRing &&rhs) {
-            if (&rhs != this && rhs._init) {
-                if (this->_init)
+            if (&rhs != this
+#ifndef ALCP_NO_CHECKS
+                    && rhs.init()) {
+                if (this->init())
                     checkInSameField(rhs, "The elements are not in the same ring.");
-                _init = true;
+#else
+                ){
+#endif
                 _mod = std::move(rhs._mod);
                 _num = std::move(rhs._num);
             }
             return *this;
         }
 
-        // Duplicated code for generalized move... :/
         template<class Int, class Quot,
                 class = std::enable_if_t<is_integral<Int>::value>>
         QuotientRing &operator=(QuotientRing<FelemBase, Quot, Int> &&rhs){
-            if (&rhs != this && rhs._init) {
-                if (this->_init)
-                    checkInSameField(rhs, "The elements are not in the same ring.");
-                _init = true;
-                _mod = std::move(rhs._mod);
-                _num = std::move(rhs._num);
-            }
-            return *this;
+            return *this = QuotientRing(std::move(rhs));
         }
 
-        // Implying that Z is inmersible into the ring...
         template<class Int2, class = typename std::enable_if<is_integral<Int2>::value>::type>
         Felem &operator=(Int2 rhs) {
-            if (!this->_init)
+#ifndef ALCP_NO_CHECKS
+            if (!this->init())
                 throw ENotInitializedRing("Assignment to a non initialized QuotientRing elem.");
+#endif
             static_cast<Felem &>(*this) =
                 static_cast<const Felem*>(this)->getField().get(rhs);
-            _init = true;
             return static_cast<Felem &>(*this);
         }
 
@@ -123,7 +118,9 @@ namespace alcp {
 		}
 
         Felem &operator+=(const Felem &rhs) {
+#ifndef ALCP_NO_CHECKS
             checkInSameField(rhs, "Addition or substraction error.");
+#endif
             _num = (_num + rhs._num) % _mod;
             return static_cast<Felem &>(*this);
         }
@@ -145,7 +142,9 @@ namespace alcp {
         }
 
         Felem &operator*=(const Felem &rhs) {
+#ifndef ALCP_NO_CHECKS
             checkInSameField(rhs, "Multiplication or division error.");
+#endif
             _num = (_num * rhs._num) % _mod;
             return static_cast<Felem &>(*this);
         }
@@ -255,16 +254,23 @@ namespace alcp {
         friend Felem getOne(const Felem &e) { return e.getField().get(1); }
 
     protected:
-        QuotientRing(const Quotient& num, const Quotient& mod) : _num(num), _mod(mod), _init(true){ }
-        QuotientRing(Quotient&& num, Quotient&& mod) : _num(std::move(num)), _mod(std::move(mod)), _init(true){ }
+        QuotientRing(const Quotient& num, const Quotient& mod) : _num(num), _mod(mod){ }
+        QuotientRing(Quotient&& num, Quotient&& mod) : _num(std::move(num)), _mod(std::move(mod)){ }
 
         Quotient _num;
         Quotient _mod;
-        bool _init{false};
 
         template <template <class> class, class, class>
             friend class QuotientRing;
+
+        // It shows the init function
+        template <template <class> class, class, class>
+            friend class PolynomialRing;
     private:
+
+#ifndef ALCP_NO_CHECKS
+        // Relies in the fact that it is not possible to quotient by the ideal generated by 0
+        bool init() const { return _mod != Quotient(); }
 
         void checkInSameField(const QuotientRing &rhs, std::string &&error) const {
             if (!compatible(static_cast<const Felem &>(*this),
@@ -280,6 +286,7 @@ namespace alcp {
                         " in " +
                         to_string(static_cast<const Felem &>(rhs).getField()));
         }
+#endif
     };
 }
 

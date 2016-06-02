@@ -146,6 +146,13 @@ std::vector<std::vector<Zxelem_b>> test_cases_hensel(){
     return tests;
 }
 
+std::vector<std::pair<Zxelem_b, unsigned int>> vectorWithMultiplicity(std::vector<Zxelem_b> v){
+    std::vector<std::pair<Zxelem_b, unsigned int>> ret(v.size());
+    std::transform(v.begin(), v.end(), ret.begin(),
+            [](Zxelem_b p){ return std::make_pair(p, 1);});
+    return ret;
+}
+
 std::ostream& operator<<(std::ostream& os, const std::vector<Zxelem_b>& v){
     os << "[";
     for(auto e : v)
@@ -154,39 +161,46 @@ std::ostream& operator<<(std::ostream& os, const std::vector<Zxelem_b>& v){
     return os;
 }
 
-void test_hensel_sq_free(int leadingCoeff, bool doble_roots = false){
+void test_hensel_sq_free(int leadingCoeff, bool double_roots = false){
     std::vector<std::vector<Zxelem_b>> pols = test_cases_hensel();
     Zxelem_b z;
-    auto greater_fun = [](const Zxelem_b& a, const Zxelem_b b){
-                if(a.deg() > b.deg()) return true;
-                if(a.deg() < b.deg()) return false;
-                for(int i = a.deg(); i >= 0; --i){
-                    if(a[i] > b[i]) return true;
-                    if(a[i] < b[i]) return false;
+    auto greater_fun = [](const std::pair<Zxelem_b, unsigned int>& a,
+                          const std::pair<Zxelem_b, unsigned int>& b){
+                if(a.first.deg() > b.first.deg()) return true;
+                if(a.first.deg() < b.first.deg()) return false;
+                for(int i = a.first.deg(); i >= 0; --i){
+                    if(a.first[i] > b.first[i]) return true;
+                    if(a.first[i] < b.first[i]) return false;
                 }
                 return false;
             };
 
     for(auto pp : pols){
-        z = leadingCoeff;
+        z = 1;
         for(auto p : pp)
             z *= p;
 
-        if(doble_roots){
+        auto ppmult = vectorWithMultiplicity(pp);
+
+        if(double_roots){
             z*=z;
-            std::size_t l = pp.size();
-            for(std::size_t i=0;i<l;++i)
-                pp.emplace_back(pp[i]);
+            for(auto& e : ppmult)
+                e.second = 2;
         }
 
-        if(leadingCoeff != 1)
-            pp.emplace_back(leadingCoeff);
 
-        std::sort(pp.begin(), pp.end(), greater_fun);
-        auto sol = factorizationHenselSquareFree(z);
+        if(leadingCoeff != 1){
+            ppmult.emplace_back(std::make_pair(leadingCoeff, 1));
+            z*=leadingCoeff;
+        }
+
+
+        auto sol = factorizationHensel(z);
+
+        std::sort(ppmult.begin(), ppmult.end(), greater_fun);
         std::sort(sol.begin(), sol.end(), greater_fun);
 
-        EXPECT_EQ(pp,sol);
+        EXPECT_EQ(ppmult,sol);
     }
 }
 

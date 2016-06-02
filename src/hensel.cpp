@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <utility>
-#include <iostream> // TODO Quitar
 
 #include "fpelem.hpp"
 #include "fpxelem.hpp"
@@ -168,7 +167,7 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 		if (icontent != 1){
 			result.push_back(std::make_pair(icontent, 1));
 		}
-		auto aux = squareFreeFactChar0(pol/Zxelem_b(icontent));
+		auto aux = squareFreeFactChar0(pol/icontent);
 		for (auto &pair: aux) {
 			auto factors = factorizationHenselSquareFree(pair.first);
 			for (auto &elem : factors) {
