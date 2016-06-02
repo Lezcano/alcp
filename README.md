@@ -30,6 +30,7 @@
 
 [✓] Modular Euclidean algorithm
 
+[✓] BCH codification. General Berlekamp-Massey algorithm. BCH decodification using Berlekamp-Massey
 ## Misc:
 
 [✓] Addition and multiplication of 63-bit numbers using 64-bit registers - Russian peasant algorithm
