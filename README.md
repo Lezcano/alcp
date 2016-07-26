@@ -10,11 +10,11 @@
 
 [✓] Polynomial ring of an ED: R[X]
 
-- [✓] Finite field GF(p)[X]
+- [✓] Polynomial ring GF(p)[X]
 
-- [✓] Finite field GF(q)[X]
+- [✓] Polynomial ring GF(q)[X]
 
-- [✓] Finite field Z[X]
+- [✓] Polynomial ring Z[X]
 
 ## Main algorithms:
 
