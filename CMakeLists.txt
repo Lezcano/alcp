@@ -7,6 +7,8 @@ project(${PROJECT_NAME_STR})
 
 
 find_package(Threads REQUIRED)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
