@@ -1,0 +1,27 @@
+language: cpp
+
+env:
+    global:
+        - SIPLASPLAS_GITHUB_USER="Manu343726"
+
+install:
+
+############################################################################
+# Install a recent CMake
+############################################################################
+  - CMAKE_URL="http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz"
+  - mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+  - export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+
+  - cmake --version
+
+
+  - cd ${TRAVIS_BUILD_DIR}
+
+  # Configure and build project:
+  - if [ ! -d build ]; then mkdir build; fi
+  - cd build
+
+  - cmake .. -DCMAKE_BUILD_TYPE=Release
+  - cmake --build .
+  - ctest -VV
