@@ -6,6 +6,7 @@
 #include <utility>          // pair, make_pair
 #include <functional>       // not_equal_to
 #include <string>           // to_string
+#include <iostream> 		//TODO quitar
 
 #include "types.hpp"
 #include "exceptions.hpp"
@@ -148,6 +149,32 @@ namespace alcp {
             return lhs._v != rhs._v;
         }
 
+        friend bool operator<(const Fxelem &lhs, const Fxelem &rhs) {
+        	if (lhs.deg()  < rhs.deg())
+				return true;
+			if (lhs.deg()  > rhs.deg())
+				return false;
+			for(int i = lhs.deg(); i >= 0; i--){
+				if (lhs._v[i] < rhs._v[i])
+					return true;
+				if (lhs._v[i] > rhs._v[i])
+					return false;
+			}
+        	return false;
+		}
+
+        friend bool operator<=(const Fxelem &lhs, const Fxelem &rhs) {
+        	return lhs < rhs || lhs == rhs;
+        }
+
+        friend bool operator>(const Fxelem &lhs, const Fxelem &rhs) {
+        	return !(lhs <= rhs);
+        }
+
+        friend bool operator>=(const Fxelem &lhs, const Fxelem &rhs) {
+			return !(lhs < rhs);
+		}
+
         Fxelem &operator+=(const Fxelem &rhs) {
 #ifndef ALCP_NO_CHECKS
             checkInSameField(PolynomialRing(rhs),
@@ -281,6 +308,14 @@ namespace alcp {
             return ret;
         }
 
+        Felem eval(Felem a) const{ //Horner's algorithm
+        	Felem ret(_v[_v.size()-1]);
+        	for (int i = _v.size()-2 ; i >= 0; --i){
+        		ret = ret*a + _v[i];
+        	}
+        	return ret;
+        }
+
         // Leading coefficient
         Felem lc() const { return _v.back(); }
 
@@ -295,10 +330,10 @@ namespace alcp {
         friend inline Fxelem normalForm(const Fxelem &e) { return e / unit(e); }
 
         friend std::string to_string(const Fxelem &f, char var = PolynomialRing::var /* x */) {
-            if(f.deg() == 0)
+        	if(f.deg() == 0)
                 return to_string(f.lc());
-
-            std::string aux(to_string_coef(f.lc()));
+        	auto a = f.lc();
+            std::string aux(to_string_coef(a));
             if(aux[0] == '+'){
                 aux.erase(0,1);
                 if(aux == "1")

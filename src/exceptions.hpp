@@ -65,6 +65,21 @@ Exception(const std::string &msg) : ExcepALCP(msg) {} \
     DECLARE_EXCEPTION(EFPXNotIrreducible);
     DECLARE_EXCEPTION(EDifferentSizeVectorsCRA);
     DECLARE_EXCEPTION(ENotInitializedRing);
+
+    /**
+	 * Thrown when trying to create a BCH object and the data provided does not fulfill the requirements
+	 */
+    DECLARE_EXCEPTION(EBadBCHInitialization);
+    /**
+	 * Thrown when trying to encode a message longer that it is possible
+	 */
+    DECLARE_EXCEPTION(EBadFormatMessageBCH);
+
+    /**
+   	 * Thrown when trying to decode a message with more errors than those that are allowed
+   	 */
+    DECLARE_EXCEPTION(ETooManyErrorsBCH);
+
  
  
 }

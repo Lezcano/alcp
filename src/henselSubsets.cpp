@@ -17,7 +17,7 @@ namespace alcp {
             semiSumOfDeg(poly.deg() / 2),
             sumOfDeg(poly.deg()),
             intersection(poly.deg() / 2 + 1, 1),
-            howManyPrimes(6),
+            howManyPrimes(3),
             index(-1),
             index_intersection(-1),
             hadRemoved(false),

@@ -46,6 +46,18 @@ namespace alcp {
                     return ret;
                 }(std::move(v),std::move(f))){}
 
+        Fqxelem (const std::vector<Fpxelem<Integer> > &e, const Fq<Integer> & f) : FBase(
+		   [&]() -> Fqxelem {
+			   std::vector<Fqelem<Integer>> ret(e.size());
+			   std::transform(e.begin(),
+							  e.end(),
+							  ret.begin(),
+							  [&f](const Fpxelem<Integer>& v){
+								  return f.get(v);
+							  });
+			   return ret;
+		   }()){}
+
         const Fq<Integer> getField() const {
             return this->lc().getField();
         }
@@ -73,6 +85,17 @@ namespace alcp {
         friend bool operator!=(const Fqxelem<Integer> &lhs, Integer rhs) { return !(lhs == rhs); }
 
         friend bool operator!=(Integer lhs, const Fqxelem<Integer> &rhs) { return !(rhs == lhs); }
+
+        /*
+        // Este diseño es puta mierda, mirar como hacer bien el toFpxeleme, toZxelemSym y esta función (en polRing?)
+        friend Fqxelem<Integer> toFqxelem(const Fpxelem<Integer> &e, const Fq<Integer> & f) {
+            std::vector<Fqelem<Integer>> v(e.deg() + 1);
+            //TODO we should do this with transform
+            for (std::size_t i = 0; i <= e.deg(); ++i)
+                v[i] = f.get(e[i]);
+            return Fqxelem<Integer>(std::move(v));
+        }
+        */
     };
 
     using Fqxelem_b = Fqxelem<big_int>;

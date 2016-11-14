@@ -10,11 +10,11 @@
 
 [✓] Polynomial ring of an ED: R[X]
 
-- [✓] Finite field GF(p)[X]
+- [✓] Polynomial ring GF(p)[X]
 
-- [✓] Finite field GF(q)[X]
+- [✓] Polynomial ring GF(q)[X]
 
-- [✓] Finite field Z[X]
+- [✓] Polynomial ring Z[X]
 
 ## Main algorithms:
 
@@ -30,6 +30,7 @@
 
 [✓] Modular Euclidean algorithm
 
+[✓] BCH codification. General Berlekamp-Massey algorithm. BCH decodification using Berlekamp-Massey
 ## Misc:
 
 [✓] Addition and multiplication of 63-bit numbers using 64-bit registers - Russian peasant algorithm

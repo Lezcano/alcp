@@ -5,8 +5,8 @@
 #include <utility>
 #include <algorithm>
 #include <utility>
-#include <random>
-#include <chrono>
+#include <random>//TODO Mirar si hace falta esto
+#include <chrono>//TODO Mirar si hace falta esto
 
 #include "fpxelem.hpp"
 #include "fqxelem.hpp"
@@ -110,7 +110,7 @@ namespace alcp {
             big_int exponent = fastPow(p, a.getField().getM() - 1);
             //This for computes a = a^{1/p}
             std::vector<typename Fxelem::Felem> rootPOfA;
-            for (int j = 0; j <= a.deg(); j += static_cast<std::size_t>(p))
+            for (std::size_t j = 0; j <= a.deg(); j += static_cast<std::size_t>(p))
                 if (a[j] != 0)
                     rootPOfA.push_back(fastPow(a[j], exponent));
                 else {
@@ -231,11 +231,13 @@ namespace alcp {
     Fqxelem<Integer> randomPol(const Fq<Integer> & field, std::size_t degree){
 		std::vector<Fqelem<Integer>> r(degree+1);
 		std::size_t d = field.getM()-1;
-		for (int i = 0; i <= degree; ++i) {
+		for (size_t i = 0; i <= degree; ++i) {
 			r[i]=field.get(randomPol(field.getBaseField(), d));
 		}
 		return r;
     }
+
+
 
 //Part III
 /*
@@ -478,9 +480,9 @@ namespace alcp {
         for (int i = 0; i < n; ++i)
             mat[i][i] -= 1;
         auto base = kernelBasis<Fxelem>(mat);
-        int k = base.size() + 1;//we haven't computed the first element of the base, so have to add 1 to k
+        size_t k = base.size() + 1;//we haven't computed the first element of the base, so have to add 1 to k
         while (factors.size() < k) {
-            for (int i = 0; i < factors.size(); ++i) {
+            for (size_t i = 0; i < factors.size(); ++i) {
                 Fxelem v(base[(size_t) r]);
                 for (auto &s : pol.getField().getElems()) {
                     Fxelem g = gcd(v - s, factors[i]);

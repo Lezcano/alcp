@@ -22,6 +22,7 @@
 #include "hensel.hpp"
 #include "modularGCD.hpp"
 #include "generalPurpose.hpp"
+#include "bchCodes.hpp"
 
 namespace alcp {
     class Command;
@@ -41,6 +42,7 @@ namespace alcp {
         cmds["discreteLog"] = std::unique_ptr<Command>(new CommandPollardLog());
         cmds["isPrime"] = std::unique_ptr<Command>(new CommandMillerRabin());
         cmds["isIrreducibleGFp"] = std::unique_ptr<Command>(new CommandIrrGFp());
+        cmds["BCH"] = std::unique_ptr<Command>(new CommandBCH());
     }
 
     UserInterface &UserInterface::instance() {
@@ -67,7 +69,6 @@ namespace alcp {
             getline(std::cin, cmdline);
             if (cmdline == "quit")
                 break;
-
             std::istringstream ss(cmdline);
 			std::string cmd;
 			if (!alcpScan(ss, "s", &cmd)){
@@ -224,7 +225,6 @@ namespace alcp {
         "Factorizes a polynomial in GF(p^m)[x] using Cantor-Zassenhaus algorithm." << std::endl <<
         "    GF(p^m) refers to the finite field of p^m elements, with p prime and m a postive integer." << std::endl;
         std::cout << "        " << name << "((a_0, a_1, ..., a_n), p)" << std::endl;
-        //TODO
         std::cout << "        " << name << "(((a0_0, a_01, ...a0_n0), ..., (am_0, ..., ak_nk)), p, (b_0, ..., b_m))" << std::endl;
         std::cout << "    " << "The first k+1 vectors will be polynomials the coefficients" << std::endl;
     }
@@ -466,6 +466,79 @@ namespace alcp {
         std::cout << "        " << name << "((a_0, a_1, ... a_n), p)" << std::endl;
     }
 
+    void UserInterface::CommandBCH::parseAndRun(std::istringstream &args){
+    	try {
+    		size_t l, c, d;
+			std::vector<big_int> v;
+			big_int p;
+			if (alcpScan(args, "(n, v, m, m, m)$", &p, &v, &l, &c, &d)){
+				Fpxelem_b prim_pol(v, p);
+				BCH bch = BCH(prim_pol, 1, l, c, d);
+				std::cout << "Give me the message(Intro for random message): " << std::endl;
+				std::string cmdline;
+				std::cout << ">> ";
+				getline(std::cin, cmdline);
+				Fpxelem_b message;
+				if (cmdline == ""){
+					message = randomPol(Fp_b(p), bch.getDimension()-1);
+					std::cout << "The random message chosen is" << std::endl;
+					std::cout << "MESSAGE := " << message << std::endl;
+				}
+				else{
+					std::istringstream ss(cmdline);
+					if (alcpScan(args, "v", &v)){
+						message = Fpxelem_b(v, p);
+					}
+					else{
+						std::cout << "Parse error" << std::endl; //TODO throw exception
+					}
+				}
+				std::cout << std::endl <<"The codification of your message is:" << std::endl;
+				Fpxelem_b sent = bch.encode(message);
+				std::cout << "CODE SENT:= " << sent << std::endl;
+				std::cout << "Sending your message through an error-prone channel" << std::endl;
+				std::set<int> error_indices;
+				Fpxelem_b received;
+				std::tie(error_indices, received) = bch.randomErrors(sent);
+				std::cout << "An oracle tells us that " << error_indices.size() <<
+						" ocurred during the transmission at indices ";
+				for(auto & elem: error_indices){
+					std::cout << elem << ", ";
+				}
+				std::cout << "The code received is" << std::endl;
+				std::cout << "CODE RECEIVED:= " << received << std::endl;
+				std::cout << std::endl << std::endl << "Decoding using Berlekamp algorithm."<< std::endl;
+				Fpxelem_b decoded = bch.decode(received);
+				std::cout << "The corrected code is" << std::endl;
+				std::cout << "CODE CORRECTED := " << decoded << std::endl << std::endl;
+				if (sent == decoded){
+					std::cout << "I have checked it is the same code that was sent" << std:: endl;
+					std::cout << "The original message is" << decoded/bch.getG()<< std:: endl;
+				}
+				else{
+					std::cout << "OH! YOUR HAVE A MISTAKE. YOUR CODE HAS NOT WORKED.";
+				}
+			}
+			else
+				std::cout << "Parse error" << std::endl;
+    	} catch (const ExcepALCP& e){
+			std::cout << e.msg() << std::endl;
+			throw e;
+        }
+	}
+
+	void UserInterface::CommandBCH::help(const std::string &name) {
+		//TODO
+		std::cout << "Create a BCH codification system and then ask for a message to encode. The program changes some random coefficients of the encoded message and then it decodes it";
+		std::cout << std::endl << std::endl;
+		std::cout << "        " << "Usage:" << std::endl;
+		std::cout << "        " << name << "(p, (a_0, a_1, ..., a_n), l, c, d)" << std::endl;
+		std::cout << "        " << "Atributes description" << std::endl;
+		std::cout << "        " << "p: prime number that defines the message base field" << std::endl;
+		std::cout << "        " << "(a_0, a_1, ..., a_n): are the coefficients of a primitive polinomial f in F_p[x] such that there is a primitive l^th root of unity in F_p[t]/<f>, where l is also given." << std::endl;
+		std::cout << "        " << "l: see previous description."<< std::endl;
+		std::cout << "        " << "c, d: The generating polynomial of the BHC code will be the lcm of the minimum polinomials of t^c, t^{c+1}, ... t^{c+d-2} \\in F_p[t]/<f>" << std::endl;
+	}
     bool closedParen(std::istringstream & args){
         char c;
         if (!(args >> c) || c!= ')' )
@@ -480,11 +553,16 @@ namespace alcp {
         return true;
     }
 
-	bool inline isNumber(std::istringstream &args, big_int &n) {
+	bool inline isBigNumber(std::istringstream &args, big_int &n) {
 		if (!(args >> n))
 			return false;
 		return true;
 	}
+	bool inline isNumber(std::istringstream &args, int &n) {
+			if (!(args >> n))
+				return false;
+			return true;
+		}
 
 	bool isVector(std::istringstream &args, std::vector<big_int> &v) {
 		std::string s;
@@ -551,13 +629,23 @@ namespace alcp {
 
 			if (*fmt == 'n'){
                 big_int n;
-				if (!isNumber(iss, n)) {
+				if (!isBigNumber(iss, n)) {
                     iss.clear();
                     iss.seekg(pos);
                     return false;
                 }
 				auto *num = va_arg(args, big_int*);
 				*num = n;
+			}
+			else if (*fmt == 'm'){
+                int m;
+				if (!isNumber(iss, m)) {
+                    iss.clear();
+                    iss.seekg(pos);
+                    return false;
+                }
+				auto *num = va_arg(args, int*);
+				*num = m;
 			}
 			else if (*fmt == 'v') {
                 std::vector<big_int> v;
