@@ -1,8 +1,7 @@
-language: cpp
+# Mostly based on Eric Niebler's range-v3 one
+# https://github.com/Manu343726/siplasplas/blob/master/.travis.yml
 
-env:
-    global:
-        - SIPLASPLAS_GITHUB_USER="Manu343726"
+language: cpp
 
 install:
 
