@@ -2,7 +2,7 @@
 #define __POL_RING_HPP
 
 #include <vector>
-#include <algorithm>        // find_if
+#include <algorithm>        // find_if, count_if
 #include <utility>          // pair, make_pair
 #include <functional>       // not_equal_to
 #include <string>           // to_string
@@ -33,29 +33,20 @@ namespace alcp {
         PolynomialRing(Felem_t &&e) : _v(std::vector<Felem>({std::move(e)})) { }
 
         PolynomialRing(const std::vector<Felem> &v) : _v(v) {
-            if (v.size() != 0) {
-                // Remove trailing zeros
-                this->removeTrailingZeros();
-                Felem aux = this->lc();
+            // Remove trailing zeros
+            this->removeTrailingZeros();
 #ifndef ALCP_NO_CHECKS
+            if (this->init()){
+                Felem aux = this->lc();
                 for (auto &e : v)
                     if (!compatible(aux, e))
                         throw ENotCompatible("Not all the elements in the array are in the same ring.");
-#endif
             }
+#endif
         }
 
         template<class Felem_t, class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>>
-        PolynomialRing(const std::vector<Felem_t> &v) : _v(v) {
-            if (v.size() != 0) {
-                // Remove trailing zeros
-                this->removeTrailingZeros();
-                Felem aux = this->lc();
-                for (auto &e : v)
-                    if (!compatible(aux, e))
-                        throw ENotCompatible("Not all the elements in the array are in the same ring.");
-            }
-        }
+        PolynomialRing(const std::vector<Felem_t> &v) : PolynomialRing(v){}
 
         PolynomialRing(const PolynomialRing &) = default;
 
@@ -77,20 +68,20 @@ namespace alcp {
                 ){};
 
         // Copy assignment
-        PolynomialRing &operator=(const PolynomialRing &rhs) {
-            if (&rhs != this
 #ifndef ALCP_NO_CHECKS
-                    && rhs.init()) {
+        PolynomialRing &operator=(const PolynomialRing &rhs) {
+            if (&rhs != this && rhs.init()) {
                 if (this->init())
                     checkInSameField(rhs, "Assignation failed. The elements are not in the same ring.");
-#else
-                ){
-#endif
                 _v = rhs._v;
             }
             return *this;
         }
+#else
+        PolynomialRing &operator=(const PolynomialRing &) = default;
+#endif
 
+        // Generalized copy assignment
         template<class Felem_t, class Int,
                 class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>,
                 class = std::enable_if_t<is_integral<Int>::value>>
@@ -99,19 +90,18 @@ namespace alcp {
         }
 
         // Move assignment
-        PolynomialRing &operator=(PolynomialRing &&rhs) {
-            if (&rhs != this
 #ifndef ALCP_NO_CHECKS
-                    && rhs.init()) {
+        PolynomialRing &operator=(PolynomialRing &&rhs) {
+            if (&rhs != this && rhs.init()) {
                 if (this->init())
                     checkInSameField(rhs, "Assignation failed. The elements are not in the same ring.");
-#else
-                ){
-#endif
                 _v = std::move(rhs._v);
             }
             return *this;
         }
+#else
+        PolynomialRing &operator=(PolynomialRing &&rhs) = default;
+#endif
 
         // Generalized move assignment
         template<class Felem_t, class Int,
@@ -298,11 +288,7 @@ namespace alcp {
         size_t deg() const { return _v.size() - 1; }
 
         std::size_t nonZeroCoefs() const{
-            std::size_t ret = 0;
-            for(const auto& elem : _v)
-                if(elem != 0)
-                    ++ret;
-            return ret;
+            return std::count_if(_v.begin(), _v.end(), [](const Felem& e){return e!= 0;});
         }
 
         // Normal form of the polynomial. It ensures the unicity of gdc for example

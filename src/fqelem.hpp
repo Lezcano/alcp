@@ -95,9 +95,9 @@ namespace alcp {
     private:
         // Auxiliary functions
         bool increment(std::vector<Fpelem<Integer>> &act) const {
-            for (auto e = act.begin(); e != act.end(); ++e) {
-                *e += 1;
-                if (*e != 0)
+            for (auto& elem : act){
+                elem += 1;
+                if (elem != 0)
                     return true;
             }
             return false; // We are done

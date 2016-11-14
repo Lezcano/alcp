@@ -261,7 +261,7 @@ namespace alcp {
         try {
             std::vector<big_int> v1, v2;
 			if (!alcpScan(args, "(v,v)$", &v1, &v2))
-                std::cout << "Parse error" << std::endl; 
+                std::cout << "Parse error" << std::endl;
             Zxelem_b pol1(v1), pol2(v2);
             std::cout << "gcd( " << pol1 << " ,  " << pol2 << " ) = " << std::endl;
             std::cout << modularGCD(pol1, pol2) << std::endl;
@@ -371,7 +371,7 @@ namespace alcp {
         try {
             big_int aux;
             if (!alcpScan(args, "(n)$", &aux))
-                std::cout << "Parse error" << std::endl; 
+                std::cout << "Parse error" << std::endl;
             std::cout << "WARNING: This algorithm is probabilistic. Some integers might not fully factorize." << std::endl;
             std::cout << aux << " = ";
             auto map = factorInteger(static_cast<long long>(aux));
@@ -405,8 +405,8 @@ namespace alcp {
         try {
             long long a, b, p, log;
             if (!alcpScan(args, "(n,n,n)$", &a, &b, &p))
-                std::cout << "Parse error" << std::endl; 
-            pollardRhoLogarithm(2, 5, 1019, log);
+                std::cout << "Parse error" << std::endl;
+            pollardRhoLogarithm(a, b, p, log);
             std::cout << "log_" << a << "(" << b << ") = " << log << " (mod " << p << ")" << std::endl;
         } catch (const ExcepALCP& e){
 			std::cout << e.msg() << std::endl;
@@ -424,7 +424,7 @@ namespace alcp {
         try {
             big_int num;
             if (!alcpScan(args, "(n)$", &num))
-                std::cout << "Parse error" << std::endl; 
+                std::cout << "Parse error" << std::endl;
             std::cout << num << " is ";
             if (!millerRabin(num))
                 std::cout << "not ";
@@ -447,7 +447,7 @@ namespace alcp {
             std::vector<big_int> v;
             big_int p;
             if (!alcpScan(args, "(v,n)$", &v, &p))
-                std::cout << "Parse error" << std::endl; 
+                std::cout << "Parse error" << std::endl;
             Fpxelem_b pol(v,p);
             std::cout << "The polynomial " << pol << " is ";
             if (!pol.irreducible())

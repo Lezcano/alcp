@@ -35,21 +35,19 @@ namespace alcp {
         QuotientRing(QuotientRing<FelemBase, Quot, Int> &&rhs) : _mod(std::move(rhs._mod)), _num(std::move(rhs._num)){ }
 
         // Copy assignment
-        QuotientRing &operator=(const QuotientRing &rhs) {
-            if (&rhs != this
-
 #ifndef ALCP_NO_CHECKS
-                    && rhs.init()){
+        QuotientRing &operator=(const QuotientRing &rhs) {
+            if (&rhs != this && rhs.init()){
                 if (this->init())
                     checkInSameField(rhs, "The elements are not in the same ring.");
-#else
-                    ){
-#endif
                 _mod = rhs._mod;
                 _num = rhs._num;
             }
             return *this;
         }
+#else
+        QuotientRing &operator=(const QuotientRing &rhs) = default;
+#endif
 
         // Duplicated code for generalized copy... :/
         template<class Int, class Quot,
@@ -59,20 +57,19 @@ namespace alcp {
         }
 
         // Move assignment
-        QuotientRing &operator=(QuotientRing &&rhs) {
-            if (&rhs != this
 #ifndef ALCP_NO_CHECKS
-                    && rhs.init()) {
+        QuotientRing &operator=(QuotientRing &&rhs) {
+            if (&rhs != this && rhs.init()) {
                 if (this->init())
                     checkInSameField(rhs, "The elements are not in the same ring.");
-#else
-                ){
-#endif
                 _mod = std::move(rhs._mod);
                 _num = std::move(rhs._num);
             }
             return *this;
         }
+#else
+        QuotientRing &operator=(QuotientRing &&rhs) = default;
+#endif
 
         template<class Int, class Quot,
                 class = std::enable_if_t<is_integral<Int>::value>>
@@ -274,4 +271,4 @@ namespace alcp {
     };
 }
 
-#endif // __FQELEM_HPP
+#endif // __FELEMBASE_HPP

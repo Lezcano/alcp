@@ -10,7 +10,7 @@
 
 
 namespace alcp {
-    std::vector<std::pair<Zxelem_b, unsigned int> > squareFreeFactChar0(const Zxelem_b &pol);
+    std::vector<std::pair<Zxelem_b, std::size_t> > squareFreeFactChar0(const Zxelem_b &pol);
 
     bool HenselLifting(const Zxelem_b &polynomial, Fpxelem_b u1, Fpxelem_b w1, Zxelem_b &u, Zxelem_b &w);
 
@@ -18,6 +18,6 @@ namespace alcp {
 
     std::vector<Zxelem_b> factorizationHenselSquareFree(const Zxelem_b &poli);
 
-    std::vector<std::pair<Zxelem_b, unsigned int> > factorizationHensel(const Zxelem_b &pol);
+    std::vector<std::pair<Zxelem_b, std::size_t> > factorizationHensel(const Zxelem_b &pol);
 }
 #endif // __HENSEL

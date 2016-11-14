@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 2.8.8)
 set(PROJECT_NAME_STR alcp)
 project(${PROJECT_NAME_STR})
 
+
 find_package(Threads REQUIRED)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -23,26 +24,12 @@ if(NOT MSVC)
     endif()
 
     set(CPP_GLOBAL_ALL_COMPILE_OPTIONS -std=${STD_CXX} -Wall -pedantic )
-    set(CPP_GLOBAL_DEBUG_COMPILE_OPTIONS -O0 -g3)
+    set(CPP_GLOBAL_DEBUG_COMPILE_OPTIONS -O0 -g3 -Wextra -Werror -fsanitize=undefined -fsanitize=address -fsanitize=thread -fsanitize=memory)
     set(CPP_GLOABL_RELEASE_COMPILE_OPTIONS -O3 -g0 -DALCP_NO_CHECKS)
 else()
     set(CPP_GLOBAL_ALL_COMPILE_OPTIONS /DCTTI_STRING_MAX_LENGTH=512)
 endif()
 
-set(COMMON_INCLUDES ${PROJECT_SOURCE_DIR}/include)
-
-include_directories(${COMMON_INCLUDES})
-file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
-
-#-------------------
-# Test
-#-------------------
-enable_testing()
-set(PROJECT_TEST_NAME ${PROJECT_NAME_STR}_test)
-file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/tests/*.cpp)
-add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES})
-add_test(test1 ${PROJECT_TEST_NAME})
-
-target_link_libraries(${PROJECT_TEST_NAME} ${CMAKE_THREAD_LIBS_INIT})
-
-add_executable(${PROJECT_NAME_STR} ${SRC_FILES})
+include(CTest)
+add_subdirectory(src)
+add_subdirectory(tests)

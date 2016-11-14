@@ -13,7 +13,7 @@
 
 namespace alcp {
 	struct DegTag {
-		unsigned int deg, tag;
+		std::size_t deg, tag;
 	};
 
 	class ord {
@@ -32,11 +32,11 @@ namespace alcp {
 
 	struct Pri {
 		Fpxelem_b pol;
-		std::vector<std::pair<Fpxelem_b, unsigned int> > factors;
-		std::vector<unsigned int> sums;
+		std::vector<std::pair<Fpxelem_b, std::size_t> > factors;
+		std::vector<std::size_t> sums;
 		std::vector<std::set<DegTag, ord> > predecessor;
-		std::map<unsigned int, unsigned int> map;
-		unsigned int numOfCases;
+		std::map<std::size_t, std::size_t> map;
+		std::size_t numOfCases;
 	};
 
 	class HenselSubsets {
@@ -45,7 +45,7 @@ namespace alcp {
 
 		bool oneMorePrime();
 
-		void insert(const std::vector<std::pair<Fpxelem_b, unsigned int> > &factors, const Fpxelem_b &poli);
+		void insert(const std::vector<std::pair<Fpxelem_b, std::size_t> > &factors, const Fpxelem_b &poli);
 
 		Option bestOption();
 
@@ -54,17 +54,17 @@ namespace alcp {
 		Zxelem_b getLast();
 
 	private:
-		unsigned int semiSumOfDeg;
-		unsigned int sumOfDeg;
-		std::vector<unsigned int> intersection;
-		const unsigned int howManyPrimes;
+		std::size_t semiSumOfDeg;
+		std::size_t sumOfDeg;
+		std::vector<std::size_t> intersection;
+		const std::size_t howManyPrimes;
 		std::vector<Pri> global;
 		int index;
-		unsigned int index_intersection;
+		std::size_t index_intersection;
 		Pri globind;
 		bool hadRemoved;
 		Zxelem_b last;
-		std::stack<unsigned int> stackInd;
+		std::stack<std::size_t> stackInd;
 		std::stack<Fpxelem_b> stackPol;
 		std::stack<std::set<DegTag, ord>::iterator> stackIt;
 	};

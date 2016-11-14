@@ -146,8 +146,8 @@ std::vector<std::vector<Zxelem_b>> test_cases_hensel(){
     return tests;
 }
 
-std::vector<std::pair<Zxelem_b, unsigned int>> vectorWithMultiplicity(std::vector<Zxelem_b> v){
-    std::vector<std::pair<Zxelem_b, unsigned int>> ret(v.size());
+std::vector<std::pair<Zxelem_b, std::size_t>> vectorWithMultiplicity(std::vector<Zxelem_b> v){
+    std::vector<std::pair<Zxelem_b, std::size_t>> ret(v.size());
     std::transform(v.begin(), v.end(), ret.begin(),
             [](Zxelem_b p){ return std::make_pair(p, 1);});
     return ret;
@@ -164,8 +164,8 @@ std::ostream& operator<<(std::ostream& os, const std::vector<Zxelem_b>& v){
 void test_hensel_sq_free(int leadingCoeff, bool double_roots = false){
     std::vector<std::vector<Zxelem_b>> pols = test_cases_hensel();
     Zxelem_b z;
-    auto greater_fun = [](const std::pair<Zxelem_b, unsigned int>& a,
-                          const std::pair<Zxelem_b, unsigned int>& b){
+    auto greater_fun = [](const std::pair<Zxelem_b, std::size_t>& a,
+                          const std::pair<Zxelem_b, std::size_t>& b){
                 if(a.first.deg() > b.first.deg()) return true;
                 if(a.first.deg() < b.first.deg()) return false;
                 for(int i = a.first.deg(); i >= 0; --i){

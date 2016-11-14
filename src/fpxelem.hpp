@@ -35,7 +35,7 @@ namespace alcp {
             Fpxelem x(std::vector<Fpelem<Integer>>{getZero(this->lc()), getOne(this->lc())});
             Fpxelem xpk = x; // x^(p^k)
 
-            for (unsigned int i = 0; i < this->deg() / 2; ++i) {
+            for (std::size_t i = 0; i < this->deg() / 2; ++i) {
                 xpk = fastPowMod(xpk, this->getSize(), *this);
                 if (gcd(*this, xpk - x).deg() != 0)
                     return false;

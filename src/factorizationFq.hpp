@@ -64,9 +64,9 @@ namespace alcp {
  *
  * */
     template<typename Fxelem>
-    std::vector<std::pair<Fxelem, unsigned int> > squareFreeFF(Fxelem a) {
-        unsigned int i = 1;
-        std::vector<std::pair<Fxelem, unsigned int> > result;
+    std::vector<std::pair<Fxelem, std::size_t> > squareFreeFF(Fxelem a) {
+        std::size_t i = 1;
+        std::vector<std::pair<Fxelem, std::size_t> > result;
 
         Fxelem b = a.derivative();
         if (b != 0) {
@@ -96,7 +96,7 @@ namespace alcp {
                 auto aux = squareFreeFF(Fxelem(rootPOfC));
 
                 for (auto &pair: aux) {
-                    pair.second *= static_cast<unsigned int>(p);
+                    pair.second *= static_cast<std::size_t>(p);
                 }
                 result.insert(
                         result.end(),
@@ -110,7 +110,7 @@ namespace alcp {
             big_int exponent = fastPow(p, a.getField().getM() - 1);
             //This for computes a = a^{1/p}
             std::vector<typename Fxelem::Felem> rootPOfA;
-            for (int j = 0; j <= a.deg(); j += static_cast<unsigned int>(p))
+            for (int j = 0; j <= a.deg(); j += static_cast<std::size_t>(p))
                 if (a[j] != 0)
                     rootPOfA.push_back(fastPow(a[j], exponent));
                 else {
@@ -119,7 +119,7 @@ namespace alcp {
             auto aux = squareFreeFF(Fxelem(rootPOfA));
 
             for (auto &pair: aux) {
-                pair.second *= static_cast<unsigned int>(p);
+                pair.second *= static_cast<std::size_t>(p);
             }
             result.insert(
                     result.end(),
@@ -136,9 +136,9 @@ namespace alcp {
      *
      * */
     template<typename Fxelem>
-    std::vector<std::pair<Fxelem, unsigned int> > partialFactorDD(Fxelem pol) {
+    std::vector<std::pair<Fxelem, std::size_t> > partialFactorDD(Fxelem pol) {
     	//result[i].first will be a product of irreducible polynomials with degree result[i].second
-    	std::vector<std::pair<Fxelem, unsigned int> > result;
+    	std::vector<std::pair<Fxelem, std::size_t> > result;
 
     	int n = pol.deg();
     	if (n == 1){
@@ -152,7 +152,7 @@ namespace alcp {
         std::vector<typename Fxelem::Felem> r = mat[1];
 
 
-        unsigned int i = 1;
+        std::size_t i = 1;
         r[1] -= 1;
         result.push_back(std::make_pair(gcd(Fxelem(r), pol), i));
         r[1] += 1;
@@ -497,8 +497,8 @@ namespace alcp {
     }
 
     template<typename Fxelem>
-    std::vector<std::pair<Fxelem, unsigned int> > factorizationBerlekamp(const Fxelem &pol) {//TODO: probar con el polinomio 1, si no funciona ponerlo como caso particular
-    	std::vector<std::pair<Fxelem, unsigned int> > result;
+    std::vector<std::pair<Fxelem, std::size_t> > factorizationBerlekamp(const Fxelem &pol) {//TODO: probar con el polinomio 1, si no funciona ponerlo como caso particular
+    	std::vector<std::pair<Fxelem, std::size_t> > result;
     	if (pol.deg() <= 1){
 			result.push_back(std::make_pair(pol, 1));
 			return result;
@@ -517,8 +517,8 @@ namespace alcp {
     }
 
     template<typename Fxelem>
-    std::vector<std::pair<Fxelem, unsigned int> > factorizationCantorZassenhaus(const Fxelem &pol) {
-    	std::vector<std::pair<Fxelem, unsigned int> > result;
+    std::vector<std::pair<Fxelem, std::size_t> > factorizationCantorZassenhaus(const Fxelem &pol) {
+    	std::vector<std::pair<Fxelem, std::size_t> > result;
     	if (pol.deg() <= 1){
     		result.push_back(std::make_pair(pol, 1));
     		return result;

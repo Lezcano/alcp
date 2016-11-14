@@ -16,9 +16,9 @@
 namespace alcp {
 	const bool verbose = false;
 
-	std::vector<std::pair<Zxelem_b, unsigned int> > squareFreeFactChar0(const Zxelem_b &pol) {
-		std::vector<std::pair<Zxelem_b, unsigned int> > result;
-		unsigned int i = 1;
+	std::vector<std::pair<Zxelem_b, std::size_t> > squareFreeFactChar0(const Zxelem_b &pol) {
+		std::vector<std::pair<Zxelem_b, std::size_t> > result;
+		std::size_t i = 1;
 		Zxelem_b b = pol.derivative();
 		Zxelem_b c = modularGCD(b, pol);
 		Zxelem_b w = pol / c;
@@ -91,7 +91,7 @@ namespace alcp {
 	}
 
 /*
-unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const std::vector<unsigned int> & posibilitiesSizes, unsigned int intersectionSize){
+std::size_t heuristic (std::size_t deg, std::size_t numberOfPrimesUsed, const std::vector<std::size_t> & posibilitiesSizes, std::size_t intersectionSize){
 
 }
 */
@@ -157,8 +157,8 @@ unsigned int heuristic (unsigned int deg, unsigned int numberOfPrimesUsed, const
 		return factorizationHenselSquareFree(poli, hs);
 	}
 
-	std::vector<std::pair<Zxelem_b, unsigned int> > factorizationHensel(const Zxelem_b &pol) {
-		std::vector<std::pair<Zxelem_b, unsigned int> > result;
+	std::vector<std::pair<Zxelem_b, std::size_t> > factorizationHensel(const Zxelem_b &pol) {
+		std::vector<std::pair<Zxelem_b, std::size_t> > result;
 		if (pol.deg() == 0){
 			result.push_back(std::make_pair(pol, 1));
 			return result;
