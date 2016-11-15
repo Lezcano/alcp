@@ -28,6 +28,11 @@ before_install:
     - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.8" CC="clang-3.8"; fi
     - git submodule update --init --recursive
 
+    # Gtest from: https://github.com/easylogging/easyloggingpp/blob/master/.travis.yml
+    - sudo apt-get -qq update
+    - sudo apt-get install -y libgtest-dev
+    - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
+
 install:
 
     # From: https://github.com/boostorg/hana/blob/master/.travis.yml
