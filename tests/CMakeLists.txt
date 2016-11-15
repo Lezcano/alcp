@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.3)
-
 set(PROJECT_TEST_NAME ${PROJECT_NAME_STR}_test)
 
 find_package(GTest REQUIRED)
