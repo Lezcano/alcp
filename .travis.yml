@@ -1,6 +1,14 @@
 # From: https://github.com/boostorg/hana/blob/master/.travis.yml
 
-language: cpp
+language: c++
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - g++-6
+    sources: &sources
+      - ubuntu-toolchain-r-test
 
 cache:
   directories:
