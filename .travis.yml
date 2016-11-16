@@ -139,7 +139,7 @@ install:
       mkdir -p ${GTEST_DIR} ${GTEST_DIR}/build
       (cd ${GTEST_DIR}/build && cmake -DCMAKE_BUILD_TYPE=RELEASE /usr/src/gtest/ && cmake --build .)
     fi
-  - export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${GTEST_DIR}/build"
+  - export GTEST_ROOT="${GTEST_DIR}/build"
 
 before_script:
   ############################################################################
