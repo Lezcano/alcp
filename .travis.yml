@@ -7,6 +7,7 @@ addons:
   apt:
     packages:
       - g++-6
+      - libgtest-dev
     sources: &sources
       - ubuntu-toolchain-r-test
 
