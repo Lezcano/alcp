@@ -129,6 +129,11 @@ install:
       export PATH="${LLVM_DIR}/clang/bin:${PATH}"
     fi
 
+  ############################################################################
+  # Install gtest
+  ############################################################################
+  - (cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd ${TRAVIS_BUILD_DIR})
+
 before_script:
   ############################################################################
   # Go back to the root of the project and setup the build directory
