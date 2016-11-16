@@ -1,0 +1,44 @@
+# Classical Computer Algebra Algorithms
+
+## Basic data structures:
+
+[✓] Quotient of an ED by a principal ideal: R / \<a\>
+  
+- [✓] Finite field GF(p) = Z / \<p\> 
+
+- [✓] Finite field GF(q) = GF(p)[X] / \<f\>
+
+[✓] Polynomial ring of an ED: R[X]
+
+- [✓] Polynomial ring GF(p)[X]
+
+- [✓] Polynomial ring GF(q)[X]
+
+- [✓] Polynomial ring Z[X]
+
+## Main algorithms:
+
+[✓] Extended euclides algorithm for an ED
+
+[✓] Chinese remainder algorithm
+
+[✓✓] Berlekamp 
+
+[✓✓✓] Cantor-Zassenhaus
+
+[✓✓✓] Hensel
+
+[✓] Modular Euclidean algorithm
+
+[✓] BCH codification. General Berlekamp-Massey algorithm. BCH decodification using Berlekamp-Massey
+## Misc:
+
+[✓] Addition and multiplication of 63-bit numbers using 64-bit registers - Russian peasant algorithm
+
+[✓] Irreducibility criterion for GF(p)[X]
+
+[✓] Pollard's ρ algorithm for integer factorization
+
+[✓] Discrete logarithm in GF(q) - Pollard's ρ algorithm for logarithms
+
+[✓] Miller-Rabin

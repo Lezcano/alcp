@@ -1,16 +1,37 @@
-cmake_minimum_required(VERSION 2.6.2)
+# Mostyl based on the CMake from Manu343726
+# https://github.com/GueimUCM/siplasplas/blob/master/CMakeLists.txt
 
-project( googletest-distribution )
+cmake_minimum_required(VERSION 2.8.6)
+set(PROJECT_NAME_STR alcp)
+project(${PROJECT_NAME_STR})
 
-enable_testing()
 
-option(BUILD_GTEST "Builds the googletest subproject" OFF)
+find_package(Threads REQUIRED)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
 
-#Note that googlemock target already builds googletest
-option(BUILD_GMOCK "Builds the googlemock subproject" ON)
-
-if(BUILD_GMOCK)
-  add_subdirectory( googlemock )
-elseif(BUILD_GTEST)
-  add_subdirectory( googletest )
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
 endif()
+
+# Project options
+if(NOT MSVC)
+    # gtest needs fileno() function at file gtest/include/gtest/internal/gtest-port.h,
+    # but is considered an extension in cygwin GCC setup. Use GNU extensions.
+    # See http://stackoverflow.com/questions/18784112/googletest-1-6-with-cygwin-1-7-compile-error-fileno-was-not-declared-in-this
+    if(CYGWIN)
+        set(STD_CXX gnu++14)
+    else()
+        set(STD_CXX c++14)
+    endif()
+
+    set(CPP_GLOBAL_ALL_COMPILE_OPTIONS -std=${STD_CXX} -Wall -pedantic )
+    set(CPP_GLOBAL_DEBUG_COMPILE_OPTIONS -O0 -g3 -Wextra -Werror -fsanitize=undefined -fsanitize=address -fsanitize=thread -fsanitize=memory)
+    set(CPP_GLOABL_RELEASE_COMPILE_OPTIONS -O3 -g0 -DALCP_NO_CHECKS)
+else()
+    set(CPP_GLOBAL_ALL_COMPILE_OPTIONS /DCTTI_STRING_MAX_LENGTH=512)
+endif()
+
+include(CTest)
+add_subdirectory(src)
+add_subdirectory(tests)
