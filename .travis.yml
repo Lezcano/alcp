@@ -96,7 +96,7 @@ install:
   ############################################################################
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      CMAKE_URL="http://www.cmake.org/files/v3.3/cmake-3.3.1-Linux-x86_64.tar.gz"
+      CMAKE_URL="http://www.cmake.org/files/v3.5/cmake-3.5.2-Linux-x86_64.tar.gz"
       mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
       export PATH=${DEPS_DIR}/cmake/bin:${PATH}
     else
@@ -142,6 +142,8 @@ install:
       (cd ${GTEST_DIR}/build && cmake -DCMAKE_BUILD_TYPE=RELEASE .. && cmake --build .)
     fi
   - export GTEST_ROOT="${GTEST_DIR}/build"
+  - export GTEST_HOME="${GTEST_DIR}/build"
+  - export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${GTEST_DIR}/build"
 
 before_script:
   ############################################################################
