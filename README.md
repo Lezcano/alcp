@@ -3,8 +3,8 @@
 ## Basic data structures:
 
 [✓] Quotient of an ED by a principal ideal: R / \<a\>
-  
-- [✓] Finite field GF(p) = Z / \<p\> 
+
+- [✓] Finite field GF(p) = Z / \<p\>
 
 - [✓] Finite field GF(q) = GF(p)[X] / \<f\>
 
@@ -22,7 +22,7 @@
 
 [✓] Chinese remainder algorithm
 
-[✓✓] Berlekamp 
+[✓✓] Berlekamp
 
 [✓✓✓] Cantor-Zassenhaus
 
