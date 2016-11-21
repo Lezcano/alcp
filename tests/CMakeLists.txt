@@ -1,7 +1,8 @@
-set(PROJECT_TEST_NAME ${PROJECT_NAME_STR}_test)
+set(PROJECT_TEST_NAME ${PROJECT_NAME}_test)
 
-find_package(GTest REQUIRED)
-include_directories(${GTEST_SOURCE_DIR}/include ${GTEST_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/src)
+include(CTest)
+
+find_package(Threads REQUIRED)
 
 add_executable(${PROJECT_TEST_NAME} tests.cpp)
 
@@ -9,7 +10,6 @@ target_link_libraries(${PROJECT_TEST_NAME}
     gtest
     gtest_main
     ${CMAKE_THREAD_LIBS_INIT}
-    alcp_lib)
+    ${PROJECT_LIB})
 
-enable_testing()
-add_test(test1 ${PROJECT_TEST_NAME})
+add_test(all_tests ${PROJECT_TEST_NAME})

@@ -1,2 +1,3 @@
 # Ignore CI build directory
 build/
+how_to_install.sh

@@ -2,11 +2,14 @@
 # https://github.com/GueimUCM/siplasplas/blob/master/CMakeLists.txt
 
 cmake_minimum_required(VERSION 2.8.6)
-set(PROJECT_NAME_STR alcp)
-project(${PROJECT_NAME_STR})
+
+set(PROJECT_NAME alcp)
+set(PROJECT_LIB ${PROJECT_NAME}_lib)
 
 
-find_package(Threads REQUIRED)
+project(${PROJECT_NAME})
+
+
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
@@ -32,6 +35,7 @@ else()
     set(CPP_GLOBAL_ALL_COMPILE_OPTIONS /DCTTI_STRING_MAX_LENGTH=512)
 endif()
 
-include(CTest)
 add_subdirectory(src)
+
+add_subdirectory(lib/gtest-1.8.0)
 add_subdirectory(tests)
