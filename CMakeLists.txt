@@ -38,6 +38,6 @@ endif()
 add_subdirectory(src)
 
 # Testing
-add_subdirectory(lib/gtest-1.8.0)
+add_subdirectory(deps/gtest-1.8.0)
 include(CTest)
 add_subdirectory(tests)
