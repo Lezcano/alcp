@@ -1,10 +1,10 @@
 set(PROJECT_TEST_NAME ${PROJECT_NAME}_test)
 
-include(CTest)
-
 find_package(Threads REQUIRED)
 
 add_executable(${PROJECT_TEST_NAME} tests.cpp)
+
+include_directories(${PROJECT_SOURCE_DIR}/src)
 
 target_link_libraries(${PROJECT_TEST_NAME}
     gtest
