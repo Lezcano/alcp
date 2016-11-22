@@ -35,6 +35,15 @@ else()
     set(CPP_GLOBAL_ALL_COMPILE_OPTIONS /DCTTI_STRING_MAX_LENGTH=512)
 endif()
 
+
+##############################################################################
+# Setup include paths. More include paths can be added in subdirectories.
+##############################################################################
+find_package(Boost 1.62)
+if (Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+endif()
+
 add_subdirectory(src)
 
 # Testing
