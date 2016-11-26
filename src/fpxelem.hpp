@@ -31,7 +31,17 @@ namespace alcp {
 
         Fpxelem() = default;
 
-        Fpxelem(const Zxelem<Integer> &e, Integer p) : FBase(toFpxelem(e, p)) { }
+        Fpxelem(const Zxelem<Integer> &e, const Fp<Integer>& f) : FBase{
+            [&]() -> Fpxelem{
+                std::vector<Fpelem<Integer>> ret(e.deg() + 1);
+                std::transform(e.begin(),
+                               e.end(),
+                               ret.begin(),
+                               [&f](const Integer& elem){ return f.get(elem); });
+                return ret;
+            }()} { }
+
+        Fpxelem(const Zxelem<Integer> &e, Integer p) : FBase{Fpxelem{e, Fp<Integer>(p)}}{}
 
         bool irreducible() const {
             Fpxelem x(std::vector<Fpelem<Integer>>{getZero(this->lc()), getOne(this->lc())});

@@ -106,6 +106,32 @@ TEST(pollardo_factoring, composite_numbers){
         EXPECT_EQ(factorInteger(num[i]), sol[i]);
 }
 
+TEST(const_iterate, fpxelem){
+    auto x = Fpxelem_b(Zxelem_b{{1, 3, 5, 2, 3, 0, 4}}, 5);
+    for(const auto& a : x);
+}
+
+TEST(const_iterate, zxelem){
+    auto x = Zxelem_b{{12,5,1,76,0,612,-23,3,-13}};
+    for(const auto& a : x);
+}
+
+TEST(iterate, fpxelem){
+    auto x = Fpxelem_b(Zxelem_b{{1,2,6,1,2,3,1}}, 5);
+
+    for(auto& a : x) a *= 2;
+
+    EXPECT_EQ(x, Fpxelem_b(Zxelem_b{{2, 4, 2, 2, 4, 1, 2}}, 5));
+}
+
+TEST(iterate, zxelem){
+    auto x = Zxelem_b{{12,5,1,76,0,612,-23,3,-13}};
+
+    for(auto& a : x) a += -4;
+
+    EXPECT_EQ(x, Zxelem_b({8, 1,-3, 72, -4, 608, -27, -1,-17}));
+}
+
 TEST(pollardo_logarithm, composite_numbers){
     long long log;
 

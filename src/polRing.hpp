@@ -6,7 +6,6 @@
 #include <utility>          // pair, make_pair
 #include <functional>       // not_equal_to
 #include <string>           // to_string
-#include <iostream> 		//TODO quitar
 
 #include "types.hpp"
 #include "exceptions.hpp"
@@ -19,11 +18,17 @@ namespace alcp {
         using Fxelem = FxelemBase<Integer>;
     public:
         using Int = Integer;
-        const static char var = 'x';
+
+        // Iterator utilities
+        using iterator = typename std::vector<Felem>::iterator;
+        using const_iterator = typename std::vector<Felem>::const_iterator;
+
+        // Variable used to print the polynomial by default
+        constexpr static char var = 'x';
 
         PolynomialRing() = default;
 
-        // Immersion from the base ring
+        // Copy immersion from the base ring
         template<class Felem_t,
                 class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>>
         PolynomialRing(const Felem_t &e) : _v(std::vector<Felem>({e})) { }
@@ -46,11 +51,13 @@ namespace alcp {
 #endif
         }
 
+        // Constructor from a vector
         template<class Felem_t, class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>>
-        PolynomialRing(const std::vector<Felem_t> &v) : PolynomialRing(v){}
+        PolynomialRing(const std::vector<Felem_t> &v) : PolynomialRing{v}{}
 
         PolynomialRing(const PolynomialRing &) = default;
 
+        // Generalized copy constructor
         template<class Felem_t, class Int,
                 class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>,
                 class = std::enable_if_t<is_integral<Int>::value>>
@@ -59,6 +66,7 @@ namespace alcp {
 
         PolynomialRing(PolynomialRing &&) = default;
 
+        // Generalized move constructor
         template<class Felem_t, class Int,
                 class = std::enable_if_t<std::is_constructible<Felem, Felem_t>::value>,
                 class = std::enable_if_t<is_integral<Int>::value>>
@@ -251,9 +259,10 @@ namespace alcp {
             if (divisor.deg() == 0) {
                 Fxelem quot(static_cast<const Fxelem &>(*this));
                 Fxelem rem(static_cast<const Fxelem &>(*this));
-                for (auto &e : quot._v) {
-                    e /= divisor.lc();
-                }
+                std::for_each(quot.begin(),
+                              quot.end(),
+                              [lc = divisor.lc()](Felem &elem){elem /= lc;});
+
                 return std::make_pair(quot, Fxelem(getZero(this->lc())));
             }
 
@@ -328,6 +337,14 @@ namespace alcp {
 
         // Normal form of the polynomial. It ensures the unicity of gdc for example
         friend inline Fxelem normalForm(const Fxelem &e) { return e / unit(e); }
+
+        // Iterator utilities
+        iterator begin() { return _v.begin(); }
+        const_iterator begin() const { return _v.begin(); }
+        iterator end() { return _v.end(); }
+        const_iterator end() const { return _v.end(); }
+        const_iterator cbegin() const { return _v.cbegin(); }
+        const_iterator cend() const { return _v.cend(); }
 
         friend std::string to_string(const Fxelem &f, char var = PolynomialRing::var /* x */) {
         	if(f.deg() == 0)
