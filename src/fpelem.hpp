@@ -79,11 +79,13 @@ namespace alcp {
     template<class Integer>
     class Fpelem : public QuotientRing<Fpelem, Integer, Integer> {
     private:
-        using FBase = QuotientRing<Fpelem, Integer, Integer>;
+        // ::alcp::Fpelem still necessary for clang 3.9
+        // http://stackoverflow.com/questions/17687459/clang-not-accepting-use-of-template-template-parameter-when-using-crtp
+        using FBase = QuotientRing<::alcp::Fpelem, Integer, Integer>;
 
     public:
         using F = Fp<Integer>;
-        using FBase::QuotientRing;
+        using FBase::FBase;
         using FBase::operator=;
 
         Fpelem() = default;

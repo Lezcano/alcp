@@ -115,11 +115,13 @@ namespace alcp {
     template<class Integer = big_int>
     class Fqelem : public QuotientRing<Fqelem, Fpxelem<Integer>, Integer> {
     private:
-        using FBase = QuotientRing<Fqelem, Fpxelem<Integer>, Integer>;
+        // ::alcp::Fqelem still necessary for clang 3.9
+        // http://stackoverflow.com/questions/17687459/clang-not-accepting-use-of-template-template-parameter-when-using-crtp
+        using FBase = QuotientRing<::alcp::Fqelem, Fpxelem<Integer>, Integer>;
 
     public:
         using F = Fq<Integer>;
-        using FBase::QuotientRing;
+        using FBase::FBase;
         using FBase::operator=;
 
         F getField() const{ return F(this->_mod, true); }

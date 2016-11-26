@@ -23,25 +23,19 @@ namespace alcp {
 	 */
 	template<typename Fxelem>
 	Fxelem berlekampMassey(const std::vector<typename Fxelem::Felem> & s){
-		/*/
-		for(auto elem: s){
-			std::cout << elem << std::endl;
-		}
-		/**/
-		unsigned int n = s.size();
+		size_t n = s.size();
 		Fxelem f_m(getOne(s[0])), f_k(getOne(s[0]));
-		unsigned int l = 0;
+		size_t l = 0;
 		int m = 1;
 		typename Fxelem::Felem d_m = getOne(s[0]);
 
-		for (unsigned int i = 0; i < n; i++){
+		for (size_t i = 0; i < n; i++){
 			typename Fxelem::Felem d_k = getZero(s[0]);
-			unsigned int min = f_k.deg();
+			size_t min = f_k.deg();
 			if (l < min ) min = l;
 			for(size_t j = 0; j <= min; j++ ){
 				d_k += s[i-j]*f_k[j];
 			}
-			//std::cout << "d_k" << d_k << std::endl;
 			if (d_k == 0){
 				m++;
 			}

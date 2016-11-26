@@ -21,11 +21,13 @@ namespace alcp {
     template<class Integer>
     class Zxelem : public PolynomialRing<Zxelem, Integer, Integer> {
     private:
-        using RBase = PolynomialRing<Zxelem, Integer, Integer>;
+        // ::alcp::Zxelem still necessary for clang 3.9
+        // http://stackoverflow.com/questions/17687459/clang-not-accepting-use-of-template-template-parameter-when-using-crtp
+        using RBase = PolynomialRing<::alcp::Zxelem, Integer, Integer>;
 
     public:
         // Inherit ctors
-        using RBase::PolynomialRing;
+        using RBase::RBase;
 
         Zxelem() = default;
 

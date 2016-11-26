@@ -17,7 +17,9 @@ namespace alcp {
     template<class Integer>
     class Fpxelem : public PolynomialRing<Fpxelem, Fpelem<Integer>, Integer> {
     private:
-        using FBase = PolynomialRing<Fpxelem, Fpelem<Integer>, Integer>;
+        // ::alcp::Fpxelem still necessary for clang 3.9
+        // http://stackoverflow.com/questions/17687459/clang-not-accepting-use-of-template-template-parameter-when-using-crtp
+        using FBase = PolynomialRing<::alcp::Fpxelem, Fpelem<Integer>, Integer>;
 
     public:
         // Base field
@@ -25,7 +27,7 @@ namespace alcp {
         using Felem = Fpelem<Integer>;
 
         // Inherit ctors
-        using FBase::PolynomialRing;
+        using FBase::FBase;
 
         Fpxelem() = default;
 
