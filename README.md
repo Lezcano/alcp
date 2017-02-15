@@ -80,5 +80,7 @@ Polynomial ring of an ED: R[X]
 
 - Miller-Rabin
 
+# Developers:
+This project was developed by [Lezcano](https://github.com/Lezcano) and [damaru2](https://github.com/damaru2)
 <!-- Links -->
 [CMake]: http://www.cmake.org
